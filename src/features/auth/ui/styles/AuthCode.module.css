@@ -1,0 +1,50 @@
+
+.logoModalCode {
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 200px;
+    height: auto;
+  }
+  
+  .modalCodeTitle {
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .codeInputContainer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .codeInput {
+    width: 50px;
+    height: 60px;
+    text-align: center;
+    font-size: 24px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s;
+  }
+  
+  .codeInput:focus {
+    outline: none;
+    border-color: #5388d8;
+  }
+  
+  .btnCodeCustom {
+    width: 80%;
+    height: 50px;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-top: 20px;
+    background-color: #5388d8 !important;
+  }
+
+  .errorMessage {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+  }

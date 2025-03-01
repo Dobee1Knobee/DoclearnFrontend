@@ -1,0 +1,95 @@
+.customInput {
+  border-radius: 10px;
+  height: 50px;
+  padding: 10px;
+  font-size: 18px;
+  border: 2px solid #5388d8;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.customInput:focus {
+  box-shadow: 0 0 0 0.2rem rgba(83, 136, 216, 0.25);
+  border-color: #5388d8;
+  outline: none;
+}
+
+.btnCustom {
+  width: 100%;
+  height: 50px;
+  font-size: 18px;
+  border-radius: 10px;
+  margin-top: 20px;
+  background-color: #5388d8;
+  border: none;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.btnCustom:hover {
+  background-color: #4070b8;
+}
+
+.btnCustom:disabled {
+  background-color: #5388d8;
+  opacity: 0.65;
+}
+
+.forgotPassword {
+  font-size: 14px;
+  color: #5388d8;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.passwordWrapper {
+  position: relative;
+}
+
+.passwordToggleIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #5388d8;
+}
+
+.hasError {
+  right: 35px;
+}
+
+.formLabel {
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.dateInput {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 10px;
+  font-size: 18px;
+  outline: none;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.feedbackInvalid {
+  display: block;
+  width: 100%;
+  margin-top: -15px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: red;
+}
+

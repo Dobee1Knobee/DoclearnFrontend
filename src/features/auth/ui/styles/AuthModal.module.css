@@ -1,0 +1,70 @@
+.customModal {
+  overflow-y: auto;
+  font-family: var(--font-montserrat), sans-serif;
+}
+
+.customModal :global(.modal-content) {
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  height: auto;
+  border: none;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 20px auto;
+  width: 200px;
+  height: auto;
+}
+
+.modalTitle {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.roleToggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.toggleButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 2px solid #5388d8;
+  border-radius: 10px;
+  background-color: #f0f4ff;
+  color: #5388d8;
+  cursor: pointer;
+  margin-right: 20px;
+  width: 120px;
+  height: 55px;
+  transition: all 0.2s ease;
+}
+
+.toggleButton:global(.active) {
+  background-color: #5388d8;
+  color: white;
+}
+
+.toggleButton:last-child {
+  margin-right: 0;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.loginLink,
+.registrationLink {
+  font-size: 16px;
+  color: #5388d8;
+  text-decoration: none;
+  margin-top: 20px;
+}
+
