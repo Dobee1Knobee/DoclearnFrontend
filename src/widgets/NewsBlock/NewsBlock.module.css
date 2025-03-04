@@ -1,62 +1,91 @@
 .container {
-    margin-bottom: 48px;
-  }
-  
-  .blockTitle {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-  }
-  
-  .cityName {
-    font-size: 28px;
-    font-weight: 500;
-    color: #1a1a1a;
-  }
-  
-  .moreButton {
-    padding: 8px 16px;
-    border: none;
-    background: #f0f2f5;
-    border-radius: 8px;
-    color: #1a1a1a;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .moreButton:hover {
-    background: #e4e6eb;
-  }
-  
-  .grid {
-    display: flex;
-    align-items: stretch;
-    gap: 24px;
-  }
-  
-  .mainContent {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
+  margin-bottom: 48px;
+}
+
+.blockTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.cityName {
+  font-size: 28px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.moreButton {
+  padding: 8px 16px;
+  border: none;
+  background: #f0f2f5;
+  border-radius: 8px;
+  color: #1a1a1a;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.moreButton:hover {
+  background: #e4e6eb;
+}
+
+.grid {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+}
+
+.mainContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+}
+
+.sidebar {
+  flex: 2;
+  border: 1px solid #dbdbdb;
+  border-radius: 16px;
+  /* height: fit-content;  */
+  max-height: 100%;
+}
+
+/* Tablet breakpoint */
+@media (max-width: 950px) and (min-width: 769px) {
+  .mainContent,
   .sidebar {
-    flex: 2;
-    border: 1px solid #dbdbdb;
-    border-radius: 16px;
+    flex: 1;
   }
-  
-  @media (max-width: 768px) {
-    .grid {
-      flex-direction: column;
-    }
-  
-    .sidebar {
-      flex: 1;
-    }
+
+  .sidebar {
+    max-height: 800px; /* Примерная высота двух карточек */
   }
-  
-  
+}
+
+/* Mobile breakpoint */
+@media (max-width: 768px) {
+  .grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mainContent {
+    width: 100%;
+    align-items: center;
+    max-width: 500px;
+  }
+
+  .mainContent > *:nth-child(2) {
+    display: none; /* Скрываем вторую карточку на мобильных */
+  }
+
+  .sidebar {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    max-height: none; /* Убираем ограничение высоты на мобильных */
+  }
+}
+
