@@ -8,6 +8,7 @@ import Logo from "./Logo"
 import Navigation from "./Navigation"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
 import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
+import { UserProfileCard } from "@/entities/user/ui/UserProfileCard/UserProfileCard"
 
 export default function Header() {
   const [isLoginVisible, setIsLoginVisible] = useState(false)
@@ -65,6 +66,7 @@ export default function Header() {
             </div>
             {showProfilePopup && (
               <div className={styles.profilePopup}>
+                <UserProfileCard name="Артем Кузин" role="Студент" onLogout={handleLogout} />
               </div>
             )}
           </div>
