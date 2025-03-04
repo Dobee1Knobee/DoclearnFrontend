@@ -86,6 +86,7 @@
   .avatarContainer {
     position: relative;
     margin-top: -15px;
+    margin-left: 48px;
   }
   
   .avatarWrapper {
