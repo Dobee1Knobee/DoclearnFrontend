@@ -12,7 +12,7 @@ export const featuredNews: NewsItem[] = [
       name: "Общественное мнение",
       icon: "/logoGoogle.png",
     },
-    publishedAt: "2025-02-22T19:30:00Z",
+    publishedAt: "2025-03-03T18:30:00Z",
   },
   {
     id: "2",

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat} from "next/font/google";
 import "./globals.css";
 import BootstrapClient from '@/app/providers/BootstrapClient';
-import HeaderLogin from '@/widgets/header/ui/HeaderLogin';
+import Header from '@/widgets/header/ui/Header';
 import Footer from '@/widgets/footer/Footer';
 
 // const geistSans = Geist({
@@ -45,7 +45,7 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable}  antialiased`}
       >
-        <HeaderLogin />
+        <Header />
         {children}
         <Footer />
         <BootstrapClient />

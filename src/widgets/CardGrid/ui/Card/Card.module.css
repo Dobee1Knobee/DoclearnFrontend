@@ -1,0 +1,107 @@
+.card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 300px;
+    height: 380px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  .iconWrapper {
+    background-color: #5388d8;
+    border-radius: 50%;
+    padding: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .icon {
+    width: 32px;
+    height: 32px;
+    color: #ffffff;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333333;
+  }
+  
+  .description {
+    font-size: 16px;
+    color: #666666;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  @media (max-width: 1010px) {
+    .card {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      min-height: 350px;
+    }
+  
+    .iconWrapper {
+      padding: 14px;
+      margin-bottom: 28px;
+    }
+  
+    .icon {
+      width: 28px;
+      height: 28px;
+    }
+  
+    .title {
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+  
+    .description {
+      font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .card {
+      padding: 24px;
+      min-height: 320px;
+    }
+  
+    .iconWrapper {
+      padding: 12px;
+      margin-bottom: 24px;
+    }
+  
+    .icon {
+      width: 24px;
+      height: 24px;
+    }
+  
+    .title {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+  
+    .description {
+      font-size: 14px;
+    }
+  }
+  
+  
