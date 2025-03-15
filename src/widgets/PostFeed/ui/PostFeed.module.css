@@ -1,0 +1,146 @@
+.container {
+  min-height: 100vh;
+  background-color: white;
+  padding: 2rem 1rem;
+  transition: opacity 0.5s;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 2rem 1.5rem;
+  }
+}
+
+.content {
+  max-width: 42rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.skeletonCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.skeletonAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #5388d8;
+  margin-right: 0.75rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonInfo {
+  flex: 1;
+}
+
+.skeletonName {
+  height: 12px;
+  width: 120px;
+  background-color: #5388d8;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonDate {
+  height: 8px;
+  width: 80px;
+  background-color: #5388d8;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonBody {
+  margin-bottom: 1rem;
+}
+
+.skeletonLine {
+  height: 10px;
+  width: 100%;
+  background-color: #5388d8;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonImageContainer {
+  height: 400px;
+  width: 100%;
+  background-color: #5388d8;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonFooter {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.skeletonActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.skeletonAction {
+  height: 20px;
+  width: 60px;
+  background-color: #5388d8;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonBookmark {
+  height: 20px;
+  width: 20px;
+  background-color: #5388d8;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.postAnimation {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.error {
+  color: #ef4444;
+  text-align: center;
+  padding: 2rem;
+  font-weight: 500;
+}
+

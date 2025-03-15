@@ -1,0 +1,123 @@
+.content {
+    margin-bottom: 0.75rem;
+  }
+  
+  .text {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .text a {
+    color: #3b82f6;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .text a:hover {
+    text-decoration: underline;
+  }
+  
+  .text a .externalIcon {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-left: 0.25rem;
+  }
+  
+  .images {
+    margin-top: 0.75rem;
+    overflow: hidden;
+    border-radius: 0.75rem;
+  }
+  
+  .singleImage {
+    max-height: 400px;
+  }
+  
+  .multipleImages {
+    display: grid;
+    gap: 0.5rem;
+  }
+  
+  .twoImages {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .multipleImages:not(.twoImages) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  
+  .imageContainer {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.75rem;
+  }
+  
+  .single {
+    aspect-ratio: 16 / 9;
+  }
+  
+  .imageContainer:not(.single) {
+    aspect-ratio: 1 / 1;
+  }
+  
+  .featured {
+    grid-row: span 2;
+  }
+  
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+  }
+  
+  .loading {
+    filter: blur(10px);
+    transform: scale(1.02);
+  }
+  
+  .links {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .link {
+    display: block;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(229, 231, 235, 1);
+    transition: background-color 0.2s;
+  }
+  
+  .link:hover {
+    background-color: rgba(249, 250, 251, 1);
+  }
+  
+  .linkContent {
+    display: flex;
+    align-items: center;
+  }
+  
+  .linkIcon {
+    margin-right: 0.5rem;
+    color: #3b82f6;
+  }
+  
+  .linkText {
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  
+  .linkUrl {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  
