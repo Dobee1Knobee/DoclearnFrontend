@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .avatar {
+    flex-shrink: 0;
+    margin-right: 0.75rem;
+    overflow: hidden;
+  }
+  
+  .image {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba(229, 231, 235, 1);
+    transition: all 0.3s ease-out;
+  }
+  
+  .image:hover {
+    transform: scale(1.02);
+  }
+  
+  .info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .nameContainer {
+    display: flex;
+    align-items: center;
+  }
+  
+  .name {
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  
+  .timestamp {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  
+  
