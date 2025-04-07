@@ -1,0 +1,46 @@
+.articleItem {
+  padding: 1rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.articleItem:last-child {
+  border-bottom: none;
+}
+
+.articleLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.articleTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+  transition: color 0.2s;
+}
+
+.articleLink:hover .articleTitle {
+  color: #5388d8;
+}
+
+.articleMeta {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.journalName {
+  font-weight: 500;
+}
+
+.separator {
+  margin: 0 0.5rem;
+}
+
+.publicationDate {
+  color: #9ca3af;
+}
+

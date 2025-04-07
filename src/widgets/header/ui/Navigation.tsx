@@ -13,12 +13,14 @@ import { GoBook } from "react-icons/go";
 export default function Navigation() {
   const pathname = usePathname()
 
+  const isAggregatorActive = pathname.startsWith("/Aggregator")
+
     return (
       <div className={styles.search}>
         <input 
           type="text" 
           className="form-control"
-          placeholder="Поиск" 
+          placeholder="Поиск по сайту..." 
           style={{borderColor:'#5388d8'}}
         />
         <div className={styles.iconsContainer}>
@@ -28,12 +30,12 @@ export default function Navigation() {
           <Link href="/Feed">
             <MessageSquare className={`${styles.icon} ${pathname === "/Feed" ? styles.iconActive : ""}`} />
           </Link>
-          <Link href="/Articles">
-            <FileText className={`${styles.icon} ${pathname === "/Articles" ? styles.iconActive : ""}`} />
+          <Link href="/Aggregator">
+            <FileText className={`${styles.icon} ${isAggregatorActive ? styles.iconActive : ""}`} />
           </Link>
-          {/* <Link href="/Learn">
+          <Link href="/Learn">
             <BookOpen className={`${styles.icon} ${pathname === "/Learn" ? styles.active : ""}`} />
-          </Link> */}
+          </Link>
         </div>
       </div>
     );

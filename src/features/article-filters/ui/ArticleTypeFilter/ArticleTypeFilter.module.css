@@ -1,0 +1,41 @@
+.container {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #1a1a1a;
+}
+
+.typesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.typeItem {
+  display: flex;
+  align-items: center;
+}
+
+.typeLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #5388d8;
+}
+
+.typeName {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+

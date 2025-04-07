@@ -5,6 +5,7 @@ import "./globals.css";
 import BootstrapClient from '@/app/providers/BootstrapClient';
 import Header from '@/widgets/header/ui/Header';
 import Footer from '@/widgets/footer/Footer';
+import { Providers } from "./providers"
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -45,10 +46,12 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable}  antialiased`}
       >
-        <Header />
-        {children}
-        <Footer />
-        <BootstrapClient />
+        <Providers>
+          <Header />
+          {children}
+          <Footer />
+          <BootstrapClient />
+        </Providers>
       </body>
     </html>
   );

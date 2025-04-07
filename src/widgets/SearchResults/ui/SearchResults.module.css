@@ -1,0 +1,40 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.searchBarContainer {
+  margin-bottom: 1.5rem;
+}
+
+.resultsContainer {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.sidebar {
+  flex: 0 0 250px;
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.paginationContainer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .resultsContainer {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex: none;
+    width: 100%;
+  }
+}
+
