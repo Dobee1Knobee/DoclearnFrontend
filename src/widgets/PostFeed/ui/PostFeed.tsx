@@ -39,8 +39,9 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
     <div className={styles.container}>
       <div ref={containerRef} className={styles.content}>
         {loading ? (
+          // Встроенный скелетон вместо отдельного компонента
           <>
-            {[1, 2, 3].map((index) => (
+            {[1, 2].map((index) => (
               <div key={index} className={styles.skeletonCard}>
                 <div className={styles.skeletonHeader}>
                   <div className={styles.skeletonAvatar}></div>

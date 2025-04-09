@@ -1,0 +1,78 @@
+.container {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #1a1a1a;
+}
+
+.searchWrapper {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.5rem 0.5rem 0.5rem 2rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.searchInput:focus {
+  border-color: #5388d8;
+}
+
+.journalsList {
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.journalItem {
+  display: flex;
+  align-items: center;
+}
+
+.journalLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #5388d8;
+}
+
+.journalName {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.noResults {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+

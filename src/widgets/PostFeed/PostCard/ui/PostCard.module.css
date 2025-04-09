@@ -6,11 +6,11 @@
     animation: scaleIn 0.3s ease-out;
   }
   
-  .container:hover {
+  /* .container:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
     transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-  }
+  } */
   
   .content {
     padding: 1rem;
