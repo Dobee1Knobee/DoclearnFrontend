@@ -51,7 +51,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.headerContent}>
         <Logo />
-        <Navigation />
+        <Navigation isAuthenticated={isAuthenticated}/>
 
         {isAuthenticated ? (
           <div className={styles.avatarContainer}>

@@ -47,11 +47,15 @@
 }
 
 .saveButton:hover {
-  color: #6b7280;
+  color: #111827;
 }
 
 .saveButton.saved {
-  fill: #5388d8 !important;
+  color: #5388d8;
+}
+
+.saveButton.saved svg {
+  fill: #5388d8;
   color: #5388d8;
 }
 
