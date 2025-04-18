@@ -3,14 +3,14 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import styles from './Header.module.css';
-import { MdOutlineFeed } from "react-icons/md"
-import { RiArticleLine } from "react-icons/ri"
-import { HiOutlineNewspaper } from "react-icons/hi2"
+// import { MdOutlineFeed } from "react-icons/md"
+// import { RiArticleLine } from "react-icons/ri"
+// import { HiOutlineNewspaper } from "react-icons/hi2"
 import { Newspaper, MessageSquare, FileText, BookOpen } from "lucide-react"
 
 import { GoBook } from "react-icons/go";
 
-export default function Navigation() {
+export default function Navigation({isAuthenticated = false}) {
   const pathname = usePathname()
 
   const isAggregatorActive = pathname.startsWith("/Aggregator")
@@ -33,9 +33,11 @@ export default function Navigation() {
           <Link href="/Aggregator">
             <FileText className={`${styles.icon} ${isAggregatorActive ? styles.iconActive : ""}`} />
           </Link>
-          <Link href="/Learn">
-            <BookOpen className={`${styles.icon} ${pathname === "/Learn" ? styles.active : ""}`} />
-          </Link>
+          {isAuthenticated && (
+            <Link href="/Learn">
+              <BookOpen className={`${styles.icon} ${pathname === "/Learn" ? styles.iconActive : ""}`} />
+            </Link>
+          )}
         </div>
       </div>
     );
