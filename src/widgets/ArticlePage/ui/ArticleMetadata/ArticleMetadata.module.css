@@ -1,0 +1,44 @@
+.section {
+    flex: 1;
+  }
+  
+  .title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+  }
+  
+  .details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .detailItem {
+    display: flex;
+    align-items: baseline;
+  }
+  
+  .label {
+    font-weight: 500;
+    color: #4b5563;
+    width: 7rem;
+    flex-shrink: 0;
+  }
+  
+  .value {
+    color: #1a1a1a;
+  }
+  
+  @media (max-width: 768px) {
+    .detailItem {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  
+    .label {
+      width: auto;
+    }
+  }
+  

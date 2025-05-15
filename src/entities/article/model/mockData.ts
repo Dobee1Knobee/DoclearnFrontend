@@ -12,7 +12,12 @@ export const mockArticles: Article[] = [
     doi: "10.1234/oncoresearch.2024.105",
     citations: 15,
     keywords: ["Онкология", "Иммунология", "Иммунотерапия", "CAR-T"],
-    type: "Обзор"
+    type: "Обзор",
+    views: 8750,
+    downloads: 2340,
+    altmetricScore: 87,
+    publisher: "Springer Nature",
+    pages: "245-252",
   },
   {
     id: "autoimmune-diseases-review",
@@ -25,7 +30,12 @@ export const mockArticles: Article[] = [
     doi: "10.5678/rheuimmunol.2024.210",
     citations: 8,
     keywords: ["Аутоиммунные заболевания", "Иммунология", "Ревматология", "Таргетная терапия"],
-    type: "Обзор"
+    type: "Обзор",
+    views: 5230,
+    downloads: 1120,
+    altmetricScore: 42,
+    publisher: "Elsevier",
+    pages: "118-127",
   },
   {
     id: "neuroimmunology-advances",
@@ -38,7 +48,12 @@ export const mockArticles: Article[] = [
     doi: "10.3456/jneurolsci.2024.1598",
     citations: 12,
     keywords: ["Нейроиммунология", "Рассеянный склероз", "Иммунология", "Аутоиммунитет"],
-    type: "Обзор"
+    type: "Обзор",
+    views: 7120,
+    downloads: 1890,
+    altmetricScore: 63,
+    publisher: "Wiley",
+    pages: "302-315",
   },
   {
     id: "transplant-immunology-research",
@@ -51,7 +66,12 @@ export const mockArticles: Article[] = [
     doi: "10.7890/transplant.2024.547",
     citations: 5,
     keywords: ["Трансплантация", "Иммунология", "Отторжение органа", "Иммуносупрессия"],
-    type: "Научная статья"
+    type: "Научная статья",
+    views: 3450,
+    downloads: 980,
+    altmetricScore: 28,
+    publisher: "Oxford University Press",
+    pages: "78-93",
   },
   {
     id: "covid19-vaccine-efficacy",
@@ -64,7 +84,12 @@ export const mockArticles: Article[] = [
     doi: "10.1590/viroimmunol.2024.302",
     citations: 23,
     keywords: ["COVID-19", "Вакцина", "Иммунология", "Инфекционные заболевания"],
-    type: "Исследование"
+    type: "Исследование",
+    views: 12500,
+    downloads: 3200,
+    altmetricScore: 156,
+    publisher: "Nature Publishing Group",
+    pages: "421-438",
   },
   {
     id: "allergy-immunology-landscape",
@@ -77,7 +102,12 @@ export const mockArticles: Article[] = [
     doi: "10.3322/alli.2024.419",
     citations: 11,
     keywords: ["Аллергия", "Иммунология", "Моноклональные антитела", "Профилактика"],
-    type: "Обзор"
+    type: "Обзор",
+    views: 6780,
+    downloads: 1560,
+    altmetricScore: 72,
+    publisher: "Taylor & Francis",
+    pages: "189-204",
   },
   {
     id: "immunology-gene-therapy",
@@ -90,7 +120,12 @@ export const mockArticles: Article[] = [
     doi: "10.7465/molmed.2024.218",
     citations: 17,
     keywords: ["Генная терапия", "Иммунология", "Редактирование генома", "Иммунодефицит"],
-    type: "Научная статья"
+    type: "Научная статья",
+    views: 9340,
+    downloads: 2780,
+    altmetricScore: 94,
+    publisher: "Cell Press",
+    pages: "512-527",
   },
   {
     id: "pediatric-immunology-overview",
@@ -103,7 +138,12 @@ export const mockArticles: Article[] = [
     doi: "10.5555/pedhealth.2024.411",
     citations: 6,
     keywords: ["Педиатрия", "Иммунология", "Иммунодефицит", "Вакцинация"],
-    type: "Обзор"
+    type: "Обзор",
+    views: 4120,
+    downloads: 1230,
+    altmetricScore: 35,
+    publisher: "American Academy of Pediatrics",
+    pages: "145-158",
   },
   {
     id: "therapeutic-antibodies-trends",
@@ -116,7 +156,12 @@ export const mockArticles: Article[] = [
     doi: "10.9012/biotherap.2024.366",
     citations: 9,
     keywords: ["Иммунология", "Моноклональные антитела", "Биспецифические антитела", "Биотерапия"],
-    type: "Научная статья"
+    type: "Научная статья",
+    views: 5670,
+    downloads: 1450,
+    altmetricScore: 48,
+    publisher: "SAGE Publications",
+    pages: "278-291",
   },
   {
     id: "evidence-based-surgery",
@@ -129,7 +174,12 @@ export const mockArticles: Article[] = [
     doi: "10.2222/clinicsurg.2024.189",
     citations: 4,
     keywords: ["Хирургия", "Доказательная медицина", "Оперативные технологии", "Безопасность пациента"],
-    type: "Обзор"
+    type: "Обзор",
+    views: 3210,
+    downloads: 890,
+    altmetricScore: 22,
+    publisher: "Wolters Kluwer",
+    pages: "67-82",
   },
   {
     id: "hypertension-management-study",
@@ -142,7 +192,12 @@ export const mockArticles: Article[] = [
     doi: "10.7777/cardioadv.2024.575",
     citations: 10,
     keywords: ["Артериальная гипертензия", "Кардиология", "Терапия", "Рандомизированное исследование"],
-    type: "Клиническое исследование"
+    type: "Клиническое исследование",
+    views: 6890,
+    downloads: 1780,
+    altmetricScore: 53,
+    publisher: "American Heart Association",
+    pages: "324-339",
   },
   {
     id: "regulatory-t-cells-autoimmunity",
@@ -155,7 +210,12 @@ export const mockArticles: Article[] = [
     doi: "10.3212/immunol.2024.999",
     citations: 13,
     keywords: ["Иммунология", "Регуляторные Т-клетки", "Аутоиммунитет", "Терапевтические подходы"],
-    type: "Обзор"
+    type: "Обзор",
+    views: 7840,
+    downloads: 2150,
+    altmetricScore: 76,
+    publisher: "Elsevier",
+    pages: "412-428",
   },
   {
     id: "immunohistochemistry-diagnostics",
@@ -168,6 +228,11 @@ export const mockArticles: Article[] = [
     doi: "10.6543/diagpath.2024.342",
     citations: 7,
     keywords: ["Иммунология", "Иммуногистохимия", "Диагностика", "Антитела"],
-    type: "Обзор"
-  }
+    type: "Обзор",
+    views: 4980,
+    downloads: 1340,
+    altmetricScore: 41,
+    publisher: "BMJ Publishing Group",
+    pages: "203-218",
+  },
 ]

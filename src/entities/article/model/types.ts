@@ -8,13 +8,17 @@ export interface Article {
   doi?: string
   citations?: number
   keywords?: string[]
-  type?:string
+  type?: string
   url?: string
   fullText?: string
+  views?: number
+  downloads?: number
+  altmetricScore?: number
+  publisher?: string
+  pages?: string
 }
 
 export interface SearchResponse {
   results: Article[]
   totalResults: number
 }
-
