@@ -1,0 +1,80 @@
+.container {
+    margin-top: 2rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 1.5rem;
+  }
+  
+  .articlesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .articleCard {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  
+  .articleCard:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+  
+  .articleLink {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .articleTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    transition: color 0.2s;
+  }
+  
+  .articleLink:hover .articleTitle {
+    color: #5388d8;
+  }
+  
+  .articleAuthors {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+  }
+  
+  .articleMeta {
+    font-size: 0.75rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+  }
+  
+  .journal {
+    font-weight: 500;
+  }
+  
+  .separator {
+    margin: 0 0.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .articlesGrid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .articlesGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
