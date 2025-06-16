@@ -13,3 +13,15 @@ export interface UserProfile {
   avatar: string
 }
 
+export interface User {
+  _id: string
+  firstName: string
+  lastName: string
+  email: string
+  birthday: string
+  placeWork: string
+  role: "student" | "author"
+  isVerified: boolean
+  createdAt: string
+  avatar?: string
+}

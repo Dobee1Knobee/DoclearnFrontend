@@ -1,87 +1,140 @@
 "use client"
 
-import type React from "react"
+import React, { useState, useEffect } from "react";
+import { Button, Spinner } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { Form, Button } from "react-bootstrap"
 import styles from "../styles/AuthForm.module.css"
+import { useAppDispatch, useAppSelector } from "@/shared/hooks"
+import { registerUser, clearAuthError } from "@/features/auth/model/thunks"
+import { selectLoading, selectError, selectRegistrationEmail } from "@/features/auth/model/selectors"
+import { FormInput } from "../inputs/FormInput"
+import { PasswordInput } from "../inputs/PasswordInput"
 import { validateName, validateEmail, validatePassword } from "@/shared/lib/validation"
-import { FormInput } from "@/features/auth/ui/inputs/FormInput"
-import { PasswordInput } from "@/features/auth/ui/inputs/PasswordInput"
 import { errorMessages } from "@/shared/lib/errorMessages"
+import type { RegisterDto } from "@/features/auth/model/types"
 
-interface RegistrationFormData {
-  name: string
-  surname: string
-  dob: string
-  job: string
-  email: string
-  password: string
+interface RegistrationFormData extends Omit<RegisterDto, "role"> {
   confirmPassword: string
 }
 
 interface RegistrationFormProps {
-  onSubmit: (data: RegistrationFormData) => void
+  role: "student" | "author"
+  onSuccess: (email: string) => void
 }
 
-const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit }) => {
+const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) => {
+  const dispatch = useAppDispatch()
+  const loading = useAppSelector(selectLoading)
+  const authError = useAppSelector(selectError)
+  const registrationEmail = useAppSelector(selectRegistrationEmail)
+
   const {
     control,
     handleSubmit,
-    formState: { errors },
     watch,
-  } = useForm<RegistrationFormData>()
+    formState: { errors },
+  } = useForm<RegistrationFormData>({
+    mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      birthday: "",
+      placeWork: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  })
 
+  const watchedFields = watch()
   const password = watch("password")
 
-  const onSubmitForm = (data: RegistrationFormData) => {
-    onSubmit(data)
+  useEffect(() => {
+    dispatch(clearAuthError())
+  }, [dispatch, watchedFields])
+
+  useEffect(() => {
+    if (registrationEmail && !loading && !authError) {
+      onSuccess(registrationEmail)
+    }
+  }, [registrationEmail, loading, authError, onSuccess])
+
+  const onSubmit = (data: RegistrationFormData) => {
+    const { confirmPassword, ...registerData } = data
+    dispatch(registerUser({ ...registerData, role }))
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmitForm)} noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.authForm}>
       <FormInput
-        name="name"
+        name="firstName"
         label="Имя"
         control={control}
-        rules={{ validate: validateName }}
-        error={errors.name}
-        placeholder="Введите ваше имя"
+        rules={{
+          required: errorMessages.required,
+          validate: validateName,
+        }}
+        error={errors.firstName}
+        placeholder="Введите имя"
       />
 
       <FormInput
-        name="surname"
+        name="lastName"
         label="Фамилия"
         control={control}
-        rules={{ validate: validateName }}
-        error={errors.surname}
-        placeholder="Введите вашу фамилию"
+        rules={{
+          required: errorMessages.required,
+          validate: validateName,
+        }}
+        error={errors.lastName}
+        placeholder="Введите фамилию"
       />
 
       <FormInput
-        name="dob"
+        name="birthday"
         label="Дата рождения"
         control={control}
-        rules={{ required: errorMessages.required }}
-        error={errors.dob}
+        rules={{
+          required: errorMessages.required,
+          validate: (value: string) => {
+            const birthDate = new Date(value)
+            const today = new Date()
+            const age = today.getFullYear() - birthDate.getFullYear()
+
+            if (age < 16) {
+              return "Возраст должен быть не менее 16 лет"
+            }
+            if (age > 100) {
+              return "Проверьте правильность даты рождения"
+            }
+            return true
+          },
+        }}
+        error={errors.birthday}
         type="date"
       />
 
       <FormInput
-        name="job"
+        name="placeWork"
         label="Место работы/учёбы"
         control={control}
-        rules={{ required: errorMessages.required }}
-        error={errors.job}
-        placeholder="Введите место вашей работы/учёбы"
+        rules={{
+          required: errorMessages.required,
+        }}
+        error={errors.placeWork}
+        placeholder="Введите место работы"
       />
 
       <FormInput
         name="email"
         label="Почта"
         control={control}
-        rules={{ validate: validateEmail }}
+        rules={{
+          required: errorMessages.required,
+          validate: validateEmail,
+        }}
         error={errors.email}
-        placeholder="Введите вашу почту"
+        placeholder="Введите почту"
         type="email"
       />
 
@@ -89,7 +142,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit }) => {
         name="password"
         label="Пароль"
         control={control}
-        rules={{ validate: validatePassword }}
+        rules={{
+          required: errorMessages.required,
+          validate: validatePassword,
+        }}
         error={errors.password}
         placeholder="Введите пароль"
       />
@@ -99,16 +155,24 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit }) => {
         label="Повторите пароль"
         control={control}
         rules={{
-          validate: (value: string) => value === password || errorMessages.passwordMismatch,
+          required: errorMessages.required,
+          validate: (value: string) => {
+            if (value !== password) {
+              return errorMessages.passwordMismatch
+            }
+            return true
+          },
         }}
         error={errors.confirmPassword}
         placeholder="Повторите пароль"
       />
 
-      <Button variant="primary" type="submit" className={styles.btnCustom}>
-        Зарегистрироваться
+      {authError && <p className={styles.errorMessage}>{authError}</p>}
+
+      <Button variant="primary" type="submit" className={styles.btnCustom} disabled={loading}>
+        {loading ? <Spinner animation="border" size="sm" /> : "Зарегистрироваться"}
       </Button>
-    </Form>
+    </form>
   )
 }
 

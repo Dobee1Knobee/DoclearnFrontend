@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Form } from "react-bootstrap"
 import { Controller, type Control, type FieldError } from "react-hook-form"
 import { IoEye, IoEyeOff } from "react-icons/io5"
-import styles from "..//styles/AuthForm.module.css"
+import styles from "../styles/AuthForm.module.css"
 
 interface PasswordInputProps {
   name: string
