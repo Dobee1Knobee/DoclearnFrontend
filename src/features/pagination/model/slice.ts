@@ -16,6 +16,7 @@ const paginationSlice = createSlice({
     setResultsPerPage: (state, action: PayloadAction<number>) => {
       state.resultsPerPage = action.payload
       state.currentPage = 1 
+      // Reset to first page when changing results per page
     },
     resetPagination: (state) => {
       state.currentPage = 1

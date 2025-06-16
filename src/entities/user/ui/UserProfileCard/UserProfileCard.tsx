@@ -82,7 +82,7 @@ export function UserProfileCard({
                         </div>
                     </Link>
                     ))}
-                    <button type="button" className={`${styles.menuItem} ${styles.logoutButton}`} onClick={handleLogout}>
+                    <button type="button" className={`${styles.menuItem} ${styles.logoutButton}`} onClick={onLogout}>
                     <div className={styles.menuItemLeft}>
                         <LogOut className={styles.icon} />
                         <span className={styles.menuItemLabel}>Выйти</span>
