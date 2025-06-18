@@ -1,15 +1,16 @@
 "use client"
 
-import React from "react";
-import { Modal } from "react-bootstrap";
-import LoginForm from "./LoginForm";
-import styles from "../styles/AuthModal.module.css";
+import type React from "react"
+import { Modal } from "react-bootstrap"
+import LoginForm from "./LoginForm"
+import styles from "../styles/AuthModal.module.css"
 
 interface LoginModalProps {
-  show: boolean;
-  handleClose: () => void;
-  switchToRegister: () => void;
-  onSuccess: (userId: string) => void;
+  show: boolean
+  handleClose: () => void
+  switchToRegister: () => void
+  onSuccess: (userId: string) => void
+  onForgotPassword?: () => void
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({
@@ -17,6 +18,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
   handleClose,
   switchToRegister,
   onSuccess,
+  onForgotPassword,
 }) => (
   <Modal
     show={show}
@@ -30,15 +32,15 @@ const LoginModal: React.FC<LoginModalProps> = ({
         <img src="/logo.png" alt="DocLearn Logo" className={styles.logo} />
         <h2 className={styles.modalTitle}>Войти</h2>
       </div>
-      <LoginForm onSuccess={onSuccess} />
+      <LoginForm onSuccess={onSuccess} onForgotPassword={onForgotPassword} />
     </Modal.Body>
     <Modal.Footer className="d-flex justify-content-center">
       <a
         href="#"
         onClick={e => {
-          e.preventDefault();
-          handleClose();
-          switchToRegister();
+          e.preventDefault()
+          handleClose()
+          switchToRegister()
         }}
         className={styles.registrationLink}
       >
@@ -48,4 +50,4 @@ const LoginModal: React.FC<LoginModalProps> = ({
   </Modal>
 );
 
-export default LoginModal;
+export default LoginModal

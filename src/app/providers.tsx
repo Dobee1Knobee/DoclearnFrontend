@@ -2,16 +2,21 @@
 
 import type React from "react"
 import { useEffect } from "react"
-import { Provider, useDispatch } from "react-redux"
+import { Provider, useDispatch, useSelector } from "react-redux"
 import { store } from "./store"
 import { checkAuthStatus } from "@/features/auth/model/thunks"
-import type { AppDispatch } from "./store"
+import type { AppDispatch, RootState } from "./store"
 
 function AuthInitializer({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()
-  // useEffect(() => {
-  //   dispatch(checkAuthStatus())
-  // }, [dispatch])
+  const isInitialized = useSelector((state: RootState) => state.auth.isInitialized)
+
+  useEffect(() => {
+    if (!isInitialized) {
+      dispatch(checkAuthStatus())
+    }
+  }, [dispatch, isInitialized])
+
   return <>{children}</>
 }
 

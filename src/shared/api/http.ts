@@ -1,102 +1,92 @@
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
-// https://dl-back-756832582185.us-east1.run.app/auth/register
-// export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-const API_BASE_URL ="https://dl-back-756832582185.us-east1.run.app";
+const API_BASE_URL = "https://dl-back-756832582185.us-east1.run.app";
+
+interface ServerError { error?: string; message?: string; }
+
+interface RefreshRequestConfig extends AxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const http = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
-})
+});
+
+const httpRefresh = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+});
+
+let getRefreshToken: () => string | null = () => null;
+let onLogout: () => void = () => {};
+export function configureHttp(options: {
+  getRefreshToken: () => string | null;
+  onLogout: () => void;
+}) {
+  getRefreshToken = options.getRefreshToken;
+  onLogout = options.onLogout;
+}
+
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (value?: any) => void; reject: (error: any) => void }> = [];
+const processQueue = (error: any) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    error ? reject(error) : resolve();
+  });
+  failedQueue = [];
+};
 
 http.interceptors.response.use(
-  (res) => res,
-  (err: AxiosError) => {
-    if (err.response?.status === 401) {
-      return Promise.reject("Сессия истекла")
+  res => res,
+  (err: AxiosError & { config?: RefreshRequestConfig }) => {
+    const originalReq = err.config as RefreshRequestConfig;
+
+    if (err.response?.status === 401 && !originalReq._retry) {
+      originalReq._retry = true;
+
+      const rt = getRefreshToken();
+      if (!rt) {
+        onLogout();
+        return Promise.reject(err);
+      }
+
+      // многопоточный protection
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => http(originalReq));
+      }
+      isRefreshing = true;
+
+      // выполняем обновление токена
+      return new Promise(async (resolve, reject) => {
+        try {
+          const { data } = await httpRefresh.post<{ refreshToken?: string }>(
+            '/auth/refresh',
+            { refreshToken: rt },
+            { baseURL: API_BASE_URL, withCredentials: true }
+          );
+          if (data.refreshToken) {
+            localStorage.setItem('refreshToken', data.refreshToken);
+          }
+          processQueue(null);
+          resolve(http(originalReq));
+        } catch (refreshError) {
+          processQueue(refreshError);
+          onLogout();
+          reject(refreshError);
+        } finally {
+          isRefreshing = false;
+        }
+      });
     }
-    const data = err.response?.data as any
-    if (data?.error) return Promise.reject(data.error)
-    if (data?.message) {
-      return Promise.reject(Array.isArray(data.message) ? data.message.join(", ") : data.message)
-    }
-    return Promise.reject(err.message || "Сетевая ошибка")
-  },
-)
 
-export default http
+    const srv = (err.response?.data || {}) as ServerError;
+    const message = srv.error ?? srv.message ?? err.message ?? err;
+    return Promise.reject(message);
+  }
+);
 
+export default http;
 
-
-// // src/shared/api/http.ts
-// import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-// const API_BASE_URL ="https://dl-back-756832582185.us-east1.run.app";
-
-// export const http = axios.create({
-//   baseURL: process.env.API_BASE_URL,
-//   withCredentials: true,
-//   timeout: 10000,
-// });
-
-// // разбор document.cookie (не включает HttpOnly)
-// function parseCookies(): Record<string,string> {
-//   return document.cookie
-//     .split('; ')
-//     .filter(Boolean)
-//     .reduce((acc, cookie) => {
-//       const [name, ...rest] = cookie.split('=');
-//       acc[name] = decodeURIComponent(rest.join('='));
-//       return acc;
-//     }, {} as Record<string,string>);
-// }
-
-// // === Request interceptor ===
-// http.interceptors.request.use(
-//   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-//     console.groupCollapsed(`→ ${config.method?.toUpperCase()} ${config.url}`);
-//     console.log('Request headers:', config.headers);
-//     console.log('Request data:', config.data);
-//     console.log('Document.cookie:', document.cookie);
-//     console.log('Parsed cookies:', parseCookies());
-//     console.groupEnd();
-
-//     // пример добавления Authorization (если хранили токен в localStorage):
-//     // const token = localStorage.getItem('accessToken');
-//     // if (token) {
-//     //   config.headers = config.headers || {};
-//     //   config.headers.Authorization = `Bearer ${token}`;
-//     // }
-
-//     return config;
-//   },
-//   (error) => {
-//     console.error('✖ Request error:', error);
-//     return Promise.reject(error);
-//   }
-// );
-
-// // === Response interceptor ===
-// http.interceptors.response.use(
-//   (response: AxiosResponse): AxiosResponse => {
-//     console.groupCollapsed(`← ${response.status} ${response.config.url}`);
-//     console.log('Response headers:', response.headers);
-//     console.log('Response data:', response.data);
-//     console.log('Document.cookie:', document.cookie);
-//     console.log('Parsed cookies:', parseCookies());
-//     console.groupEnd();
-//     return response;
-//   },
-//   (error) => {
-//     if (error.response) {
-//       console.groupCollapsed(`✖ ${error.response.status} ${error.config.url}`);
-//       console.log('Error response headers:', error.response.headers);
-//       console.log('Error response data:', error.response.data);
-//       console.log('Document.cookie:', document.cookie);
-//       console.log('Parsed cookies:', parseCookies());
-//       console.groupEnd();
-//     } else {
-//       console.error('✖ Network / CORS error:', error);
-//     }
-//     return Promise.reject(error);
-//   }
-// );
