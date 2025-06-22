@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.item {
+  position: relative;
+  background: #ffffff;
+  padding: 1.5rem 1.25rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  border-left: 4px solid #5388d8; 
+}
+
+.item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.institution {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: #111827;
+}
+
+.degree {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.period {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.empty {
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+}

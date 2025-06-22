@@ -33,6 +33,16 @@
     outline: none;
     border-color: #5388d8;
   }
+
+  .closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+  }
   
   .btnCodeCustom {
     width: 80%;

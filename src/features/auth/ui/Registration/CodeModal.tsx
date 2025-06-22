@@ -1,11 +1,13 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap"
+import { X } from "lucide-react";
 import { useForm, Controller } from "react-hook-form"
 import styles from "../styles/AuthCode.module.css"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks"
-import { verifyUserEmail, clearAuthError } from "@/features/auth/model/thunks"
+import { verifyUserEmail} from "@/features/auth/model/thunks"
+import { clearAuthError } from "@/features/auth/model/slice";
 import { selectLoading, selectError } from "@/features/auth/model/selectors"
 
 interface CodeFormData {
@@ -93,6 +95,15 @@ const CodeModal: React.FC<CodeModalProps> = ({ show, handleClose, email }) => {
 
   return (
     <Modal show={show} onHide={loading ? undefined : handleClose} centered backdrop={loading ? "static" : true}>
+      <button 
+        type="button" 
+        className={styles.closeButton} 
+        onClick={handleClose} 
+        aria-label="Закрыть" 
+        disabled={loading}
+      >
+        <X size={20}/>
+      </button>
       <Modal.Body>
         <div className="text-center">
           <img src="/logo.png" alt="Logo" className={styles.logoModalCode} />
@@ -111,8 +122,8 @@ const CodeModal: React.FC<CodeModalProps> = ({ show, handleClose, email }) => {
                   rules={{
                     required: index === 0 ? "Введите код подтверждения" : false,
                     pattern: {
-                      value: /^[A-Z0-9]$/,
-                      message: "Только буквы и цифры",
+                      value: /^[0-9]$/,
+                      message: "Только цифры",
                     },
                   }}
                   render={({ field }) => (

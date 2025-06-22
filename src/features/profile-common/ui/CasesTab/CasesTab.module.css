@@ -1,0 +1,29 @@
+/* File: src/features/profile-common/ui/CasesTab/CasesTab.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.item {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.title {
+  margin: 0 0 0.5rem;
+  font-weight: 500;
+}
+.description {
+  margin: 0 0 0.5rem;
+  color: #374151;
+}
+.date {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+.empty {
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+}

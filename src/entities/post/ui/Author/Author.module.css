@@ -38,6 +38,11 @@
     font-weight: 500;
     font-size: 0.875rem;
   }
+
+  .verifiedIcon { 
+    width: 1.125rem;
+    height: 1.125rem;
+  }
   
   .timestamp {
     font-size: 0.75rem;

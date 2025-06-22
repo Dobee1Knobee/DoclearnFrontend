@@ -51,7 +51,6 @@ http.interceptors.response.use(
         return Promise.reject(err);
       }
 
-      // многопоточный protection
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -59,7 +58,6 @@ http.interceptors.response.use(
       }
       isRefreshing = true;
 
-      // выполняем обновление токена
       return new Promise(async (resolve, reject) => {
         try {
           const { data } = await httpRefresh.post<{ refreshToken?: string }>(
@@ -82,9 +80,9 @@ http.interceptors.response.use(
       });
     }
 
-    const srv = (err.response?.data || {}) as ServerError;
-    const message = srv.error ?? srv.message ?? err.message ?? err;
-    return Promise.reject(message);
+    // const srv = (err.response?.data || {}) as ServerError;
+    // const message = srv.error ?? srv.message ?? err.message ?? err;
+    return Promise.reject(err);
   }
 );
 
