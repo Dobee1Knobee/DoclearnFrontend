@@ -54,6 +54,16 @@
   margin-right: 0;
 }
 
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
 .errorMessage {
   color: red;
   font-size: 14px;

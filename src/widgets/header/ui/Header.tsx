@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "react-bootstrap"
 import Image from "next/image"
 import styles from "./Header.module.css"
@@ -24,6 +24,8 @@ export default function Header() {
   const [isRegisterVisible, setIsRegisterVisible] = useState(false)
   const [isForgotPasswordVisible, setIsForgotPasswordVisible] = useState(false)
   const [showProfilePopup, setShowProfilePopup] = useState(false)
+
+  const profilePopupRef = useRef<HTMLDivElement>(null)
 
   const openLoginModal = () => {
     setIsLoginVisible(true)
@@ -58,6 +60,23 @@ export default function Header() {
     setShowProfilePopup(false)
   }
 
+  // Закрытие попапа при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profilePopupRef.current && !profilePopupRef.current.contains(event.target as Node)) {
+        setShowProfilePopup(false)
+      }
+    }
+
+    if (showProfilePopup) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [showProfilePopup])
+
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
@@ -69,7 +88,7 @@ export default function Header() {
             Загрузка...
           </Button>
         ) : isAuthenticated && user ? (
-          <div className={styles.avatarContainer}>
+          <div className={styles.avatarContainer} ref={profilePopupRef}>
             <div className={styles.avatarWrapper} onClick={toggleProfilePopup}>
               <Image
                 src={user.avatar || "/Avatars/Avatar1.jpg"}
@@ -83,15 +102,18 @@ export default function Header() {
               <div className={styles.profilePopup}>
                 <UserProfileCard
                   name={`${user.firstName} ${user.lastName}`}
-                  role={user.role === "student" ? "Студент" : "Автор"}
+                  role={user.role === "student" ? "Студент" : user.role === "author" ? "Автор" : "Администратор"}
                   avatar={user.avatar || "/Avatars/Avatar1.jpg"}
+                  userId={user._id}
                   onLogout={handleLogout}
                 />
               </div>
             )}
           </div>
         ) : (
-          <Button className={styles.button} onClick={openLoginModal}>Вход</Button>
+          <Button className={styles.button} onClick={openLoginModal}>
+            Вход
+          </Button>
         )}
 
         <LoginModal
@@ -102,18 +124,10 @@ export default function Header() {
           onForgotPassword={openForgotPasswordModal}
         />
 
-        <RegistrationModal
-          show={isRegisterVisible}
-          handleClose={closeModals}
-          switchToLogin={openLoginModal}
-        />
+        <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} />
 
-        <ForgotPasswordModal 
-          show={isForgotPasswordVisible} 
-          handleClose={closeModals} 
-          onBackToLogin={openLoginModal} 
-        />
+        <ForgotPasswordModal show={isForgotPasswordVisible} handleClose={closeModals} onBackToLogin={openLoginModal} />
       </div>
     </header>
-  );
+  )
 }

@@ -22,7 +22,7 @@ export function Author({ name, avatar, isVerified, timestamp, className = "" }: 
       <div className={styles.info}>
         <div className={styles.nameContainer}>
           <span className={styles.name}>{name}</span>
-          {isVerified && <VerifiedBadge />}
+          {isVerified && <VerifiedBadge className={styles.verifiedIcon}/>}
         </div>
         <span className={styles.timestamp}>{formatDate(timestamp)}</span>
       </div>

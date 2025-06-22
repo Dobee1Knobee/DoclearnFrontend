@@ -1,0 +1,54 @@
+/* File: src/features/profile-common/ui/ContactsTab/ContactsTab.module.css */
+
+/* Контейнер: адаптивная грид-сетка карточек */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* Карточка контакта */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #ffffff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Обёртка иконки */
+.iconWrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: #f3f4f6;
+  border-radius: 50%;
+}
+
+/* Ссылка */
+.link {
+  color: #111827;
+  font-size: 0.875rem;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+/* Плейсхолдер пустого состояния */
+.empty {
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}

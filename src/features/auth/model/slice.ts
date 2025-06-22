@@ -8,7 +8,7 @@ interface AuthState {
   isLoading: boolean
   error: string | null
   registrationEmail: string | null
-  isInitialized : boolean
+  isInitialized: boolean
 }
 
 const initialState: AuthState = {
@@ -18,21 +18,26 @@ const initialState: AuthState = {
   error: null,
   registrationEmail: null,
   isInitialized: false,
-};
+}
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    clearAuthError(state) { state.error = null },
+    clearAuthError(state) {
+      state.error = null 
+    },
     setRegistrationEmail(state, action: PayloadAction<string>) {
       state.registrationEmail = action.payload
+    },
+    clearRegistrationEmail(state) {
+      state.registrationEmail = null
     },
   },
   extraReducers: (b) =>
     b
       // loginUser
-      .addCase(loginUser.pending,   (s) => { 
+      .addCase(loginUser.pending, (s) => { 
         s.isLoading = true  
         s.error = null 
       })
@@ -47,33 +52,36 @@ export const authSlice = createSlice({
       })
 
       // registerUser
-      .addCase(registerUser.pending,   (s) => { 
+      .addCase(registerUser.pending, (s) => { 
         s.isLoading = true  
         s.error = null 
       })
       .addCase(registerUser.fulfilled, (s) => { 
         s.isLoading = false 
       })
-      .addCase(registerUser.rejected,  (s, { payload }) => {
+      .addCase(registerUser.rejected, (s, { payload }) => {
         s.isLoading = false
         s.error = payload as string
       })
 
       // verifyUserEmail
-      .addCase(verifyUserEmail.pending,   s => { s.isLoading = true;  s.error = null })
-      .addCase(verifyUserEmail.fulfilled, (s, { payload }) => {
-        s.isLoading = false;
-        s.user = payload;
-        s.isAuthenticated = true;
-        s.registrationEmail = null;
+      .addCase(verifyUserEmail.pending, (s) => { 
+        s.isLoading = true  
+        s.error = null 
       })
-      .addCase(verifyUserEmail.rejected,  (s, { payload }) => {
-        s.isLoading = false;
-        s.error = payload as string;
+      .addCase(verifyUserEmail.fulfilled, (s, { payload }) => {
+        s.isLoading = false
+        s.user = payload
+        s.isAuthenticated = true
+        s.registrationEmail = null
+      })
+      .addCase(verifyUserEmail.rejected, (s, { payload }) => {
+        s.isLoading = false
+        s.error = payload as string
       })
 
       // checkAuthStatus
-      .addCase(checkAuthStatus.pending,   (s) => { 
+      .addCase(checkAuthStatus.pending, (s) => { 
         s.isLoading = true 
       })
       .addCase(checkAuthStatus.fulfilled, (s, { payload }) => {
@@ -82,7 +90,7 @@ export const authSlice = createSlice({
         s.isAuthenticated = Boolean(payload)
         s.isInitialized = true
       })
-      .addCase(checkAuthStatus.rejected,  (s) => { 
+      .addCase(checkAuthStatus.rejected, (s) => { 
         s.isLoading = false 
         s.isInitialized = true
         s.user = null
@@ -96,5 +104,5 @@ export const authSlice = createSlice({
       }),
 })
 
-export const { clearAuthError, setRegistrationEmail } = authSlice.actions
+export const { clearAuthError, setRegistrationEmail, clearRegistrationEmail } = authSlice.actions
 export default authSlice.reducer

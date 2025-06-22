@@ -1,11 +1,12 @@
 "use client"
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import styles from "../styles/AuthForm.module.css"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks"
-import { registerUser, clearAuthError } from "@/features/auth/model/thunks"
+import { registerUser } from "@/features/auth/model/thunks"
+import { clearAuthError } from "@/features/auth/model/slice";
 import { selectLoading, selectError, selectRegistrationEmail } from "@/features/auth/model/selectors"
 import { FormInput } from "../inputs/FormInput"
 import { PasswordInput } from "../inputs/PasswordInput"
@@ -46,12 +47,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
     },
   })
 
-  const watchedFields = watch()
+  // const watchedFields = watch()
   const password = watch("password")
 
   useEffect(() => {
     dispatch(clearAuthError())
-  }, [dispatch, watchedFields])
+  }, [dispatch])
 
   useEffect(() => {
     if (registrationEmail && !loading && !authError) {
@@ -61,6 +62,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
 
   const onSubmit = (data: RegistrationFormData) => {
     const { confirmPassword, ...registerData } = data
+      console.log(">> Registration payload:", {
+        ...registerData,
+        role
+      })
     dispatch(registerUser({ ...registerData, role }))
   }
 
