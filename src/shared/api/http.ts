@@ -2,8 +2,6 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
 const API_BASE_URL = "https://dl-back-756832582185.us-east1.run.app";
 
-interface ServerError { error?: string; message?: string; }
-
 interface RefreshRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
 }
@@ -80,11 +78,8 @@ http.interceptors.response.use(
       });
     }
 
-    // const srv = (err.response?.data || {}) as ServerError;
-    // const message = srv.error ?? srv.message ?? err.message ?? err;
     return Promise.reject(err);
   }
 );
 
 export default http;
-

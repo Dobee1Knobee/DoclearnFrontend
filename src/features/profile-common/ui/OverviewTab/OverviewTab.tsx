@@ -58,25 +58,29 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>О себе</h3>
           <div className={styles.aboutList}>
-            <div className={styles.aboutItem}>
-              <span className={styles.aboutIcon}>•</span>
-              <span>{profile.bio || 'Информация отсутствует'}</span>
-            </div>
-            <div className={styles.aboutItem}>
-              <span className={styles.aboutIcon}>•</span>
-              <span>{profile.experience}</span>
-            </div>
-            <div className={styles.aboutItem}>
-              <span className={styles.aboutIcon}>•</span>
-              <span>{profile.stats.totalPublications}+ публикаций</span>
-            </div>
+            {/* {(profile.bio || 'Информация отсутствует')
+              .split(/\n{2,}/) // разделение по абзацам
+              .map((paragraph, idx) => (
+                <div key={idx} className={styles.aboutItem}>
+                  <span className={styles.aboutIcon}>•</span>
+                  <span style={{ whiteSpace: 'pre-wrap' }}>{paragraph}</span>
+                </div>
+            ))} */}
+
+            {(profile.bio || 'Информация отсутствует')
+              .split(/\n{2,}/)
+              .map((paragraph, idx) => (
+                <p key={idx} style={{ whiteSpace: 'pre-wrap', marginBottom: '0.75rem', color: '#4b5563', fontSize: '0.875rem' }}>
+                  {paragraph}
+                </p>
+            ))}
           </div>
-          <button
+          {/* <button
             className={styles.showMoreButton}
             onClick={() => setShowMore((v) => !v)}
           >
             {showMore ? 'Показать меньше' : 'Показать больше'}
-          </button>
+          </button> */}
         </div>
 
         {/* Ближайшие события */}
@@ -166,7 +170,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
           </button>
         </div>
         <div className={styles.achievementsList}>
-          {profile.achievements.map((a) => (
+          {profile.achievements?.map((a) => (
             <div key={a.id} className={styles.tooltipWrapper}>
               <div className={styles.achievementItem}>
                 {(() => {
@@ -180,16 +184,6 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
                 <div className={styles.tooltipText}>{a.description}</div>
               </div>
             </div>
-            // <div key={a.id} className={styles.achievementItem} title={a.description}>
-            //   {(() => {
-            //     const Icon = achievementIconMap[a.category] || Award;
-            //     return <Icon size={24} className={styles.achievementIcon} />;
-            //   })()}
-            //   <div className={styles.achievementTitle}>{a.title}</div>
-            //   <div className={styles.achievementYear}>
-            //     {formatYear(a.earnedDate)}
-            //   </div>
-            // </div>
           ))}
         </div>
       </div>

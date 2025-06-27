@@ -20,10 +20,8 @@ export function NewsBlock({ cityName, featuredNews, relatedNews, showMoreButton 
 
   useEffect(() => {
     if (width && width <= 950 && width > 768) {
-      // Show fewer items on tablet to match main content height
       setDisplayedNews(relatedNews.slice(0, 11))
     } else {
-      // Show all items on desktop and mobile
       setDisplayedNews(relatedNews)
     }
   }, [width, relatedNews])

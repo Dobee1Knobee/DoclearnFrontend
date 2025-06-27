@@ -89,7 +89,3 @@ export function PostContent({ text, images, links, className = "" }: PostContent
     </div>
   )
 }
-
-
-
-

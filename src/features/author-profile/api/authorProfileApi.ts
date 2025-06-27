@@ -1,4 +1,3 @@
-// File: src/features/author-profile/api/authorProfileApi.ts
 import { createApi } from '@reduxjs/toolkit/query/react'
 import type { AuthorProfile } from '@/entities/user/model/types'
 import http from '@/shared/api/http'

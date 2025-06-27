@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import styles from "../styles/AuthForm.module.css"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks"
 import { registerUser } from "@/features/auth/model/thunks"
-import { clearAuthError } from "@/features/auth/model/slice";
+import { clearAuthError } from "@/features/auth/model/slice"
 import { selectLoading, selectError, selectRegistrationEmail } from "@/features/auth/model/selectors"
 import { FormInput } from "../inputs/FormInput"
 import { PasswordInput } from "../inputs/PasswordInput"
@@ -16,6 +16,7 @@ import type { RegisterDto } from "@/features/auth/model/types"
 
 interface RegistrationFormData extends Omit<RegisterDto, "role"> {
   confirmPassword: string
+  role: RegisterDto["role"]
 }
 
 interface RegistrationFormProps {
@@ -30,6 +31,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
   const registrationEmail = useAppSelector(selectRegistrationEmail)
 
   const {
+    register,
+    setValue,
     control,
     handleSubmit,
     watch,
@@ -44,10 +47,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
       email: "",
       password: "",
       confirmPassword: "",
+      role,
     },
   })
 
-  // const watchedFields = watch()
+  useEffect(() => {
+    setValue("role", role)
+  }, [role, setValue])
+
   const password = watch("password")
 
   useEffect(() => {
@@ -63,14 +70,15 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
   const onSubmit = (data: RegistrationFormData) => {
     const { confirmPassword, ...registerData } = data
       console.log(">> Registration payload:", {
-        ...registerData,
-        role
+        registerData
       })
-    dispatch(registerUser({ ...registerData, role }))
+    dispatch(registerUser(registerData))
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.authForm}>
+      <input type="hidden" {...register("role")} />
+
       <FormInput
         name="firstName"
         label="Имя"
