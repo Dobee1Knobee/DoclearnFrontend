@@ -9,10 +9,10 @@ interface PublicationsTabProps {
 }
 
 export const PublicationsTab: React.FC<PublicationsTabProps> = ({ profile }) => {
-  const { publications } = profile;
+  const { publications } = profile
 
   if (!publications.length) {
-    return <div className={styles.empty}>Нет публикаций</div>;
+    return <div className={styles.empty}>Нет публикаций</div>
   }
 
   return (
@@ -30,5 +30,5 @@ export const PublicationsTab: React.FC<PublicationsTabProps> = ({ profile }) => 
         </article>
       ))}
     </div>
-  );
-};
+  )
+}

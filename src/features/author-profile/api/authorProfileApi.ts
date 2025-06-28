@@ -1,55 +1,89 @@
-// File: src/features/author-profile/api/authorProfileApi.ts
-import { createApi } from '@reduxjs/toolkit/query/react'
-import type { AuthorProfile } from '@/entities/user/model/types'
-import http from '@/shared/api/http'
-import mockProfile from '@/shared/api/mocks/author-profile.json'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import type { AuthorProfile } from "@/entities/user/model/types"
 
-/**
- * customBaseQuery позволяет:
- * - сразу отдавать mockProfile для любых запросов вида `/profile/{id}`
- * - во всех остальных случаях проксировать запросы через ваш http-клиент
- */
-const customBaseQuery = async ({
-  url,
-  method = 'GET',
-  data,
-}: {
-  url: string
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  data?: any
-}) => {
-  // Если запрос за профилем — возвращаем мок
-  if (url.startsWith('/profile/')) {
-    return { data: mockProfile as AuthorProfile }
-  }
-
-  try {
-    const result = await http.request({ url, method, data })
-    return { data: result.data }
-  } catch (error: any) {
-    return {
-      error: {
-        status: error.response?.status,
-        data: error.response?.data ?? error.message,
-      },
+const baseQuery = fetchBaseQuery({
+  baseUrl: "https://dl-back-756832582185.us-east1.run.app",
+  prepareHeaders: (headers) => {
+    const refreshToken = localStorage.getItem("refreshToken")
+    if (refreshToken) {
+      headers.set("Authorization", `Bearer ${refreshToken}`)
     }
-  }
-}
+    headers.set("Content-Type", "application/json")
+    return headers
+  },
+  credentials: "include",
+})
 
 export const authorProfileApi = createApi({
-  reducerPath: 'authorProfileApi',
-  baseQuery: customBaseQuery,
-  tagTypes: ['AuthorProfile'],
+  reducerPath: "authorProfileApi",
+  baseQuery,
+  tagTypes: ["AuthorProfile"],
   endpoints: (builder) => ({
     getAuthorProfile: builder.query<AuthorProfile, string>({
-      query: (id: string) => ({ url: `/profile/${id}`, method: 'GET' }),
-      providesTags: (result, error, id) => [{ type: 'AuthorProfile', id }],
+      query: (id: string) => `/user/${id}/profile`,
+      transformResponse: (response: any): AuthorProfile => {
+
+        const userData = response.data || response
+        const transformedProfile: AuthorProfile = {
+          ...userData,
+          courses: [],
+          publications: [],
+          achievements: userData.achievements || [
+            {
+              id: "a1",
+              title: "Лучший преподаватель",
+              description: "Приз за вклад в образование",
+              earnedDate: "2021-06-01",
+              category: "education",
+            },
+            {
+              id: "a2",
+              title: "Врач года",
+              description: "Приз за вклад в медицину",
+              earnedDate: "2022-06-01",
+              category: "other",
+            },
+            {
+              id: "a3",
+              title: "ELO 2847",
+              description: "Высокий рейтинг",
+              earnedDate: "2025-06-01",
+              category: "rating",
+            },
+            {
+              id: "a4",
+              title: "Публикации 20+",
+              description: "Множество публикаций",
+              earnedDate: "2023-06-01",
+              category: "publication",
+            },
+            {
+              id: "a5",
+              title: "Патенты",
+              description: "Научные патенты",
+              earnedDate: "2020-06-01",
+              category: "other",
+            },
+          ],
+        }
+
+        return transformedProfile
+      },
+      transformErrorResponse: (response: any) => {
+        if (response.status === 404) {
+          return {
+            status: 404,
+            data: { message: "Такого пользователя не существует" },
+          }
+        }
+        return response
+      },
+      providesTags: (result, error, id) => [
+        { type: "AuthorProfile", id },
+        { type: "AuthorProfile", id: "LIST" },
+      ],
     }),
-    // В будущем можно добавить updateAuthorProfile, deleteAuthorProfile и т.п.
   }),
 })
 
 export const { useGetAuthorProfileQuery } = authorProfileApi
-
-
-

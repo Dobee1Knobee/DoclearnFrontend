@@ -11,12 +11,12 @@ import { EducationTab } from './EducationTab/EducationTab'
 import { ContactsTab } from './ContactsTab/ContactsTab'
 
 const tabs = [
-  { id: 'overview' as const,    label: 'Обзор' },
+  { id: 'overview' as const, label: 'Обзор' },
   { id: 'publications' as const, label: 'Публикации' },
-  { id: 'cases' as const,        label: 'Кейсы' },
-  { id: 'courses' as const,      label: 'Курсы' },
-  { id: 'education' as const,    label: 'Образование' },
-  { id: 'contacts' as const,     label: 'Контакты' },
+  { id: 'cases' as const, label: 'Кейсы' },
+  { id: 'courses' as const, label: 'Курсы' },
+  { id: 'education' as const, label: 'Образование' },
+  { id: 'contacts' as const, label: 'Контакты' },
 ];
 
 interface ProfileTabsProps {
@@ -41,9 +41,9 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
       case 'contacts':
         return <ContactsTab profile={profile} />
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   return (
     <div className={styles.container}>
@@ -63,5 +63,5 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
         {renderTabContent()}
       </div>
     </div>
-  );
-};
+  )
+}

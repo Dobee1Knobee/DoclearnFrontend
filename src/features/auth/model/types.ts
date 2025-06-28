@@ -1,5 +1,3 @@
-import { User } from "@/entities/user/model/types"
-
 export interface LoginDto {
   email: string
   password: string
@@ -12,7 +10,7 @@ export interface RegisterDto {
   password: string
   birthday: string
   placeWork: string
-  role: "student" | "author"
+  role: "student" | "doctor"
 }
 
 export interface VerifyDto {

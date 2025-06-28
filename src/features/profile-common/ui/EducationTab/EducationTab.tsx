@@ -1,16 +1,24 @@
-'use client';
+"use client"
 
-import React from 'react';
-import type { Education } from '@/entities/user/model/types';
-import styles from './EducationTab.module.css';
+import type React from "react"
+import type { Education } from "@/entities/user/model/types"
+import styles from "./EducationTab.module.css"
 
 interface EducationTabProps {
-  education: Education[];
+  education: Education[]
 }
 
 export const EducationTab: React.FC<EducationTabProps> = ({ education }) => {
   if (!education.length) {
-    return <div className={styles.empty}>Образование не указано</div>;
+    return <div className={styles.empty}>Образование не указано</div>
+  }
+
+  const formatYear = (dateString: string) => {
+    try {
+      return new Date(dateString).getFullYear()
+    } catch {
+      return dateString // Если не удалось распарсить, возвращаем как есть
+    }
   }
 
   return (
@@ -19,14 +27,13 @@ export const EducationTab: React.FC<EducationTabProps> = ({ education }) => {
         <div key={edu.id} className={styles.item}>
           <div className={styles.institution}>{edu.institution}</div>
           <div className={styles.degree}>
-            {edu.degree}, {edu.fieldOfStudy}
+            {edu.degree}, {edu.specialty}
           </div>
           <div className={styles.period}>
-            {new Date(edu.startDate).getFullYear()} –{' '}
-            {edu.endDate ? new Date(edu.endDate).getFullYear() : 'наст. вр.'}
+            {formatYear(edu.startDate)} – {edu.isCurrently ? "наст. вр." : formatYear(edu.graduationYear)}
           </div>
         </div>
       ))}
     </div>
-  );
-};
+  )
+}

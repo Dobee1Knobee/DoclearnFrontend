@@ -22,40 +22,39 @@ export interface User {
   email: string
   birthday: string
   placeWork: string
-  role: "student" | "author" | "admin"
-  isVerified: boolean
+  role: "student" | "doctor" | "admin"
+  isVerified: {
+    user: boolean
+    doctor: boolean
+    student: boolean
+  }
   createdAt: string
   avatar?: string
+  location: string
+  followers: string[]
+  following: string[]
+  rating: number
+  publications: Post[]
+  bio: string
+  achievements: Achievement[]
+  stats: {
+    followingCount: number
+    followersCount: number
+    postsCount?: number
+  }
 }
 
 export interface Achievement {
   id: string
   title: string
   description: string
-  icon: string
   earnedDate: string
   category: "education" | "publication" | "rating" | "experience" | "other"
 }
 
-export interface ProfileStats {
-  totalViews: number
-  totalLikes: number
-  totalPublications: number
-  totalCourses: number
-  responseTime: string 
-}
-
-export interface UpcomingEvent {
-  id: string
-  title: string
-  type: "conference" | "webinar" | "meeting"
-  date: string
-  location?: string
-  isOnline: boolean
-}
 
 export interface Contact {
-  type: "email" | "phone" | "website" | "vk" | "telegram" | "instagram" | string
+  type: string
   value: string
   label?: string
 }
@@ -64,31 +63,16 @@ export interface Education {
   id: string
   institution: string
   degree: string
-  fieldOfStudy: string
+  specialty: string
   startDate: string
-  endDate?: string
-}
-
-export interface Specialization {
-  main: string
-  additional?: string
-  category?: string
+  graduationYear: string
+  isCurrently: boolean
 }
 
 export interface AuthorProfile extends User {
-  position: string // должность
-  experience: string // опыт работы
-  location: string
-  followers: number 
-  following: number 
-  rating: number // рейтинг ело
-  publications: Post[] 
+  experience: string
   courses: Course[]
-  bio?: string
-  specialization?: Specialization
-  achievements: Achievement[]
-  stats: ProfileStats
-  upcomingEvents?: UpcomingEvent[];
+  specialization: string
   contacts: Contact[]   
   education: Education[]
 }

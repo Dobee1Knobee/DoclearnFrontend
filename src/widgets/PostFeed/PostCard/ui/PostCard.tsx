@@ -73,5 +73,3 @@ export function PostCard({ post, className = "", style }: PostCardProps) {
     </article>
   )
 }
-
-

@@ -6,20 +6,8 @@
   import paginationReducer from "@/features/pagination/model/slice"
   import authReducer from "@/features/auth/model/slice"
   import passwordRecoveryReducer from "@/features/auth/passwordRecovery/model/slice"
-
-  import { authorProfileApi } from '@/features/author-profile/api/authorProfileApi'
-
-
-  // export const store = configureStore({
-  //   reducer: {
-  //     search: searchReducer,
-  //     filters: filtersReducer,
-  //     pagination: paginationReducer,
-  //     auth: authReducer,
-  //     passwordRecovery: passwordRecoveryReducer,
-  //     profile: profileReducer,
-  //   },
-  // })
+  import { authorProfileApi } from "@/features/author-profile/api/authorProfileApi"
+  import { profileEditApi } from "@/features/profile-edit/api/profileEditApi"
 
   export const store = configureStore({
     reducer: {
@@ -29,9 +17,10 @@
       auth: authReducer,
       passwordRecovery: passwordRecoveryReducer,
       [authorProfileApi.reducerPath]: authorProfileApi.reducer,
+      [profileEditApi.reducerPath]: profileEditApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(authorProfileApi.middleware),
+      getDefaultMiddleware().concat(authorProfileApi.middleware, profileEditApi.middleware),
   });
 
   configureHttp({
@@ -41,7 +30,7 @@
       store.dispatch(logoutUser())
       window.location.href = '/'
     },
-  });
+  })
 
   export type RootState = ReturnType<typeof store.getState>
   export type AppDispatch = typeof store.dispatch
