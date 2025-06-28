@@ -1,6 +1,5 @@
 "use client"
 
-import { CheckCircle } from "lucide-react"
 import { formatDate } from "@/shared/lib/date"
 import styles from "./Author.module.css"
 import { VerifiedBadge } from "@/shared/ui/VerifiedBadge/VerifiedBadge"
@@ -8,7 +7,11 @@ import { VerifiedBadge } from "@/shared/ui/VerifiedBadge/VerifiedBadge"
 interface AuthorProps {
   name: string
   avatar: string
-  isVerified: boolean
+  isVerified: {
+    user: boolean
+    doctor: boolean
+    student: boolean,
+  }
   timestamp: string
   className?: string
 }
@@ -22,7 +25,7 @@ export function Author({ name, avatar, isVerified, timestamp, className = "" }: 
       <div className={styles.info}>
         <div className={styles.nameContainer}>
           <span className={styles.name}>{name}</span>
-          {isVerified && <VerifiedBadge className={styles.verifiedIcon}/>}
+          {isVerified.user && <VerifiedBadge className={styles.verifiedIcon}/>}
         </div>
         <span className={styles.timestamp}>{formatDate(timestamp)}</span>
       </div>

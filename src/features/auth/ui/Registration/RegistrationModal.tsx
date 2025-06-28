@@ -1,59 +1,59 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import React, { useState, useEffect } from "react"
+import { Modal } from "react-bootstrap"
 import { X } from 'lucide-react'
-import { useAppDispatch } from "@/shared/hooks";
-import { clearAuthError, setRegistrationEmail, clearRegistrationEmail } from "@/features/auth/model/slice";
-import RegistrationForm from "./RegistrationForm";
-import CodeModal from "./CodeModal";
-import styles from "../styles/AuthModal.module.css";
+import { useAppDispatch } from "@/shared/hooks"
+import { clearAuthError, clearRegistrationEmail } from "@/features/auth/model/slice"
+import RegistrationForm from "./RegistrationForm"
+import CodeModal from "./CodeModal"
+import styles from "../styles/AuthModal.module.css"
 
 interface RegistrationModalProps {
-  show: boolean;
-  handleClose: () => void;
-  switchToLogin: () => void;
+  show: boolean
+  handleClose: () => void
+  switchToLogin: () => void
 }
 
 const RegistrationModal: React.FC<RegistrationModalProps> = ({
   show,
   handleClose,
-  switchToLogin,
+  switchToLogin
 }) => {
-  const dispatch = useAppDispatch();
-  const [role, setRole] = useState<"student" | "author">("student");
-  const [showCodeModal, setShowCodeModal] = useState(false);
-  const [email, setEmail] = useState("");
+  const dispatch = useAppDispatch()
+  const [role, setRole] = useState<"student" | "doctor">("student")
+  const [showCodeModal, setShowCodeModal] = useState(false)
+  const [email, setEmail] = useState("")
 
   useEffect(() => {
     if (show) {
-      dispatch(clearAuthError());
+      dispatch(clearAuthError())
       dispatch(clearRegistrationEmail())
-      setShowCodeModal(false);
-      setEmail("");
-      setRole("student");
+      setShowCodeModal(false)
+      setEmail("")
+      setRole("student")
     }
-  }, [show, dispatch]);
+  }, [show, dispatch])
 
   const handleRegistrationSuccess = (registeredEmail: string) => {
-    setEmail(registeredEmail);
-    handleClose();
-    setShowCodeModal(true);
-  };
+    setEmail(registeredEmail)
+    handleClose()
+    setShowCodeModal(true)
+  }
 
   const handleCodeModalClose = () => {
     dispatch(clearRegistrationEmail())
-    setShowCodeModal(false);
-    setEmail("");
-    switchToLogin();
-  };
+    setShowCodeModal(false)
+    setEmail("")
+    switchToLogin()
+  }
 
   const handleMainModalClose = () => {
     dispatch(clearRegistrationEmail())
-    setShowCodeModal(false);
-    setEmail("");
-    handleClose();
-  };
+    setShowCodeModal(false)
+    setEmail("")
+    handleClose()
+  }
 
   return (
     <>
@@ -86,12 +86,12 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                 Студент
               </button>
               <button
-                className={`${styles.toggleButton} ${role === "author" ? "active" : ""}`}
-                onClick={() => setRole("author")}
+                className={`${styles.toggleButton} ${role === "doctor" ? "active" : ""}`}
+                onClick={() => setRole("doctor")}
                 type="button"
-                aria-pressed={role === "author"}
+                aria-pressed={role === "doctor"}
               >
-                Автор
+                Врач
               </button>
             </div>
           </div>

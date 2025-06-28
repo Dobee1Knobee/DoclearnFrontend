@@ -20,7 +20,7 @@ interface RegistrationFormData extends Omit<RegisterDto, "role"> {
 }
 
 interface RegistrationFormProps {
-  role: "student" | "author"
+  role: "student" | "doctor"
   onSuccess: (email: string) => void
 }
 
@@ -70,7 +70,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
   const onSubmit = (data: RegistrationFormData) => {
     const { confirmPassword, ...registerData } = data
       console.log(">> Registration payload:", {
-        registerData
+        registerData,
       })
     dispatch(registerUser(registerData))
   }

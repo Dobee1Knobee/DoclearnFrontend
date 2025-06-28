@@ -7,7 +7,11 @@ export const demoData: Post[] = [
       id: "user1",
       name: "Александра Миронова",
       avatar: "/Avatars/Avatar1.jpg",
-      isVerified: true,
+      isVerified: {
+        user: true,
+        doctor: false,
+        student: false,
+      },    
     },
     content: {
       text: "Технологии развиваются невероятными темпами. Каждый день мы видим новые инновации, которые меняют нашу жизнь. Что вы думаете о последних трендах в IT?",
@@ -30,7 +34,11 @@ export const demoData: Post[] = [
       id: "user2",
       name: "Максим Петров",
       avatar: "/Avatars/Avatar2.jpg",
-      isVerified: false,
+      isVerified: {
+        user: true,
+        doctor: false,
+        student: false,
+      },
     },
     content: {
       text: "Только что закончил работу над новым проектом! Использовал React и TypeScript. Очень доволен результатом. Посмотрите на сайт: https://example.com",
@@ -57,7 +65,11 @@ export const demoData: Post[] = [
       id: "user3",
       name: "Елена Соколова",
       avatar: "/Avatars/Avatar3.jpg",
-      isVerified: true,
+      isVerified: {
+        user: true,
+        doctor: false,
+        student: false,
+      },
     },
     content: {
       text: "Работаю над новой функцией для нашего приложения. Пользователи долго её ждали, и вот она почти готова!",
@@ -81,7 +93,11 @@ export const demoData: Post[] = [
       id: "user4",
       name: "Артём Лебедев",
       avatar: "/Avatars/Avatar4.jpg",
-      isVerified: true,
+      isVerified: {
+        user: true,
+        doctor: false,
+        student: false,
+      },
     },
     content: {
       text: "Вчера посетил конференцию по искусственному интеллекту. Было много интересных докладов и дискуссий. Особенно понравился доклад о применении ИИ в медицине.",
@@ -106,7 +122,11 @@ export const demoData: Post[] = [
       id: "user5",
       name: "Наталья Иванова",
       avatar: "/Avatars/Avatar5.jpg",
-      isVerified: false,
+      isVerified: {
+        user: true,
+        doctor: false,
+        student: false,
+      },
     },
     content: {
       text: "Сегодня изучаю новые фреймворки для фронтенд-разработки. А вы какие технологии предпочитаете использовать в своих проектах?",

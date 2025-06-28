@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import React from 'react';
-import type { AuthorProfile } from '@/entities/user/model/types';
-import styles from './CasesTab.module.css';
+import React from 'react'
+import type { AuthorProfile } from '@/entities/user/model/types'
+import styles from './CasesTab.module.css'
 
 interface CasesTabProps {
-  profile: AuthorProfile;
+  profile: AuthorProfile
 }
 
 export const CasesTab: React.FC<CasesTabProps> = ({ profile }) => {
-  const { publications } = profile;
+  const { publications } = profile
 
   if (!publications.length) {
     return <div className={styles.empty}>Пока кейсов нет</div>;
@@ -30,5 +30,5 @@ export const CasesTab: React.FC<CasesTabProps> = ({ profile }) => {
         </article>
       ))}
     </div>
-  );
-};
+  )
+}

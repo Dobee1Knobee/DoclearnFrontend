@@ -2,7 +2,11 @@ export interface PostAuthor {
     id: string
     name: string
     avatar: string
-    isVerified: boolean
+    isVerified: {
+      user: boolean
+      doctor: boolean
+      student: boolean,
+    }
   }
   
   export interface PostContent {

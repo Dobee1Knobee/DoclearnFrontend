@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react'
 import type { AuthorProfile } from '@/entities/user/model/types'
+import { useSelector } from "react-redux"
+import type { RootState } from "@/app/store"
 import {
   Clock,
   Star,
@@ -15,24 +17,27 @@ import {
   BookDown,
   LibraryBig,
   User as UserIcon,
-} from 'lucide-react';
-import styles from './OverviewTab.module.css';
+} from 'lucide-react'
+import styles from './OverviewTab.module.css'
 
 interface OverviewTabProps {
-  profile: AuthorProfile;
+  profile: AuthorProfile
 }
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
-  const [showMore, setShowMore] = useState(false);
+  const [showMore, setShowMore] = useState(false)
 
-  const formatYear = (date: string) => new Date(date).getFullYear();
+  const currentUser = useSelector((state: RootState) => state.auth.user)
+  const isOwner = currentUser?._id === profile._id
+
+  const formatYear = (date: string) => new Date(date).getFullYear()
 
   const getEventIcon = (date: string, type: string) => {
-    const day = new Date(date).getDate();
+    const day = new Date(date).getDate()
     const typeClass = type === 'conference' ? styles.conferenceIcon :
-      type === 'webinar' ? styles.webinarIcon : '';
-    return <div className={`${styles.eventIcon} ${typeClass}`}>{day}</div>;
-  };
+      type === 'webinar' ? styles.webinarIcon : ''
+    return <div className={`${styles.eventIcon} ${typeClass}`}>{day}</div>
+  }
 
   const appointmentData = {
     consultation: 'от 3 500 ₽',
@@ -49,12 +54,11 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
     rating: Star,
     content: LibraryBig,
     patent: Lightbulb,
-  };
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.leftColumn}>
-        {/* О себе */}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>О себе</h3>
           <div className={styles.aboutList}>
@@ -67,13 +71,18 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
                 </div>
             ))} */}
 
-            {(profile.bio || 'Информация отсутствует')
-              .split(/\n{2,}/)
-              .map((paragraph, idx) => (
-                <p key={idx} style={{ whiteSpace: 'pre-wrap', marginBottom: '0.75rem', color: '#4b5563', fontSize: '0.875rem' }}>
+            {profile.bio ? (
+              profile.bio.split(/\n{2,}/).map((paragraph, idx) => (
+                <p
+                  key={idx}
+                  style={{ whiteSpace: "pre-wrap", marginBottom: "0.75rem", color: "#4b5563", fontSize: "0.875rem" }}
+                >
                   {paragraph}
                 </p>
-            ))}
+              ))
+            ) : (
+              <p style={{ color: "#6b7280" }}>Информация отсутствует</p>
+            )}
           </div>
           {/* <button
             className={styles.showMoreButton}
@@ -83,11 +92,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
           </button> */}
         </div>
 
-        {/* Ближайшие события */}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Ближайшие события</h3>
           <div className={styles.eventsList}>
-            {profile.upcomingEvents?.map((e) => (
+            {/* {profile.upcomingEvents?.map((e) => (
               <div key={e.id} className={styles.eventItem}>
                 {getEventIcon(e.date, e.type)}
                 <div className={styles.eventDetails}>
@@ -97,13 +105,16 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
+            <p style={{ color: "#6b7280", textAlign: "center", padding: "2rem" }}>
+              Событий пока нет
+            </p>
           </div>
         </div>
       </div>
 
       <div className={styles.rightColumn}>
-        {/* Приём пациентов */}
+
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>Приём пациентов</h3>
@@ -175,7 +186,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
               <div className={styles.achievementItem}>
                 {(() => {
                   const Icon = achievementIconMap[a.category] || Award;
-                  return <Icon size={24} className={styles.achievementIcon} />;
+                  return <Icon size={24} className={styles.achievementIcon} />
                 })()}
                 <div className={styles.achievementTitle}>{a.title}</div>
                 <div className={styles.achievementYear}>

@@ -23,7 +23,6 @@ export function UserProfileCard({
   const router = useRouter()
 
   const handleProfileClick = () => {
-    console.log("Profile click triggered") // Для отладки
     router.push(`/profile/${userId}`)
   }
 
@@ -83,7 +82,6 @@ export function UserProfileCard({
           </div>
           <div className={styles.divider} />
           <div className={styles.menuContainer}>
-            {/* Мой профиль - отдельно как первый элемент */}
             <button onClick={handleProfileClick} className={`${styles.menuItem} ${styles.logoutButton}`} type="button">
               <div className={styles.menuItemLeft}>
                 <User className={styles.icon} />
@@ -91,7 +89,6 @@ export function UserProfileCard({
               </div>
             </button>
 
-            {/* Остальные пункты меню */}
             {menuItems.map((item) => (
               <Link key={item.label} href={item.href} className={styles.menuItem}>
                 <div className={styles.menuItemLeft}>
@@ -104,7 +101,6 @@ export function UserProfileCard({
               </Link>
             ))}
 
-            {/* Кнопка выхода */}
             <button type="button" className={`${styles.menuItem} ${styles.logoutButton}`} onClick={handleLogout}>
               <div className={styles.menuItemLeft}>
                 <LogOut className={styles.icon} />

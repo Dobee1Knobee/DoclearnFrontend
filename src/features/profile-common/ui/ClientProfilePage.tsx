@@ -1,32 +1,47 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { useSelector } from 'react-redux';
-import type { RootState } from '@/app/store';
-import { useGetAuthorProfileQuery } from '@/features/author-profile/api/authorProfileApi';
-import { Spinner } from 'react-bootstrap';      
-import { ProfileHeader } from './ProfileHeader';
-import { ProfileTabs } from './ProfileTabs';
+import React from 'react'
+import { useParams } from "next/navigation"
+import { useGetAuthorProfileQuery } from '@/features/author-profile/api/authorProfileApi'
+import { Spinner } from 'react-bootstrap'
+import { ProfileHeader } from './ProfileHeader'
+import { ProfileTabs } from './ProfileTabs'
 
-/**
- * Клиентский компонент страницы профиля.
- * Подтягивает userId из auth-slice, получает данные через RTK Query
- * и рендерит Header + Tabs.
- */
 export const ClientProfilePage: React.FC = () => {
-  const userId = useSelector((state: RootState) => state.auth.user?._id);
-  const {
-    data: profile,
-    isLoading,
-    isError,
-  } = useGetAuthorProfileQuery(userId ?? '');
+  const params = useParams()
+  const userId = params.id as string
+
+  const { data: profile, isLoading, error } = useGetAuthorProfileQuery(userId)
 
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <div className="text-center p-4">
+        <Spinner animation="border" style={{ color: "#5388d8" }} />
+        <p className="mt-3">Загрузка профиля...</p>
+      </div>
+    )
   }
 
-  if (isError || !profile) {
-    return <div className="text-center p-4">Ошибка загрузки профиля</div>;
+  if (error) {
+    const errorMessage =
+      "data" in error && error.data && typeof error.data === "object" && "message" in error.data
+        ? (error.data as any).message
+        : "Ошибка загрузки профиля"
+
+    return (
+      <div className="text-center p-4">
+        <h3 className="text-danger mb-3">{errorMessage}</h3>
+        <p className="text-muted">Попробуйте обновить страницу или вернуться позже</p>
+      </div>
+    )
+  }
+
+  if (!profile) {
+    return (
+      <div className="text-center p-4">
+        <h3 className="text-danger mb-3">Профиль не найден</h3>
+      </div>
+    )
   }
 
   return (
@@ -34,5 +49,5 @@ export const ClientProfilePage: React.FC = () => {
       <ProfileHeader profile={profile} />
       <ProfileTabs profile={profile} />
     </>
-  );
-};
+  )
+}
