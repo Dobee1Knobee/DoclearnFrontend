@@ -12,7 +12,9 @@ interface EducationBlockProps {
 }
 
 export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], onChange }) => {
-  
+
+  const currentYear = new Date().getFullYear()
+
   const addEducation = () => {
     const newEducation: Education = {
       id: `temp_${Date.now()}`,
@@ -37,28 +39,6 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
     onChange("education", newEducation)
   }
 
-  const validateDates = (startDate: string, graduationYear: string, isCurrently: boolean) => {
-    if (!startDate) return "Дата начала обязательна"
-
-    const start = new Date(startDate).getFullYear()
-    const currentYear = new Date().getFullYear()
-
-    if (start > currentYear) {
-      return "Дата начала не может быть в будущем"
-    }
-
-    if (!isCurrently && graduationYear) {
-      const graduation = Number.parseInt(graduationYear)
-      if (graduation < start) {
-        return "Год окончания не может быть раньше года начала"
-      }
-      if (graduation > currentYear) {
-        return "Год окончания не может быть в будущем"
-      }
-    }
-
-    return ""
-  }
 
   return (
     <div className={styles.block}>
@@ -84,7 +64,34 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
 
       <div className={styles.educationList}>
         {education.map((edu, index) => {
-          const dateError = validateDates(edu.startDate, edu.graduationYear, edu.isCurrently)
+          const institutionError = edu.institution.trim() === "" ? "Учебное заведение обязательно" : ""
+          const degreeError = edu.degree.trim() === "" ? "Степень/Квалификация обязательна" : ""
+          const specialtyError = edu.specialty.trim() === "" ? "Специальность обязательна" : ""
+          let startDateError = ""
+          if (!edu.startDate) {
+            startDateError = "Дата начала обязательна"
+          } else {
+            const start = new Date(edu.startDate).getFullYear()
+            if (start > currentYear) {
+              startDateError = "Дата начала не может быть в будущем"
+            }
+          }
+
+          let graduationYearError = ""
+          if (!edu.isCurrently) {
+            if (!edu.graduationYear) {
+              graduationYearError = "Год окончания обязателен"
+            } else {
+              const start = new Date(edu.startDate).getFullYear()
+              const graduation = Number.parseInt(edu.graduationYear)
+              if (graduation < start) {
+                graduationYearError = "Год окончания не может быть раньше года начала"
+              }
+              if (graduation > currentYear) {
+                graduationYearError = "Год окончания не может быть в будущем"
+              }
+            }
+          }
 
           return (
             <div key={edu.id || index} className={styles.educationItem}>
@@ -103,14 +110,16 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
 
               <div className={styles.educationFields}>
                 <Form.Group>
-                  <Form.Label className={styles.label}>Учебное заведение *</Form.Label>
+                  <Form.Label className={styles.label}>Учебное заведение </Form.Label>
                   <Form.Control
                     type="text"
                     value={edu.institution}
                     onChange={(e) => updateEducation(index, "institution", e.target.value)}
-                    className={styles.input}
+                    className={`${styles.input} ${institutionError ? styles.inputError : ""}`}
                     placeholder="Название университета, института, колледжа"
+                    required
                   />
+                  {institutionError && <div className={styles.errorText}>{institutionError}</div>}                  
                 </Form.Group>
 
                 <div className={styles.formRow}>
@@ -120,9 +129,11 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
                       type="text"
                       value={edu.degree || ""}
                       onChange={(e) => updateEducation(index, "degree", e.target.value)}
-                      className={styles.input}
+                      className={`${styles.input} ${degreeError ? styles.inputError : ""}`}
                       placeholder="Бакалавр, Магистр, Специалист"
+                      required
                     />
+                    {degreeError && <div className={styles.errorText}>{degreeError}</div>}
                   </Form.Group>
 
                   <Form.Group>
@@ -131,37 +142,44 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
                       type="text"
                       value={edu.specialty || ""}
                       onChange={(e) => updateEducation(index, "specialty", e.target.value)}
-                      className={styles.input}
+                      className={`${styles.input} ${specialtyError ? styles.inputError : ""}`}
                       placeholder="Направление подготовки"
+                      required
                     />
+                    {specialtyError && <div className={styles.errorText}>{specialtyError}</div>}
                   </Form.Group>
                 </div>
 
                 <div className={styles.formRow}>
                   <Form.Group>
-                    <Form.Label className={styles.label}>Дата начала *</Form.Label>
+                    <Form.Label className={styles.label}>Дата начала</Form.Label>
                     <Form.Control
                       type="date"
                       value={edu.startDate ? edu.startDate.split("T")[0] : ""}
                       onChange={(e) => updateEducation(index, "startDate", e.target.value)}
-                      className={`${styles.input} ${dateError ? styles.inputError : ""}`}
+                      className={`${styles.input} ${startDateError ? styles.inputError : ""}`}
+                      required
                     />
+                    {startDateError && <div className={styles.errorText}>{startDateError}</div>}
                   </Form.Group>
 
                   <Form.Group>
                     <Form.Label className={styles.label}>
                       {edu.isCurrently ? "Год окончания (ожидаемый)" : "Год окончания"}
+                      {!edu.isCurrently && " *"}
                     </Form.Label>
                     <Form.Control
                       type="number"
                       min="1950"
-                      max="2030"
+                      max={currentYear}
                       value={edu.graduationYear || ""}
                       onChange={(e) => updateEducation(index, "graduationYear", e.target.value)}
-                      className={`${styles.input} ${dateError ? styles.inputError : ""}`}
+                      className={`${styles.input} ${graduationYearError ? styles.inputError : ""}`}
                       placeholder="2024"
                       disabled={edu.isCurrently}
+                      required={!edu.isCurrently}
                     />
+                    {graduationYearError && <div className={styles.errorText}>{graduationYearError}</div>}
                   </Form.Group>
                 </div>
 
@@ -172,16 +190,21 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
                     label="Обучаюсь в настоящее время"
                     checked={edu.isCurrently || false}
                     onChange={(e) => {
-                      updateEducation(index, "isCurrently", e.target.checked)
-                      if (e.target.checked) {
-                        updateEducation(index, "graduationYear", "")
+                      const isChecked = e.target.checked
+                      const newEducation = [...education]
+                      const updatedEduItem = { ...newEducation[index] }
+
+                      updatedEduItem.isCurrently = isChecked
+                      if (isChecked) {
+                        updatedEduItem.graduationYear = "" 
                       }
+                      
+                      newEducation[index] = updatedEduItem
+                      onChange("education", newEducation)
                     }}
                     className={styles.checkbox}
                   />
                 </Form.Group>
-
-                {dateError && <div className={styles.errorText}>{dateError}</div>}
               </div>
             </div>
           )
