@@ -30,13 +30,27 @@ export const PersonalInfoBlock: React.FC<PersonalInfoBlockProps> = ({ data, onCh
     return age
   }
 
+  const moderationFields = ["firstName", "lastName"]
+
+  // const validateAge = (birthday: string) => {
+  //   const age = calculateAge(birthday)
+  //   if (typeof age === "number") {
+  //     if (age < 16) return "Возраст должен быть не менее 16 лет"
+  //     if (age > 100) return "Проверьте правильность даты рождения"
+  //   }
+  //   return ""
+  // }
+  
   return (
     <div className={styles.block}>
       
       <h3 className={styles.blockTitle}>Личная информация</h3>
       <div className={styles.formGrid}>
         <Form.Group>
-          <Form.Label className={styles.label}>Имя</Form.Label>
+          <Form.Label className={styles.label}>
+            Имя
+            {moderationFields.includes("firstName") && <span className={styles.moderationBadge}>Модерация</span>}
+          </Form.Label>
           <Form.Control
             type="text"
             value={data.firstName}
@@ -47,7 +61,10 @@ export const PersonalInfoBlock: React.FC<PersonalInfoBlockProps> = ({ data, onCh
         </Form.Group>
 
         <Form.Group>
-          <Form.Label className={styles.label}>Фамилия</Form.Label>
+          <Form.Label className={styles.label}>
+            Фамилия
+            {moderationFields.includes("lastName") && <span className={styles.moderationBadge}>Модерация</span>}
+          </Form.Label>
           <Form.Control
             type="text"
             value={data.lastName}

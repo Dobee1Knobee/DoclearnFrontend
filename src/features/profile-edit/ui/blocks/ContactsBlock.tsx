@@ -24,31 +24,46 @@ const contactTypes = [
 ]
 
 export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onChange }) => {
-
+  const addContact = () => {
+    const newContact: Contact = {
+      type: {
+        type: "email",
+        label: "Email",
+      },
+      value: "",
+      isPublic: true,
+    }
+    onChange("contacts", [...contacts, newContact])
+  }
 
   const removeContact = (index: number) => {
     const newContacts = contacts.filter((_, i) => i !== index)
     onChange("contacts", newContacts)
   }
 
-  const updateContact = (index: number, field: keyof Contact, value: string) => {
+  const updateContact = (index: number, field: keyof Contact, value: any) => {
     const newContacts = [...contacts]
     newContacts[index] = { ...newContacts[index], [field]: value }
     onChange("contacts", newContacts)
   }
 
-  const formatPhoneNumber = (value: string) => {
-    const cleaned = value.replace(/\D/g, "")
-    if (cleaned.length <= 11) {
-      return cleaned.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, "+$1 ($2) $3-$4-$5")
+  const updateContactType = (index: number, typeValue: string) => {
+    const contactType = contactTypes.find((t) => t.value === typeValue)
+    const newContacts = [...contacts]
+    newContacts[index] = {
+      ...newContacts[index],
+      type: {
+        type: typeValue,
+        label: contactType?.label || typeValue,
+      },
     }
-    return value
+    onChange("contacts", newContacts)
   }
 
   const validateContact = (contact: Contact) => {
     if (!contact.value.trim()) return "Значение обязательно"
 
-    switch (contact.type) {
+    switch (contact.type.type) {
       case "email":
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return emailRegex.test(contact.value) ? "" : "Некорректный email"
@@ -67,11 +82,19 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
     }
   }
 
+  const formatPhoneNumber = (value: string) => {
+    const cleaned = value.replace(/\D/g, "")
+    if (cleaned.length <= 11) {
+      return cleaned.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, "+$1 ($2) $3-$4-$5")
+    }
+    return value
+  }
+
   return (
     <div className={styles.block}>
       <div className={styles.blockHeader}>
         <h3 className={styles.blockTitle}>Контакты</h3>
-        <button className={styles.addButton} >
+        <button className={styles.addButton} onClick={addContact}>
           <Plus size={16} />
           Добавить контакт
         </button>
@@ -85,7 +108,7 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
 
       <div className={styles.contactsList}>
         {contacts.map((contact, index) => {
-          const contactType = contactTypes.find((t) => t.value === contact.type)
+          const contactType = contactTypes.find((t) => t.value === contact.type.type)
           const Icon = contactType?.icon || MessageCircle
           const error = validateContact(contact)
 
@@ -94,8 +117,8 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
               <div className={styles.contactHeader}>
                 <Icon size={16} className={styles.contactIcon} />
                 <Form.Select
-                  value={contact.type}
-                  onChange={(e) => updateContact(index, "type", e.target.value)}
+                  value={contact.type.type}
+                  onChange={(e) => updateContactType(index, e.target.value)}
                   className={styles.contactTypeSelect}
                 >
                   {contactTypes.map((type) => (
@@ -116,24 +139,24 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
 
               <div className={styles.contactFields}>
                 <Form.Group>
-                  <Form.Label className={styles.label}>Значение *</Form.Label>
+                  <Form.Label className={styles.label}>Значение</Form.Label>
                   <Form.Control
-                    type={contact.type === "email" ? "email" : contact.type === "phone" ? "tel" : "text"}
+                    type={contact.type.type === "email" ? "email" : contact.type.type === "phone" ? "tel" : "text"}
                     value={contact.value}
                     onChange={(e) => {
                       let value = e.target.value
-                      if (contact.type === "phone") {
+                      if (contact.type.type === "phone") {
                         value = formatPhoneNumber(value)
                       }
                       updateContact(index, "value", value)
                     }}
                     className={`${styles.input} ${error ? styles.inputError : ""}`}
                     placeholder={
-                      contact.type === "email"
+                      contact.type.type === "email"
                         ? "example@email.com"
-                        : contact.type === "phone"
+                        : contact.type.type === "phone"
                           ? "+7 (999) 123-45-67"
-                          : contact.type === "website"
+                          : contact.type.type === "website"
                             ? "https://example.com"
                             : "Введите значение"
                     }
@@ -145,10 +168,26 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
                   <Form.Label className={styles.label}>Подпись (необязательно)</Form.Label>
                   <Form.Control
                     type="text"
-                    value={contact.label || ""}
-                    onChange={(e) => updateContact(index, "label", e.target.value)}
+                    value={contact.type.label || ""}
+                    onChange={(e) =>
+                      updateContact(index, "type", {
+                        ...contact.type,
+                        label: e.target.value,
+                      })
+                    }
                     className={styles.input}
                     placeholder="Например: Рабочий телефон"
+                  />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Check
+                    type="checkbox"
+                    id={`public-${index}`}
+                    label="Показывать публично"
+                    checked={contact.isPublic !== false}
+                    onChange={(e) => updateContact(index, "isPublic", e.target.checked)}
+                    className={styles.checkbox}
                   />
                 </Form.Group>
               </div>

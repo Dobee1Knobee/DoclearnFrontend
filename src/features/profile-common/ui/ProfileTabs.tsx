@@ -39,7 +39,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
       case 'education':
         return <EducationTab education={profile.education} />
       case 'contacts':
-        return <ContactsTab profile={profile} />
+        return <ContactsTab contacts={profile.contacts} />
       default:
         return null
     }

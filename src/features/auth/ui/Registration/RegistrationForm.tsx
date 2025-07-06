@@ -72,7 +72,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
       console.log(">> Registration payload:", {
         registerData,
       })
-    dispatch(registerUser(registerData))
+    const formattedData = {
+      ...registerData,
+      birthday: registerData.birthday, 
+    }
+    dispatch(registerUser(formattedData))
   }
 
   return (

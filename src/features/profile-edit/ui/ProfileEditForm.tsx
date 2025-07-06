@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import type { AuthorProfile } from "@/entities/user/model/types"
 import { PersonalInfoBlock } from "./blocks/PersonalInfoBlock"
@@ -12,6 +12,7 @@ import { EducationBlock } from "./blocks/EducationBlock"
 import { AvatarSelector } from "./components/AvatarSelector"
 import { UnsavedChangesWarning } from "./components/UnsavedChangesWarning"
 import { useUpdateMyProfileMutation } from "../api/profileEditApi"
+import { useFormChanges } from "@/features/profile-edit/hooks/useFormChanges"
 import { Alert } from "react-bootstrap"
 import styles from "./ProfileEditForm.module.css"
 
@@ -23,63 +24,37 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
   const router = useRouter()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateMyProfileMutation()
 
-  const [formData, setFormData] = useState<AuthorProfile>(() => ({
-    ...profile,
-    contacts: profile.contacts || [],
-    education: profile.education || [],
-    bio: profile.bio || "",
-  }))
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const { formData, updateField, getDataToSend, hasChanges, resetToOriginal, updateOriginalData } =
+    useFormChanges(profile)
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle")
   const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
-    const hasChanges = JSON.stringify(formData) !== JSON.stringify(profile)
-    setHasUnsavedChanges(hasChanges)
-  }, [formData, profile])
-
-  const handleFieldChange = useCallback((field: keyof AuthorProfile, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
-  }, [])
+    updateOriginalData(profile)
+  }, [profile, updateOriginalData])
 
   const handleSave = async () => {
     try {
       setSaveStatus("idle")
       setErrorMessage("")
 
-      const updateData = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        // birthday: formData.birthday,
-        bio: formData.bio || "",
-        placeWork: formData.placeWork,
-        location: formData.location || "",
-        experience: formData.experience || "",
-        specialization: formData.specialization || "",
-        contacts: formData.contacts || [],
-        education: formData.education || [],
-        avatar: formData.avatar,
+      // Получаем только измененные поля
+      const dataToSend = getDataToSend()
+
+      console.log("Отправляем только измененные поля:", dataToSend)
+
+      // Если нет изменений, не отправляем запрос
+      if (Object.keys(dataToSend).length === 0) {
+        console.log("Нет изменений для отправки")
+        return
       }
 
-      const cleanedData = Object.fromEntries(
-        Object.entries(updateData).filter(([key, value]) => {
-          if (Array.isArray(value)) {
-            return value.length > 0
-          }
-          return value !== "" && value !== null && value !== undefined
-        }),
-      )
-
-      console.log("Form data being sent:", cleanedData)
-
-      const result = await updateProfile(cleanedData).unwrap()
+      // Отправка на сервер
+      const result = await updateProfile(dataToSend).unwrap()
 
       setSaveStatus("success")
-      setHasUnsavedChanges(false)
 
+      // Перенаправление через 2 секунды
       setTimeout(() => {
         router.push(`/profile/${profile._id}`)
       }, 2000)
@@ -90,20 +65,15 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
     }
   }
 
+  // Сброс формы
   const handleReset = () => {
-    setFormData({
-      ...profile,
-      contacts: profile.contacts || [],
-      education: profile.education || [],
-      bio: profile.bio || "",
-    })
-    setHasUnsavedChanges(false)
+    resetToOriginal()
     setSaveStatus("idle")
     setErrorMessage("")
   }
 
   const handleCancel = () => {
-    if (hasUnsavedChanges) {
+    if (hasChanges) {
       if (window.confirm("У вас есть несохраненные изменения. Вы уверены, что хотите выйти?")) {
         router.push(`/profile/${profile._id}`)
       }
@@ -111,10 +81,9 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
       router.push(`/profile/${profile._id}`)
     }
   }
-
   return (
     <>
-      <UnsavedChangesWarning hasUnsavedChanges={hasUnsavedChanges} />
+      <UnsavedChangesWarning hasUnsavedChanges={hasChanges} />
 
       <div className={styles.container}>
         <div className={styles.header}>
@@ -137,7 +106,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
           <div className={styles.leftColumn}>
             <AvatarSelector
               currentAvatar={formData.avatar || "/Avatars/Avatar1.jpg"}
-              onAvatarChange={(avatar) => handleFieldChange("avatar", avatar)}
+              onAvatarChange={(avatar) => updateField("avatar", avatar)}
             />
           </div>
 
@@ -148,10 +117,10 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
                 lastName: formData.lastName,
                 birthday: formData.birthday,
               }}
-              onChange={handleFieldChange}
+              onChange={updateField}
             />
 
-            <AboutBlock bio={formData.bio || ""} onChange={handleFieldChange} />
+            <AboutBlock bio={formData.bio || ""} onChange={updateField} />
 
             <ProfessionalBlock
               data={{
@@ -160,12 +129,12 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
                 experience: formData.experience || "",
                 specialization: formData.specialization || "",
               }}
-              onChange={handleFieldChange}
+              onChange={updateField}
             />
 
-            <ContactsBlock contacts={formData.contacts || []} onChange={handleFieldChange} />
+            <ContactsBlock contacts={formData.contacts || []} onChange={updateField} />
 
-            <EducationBlock education={formData.education || []} onChange={handleFieldChange} />
+            <EducationBlock education={formData.education || []} onChange={updateField} />
           
           </div>
 
@@ -173,10 +142,10 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
             <button className={styles.cancelButton} onClick={handleCancel} disabled={isUpdating}>
               Отмена
             </button>
-            <button className={styles.secondaryButton} onClick={handleReset} disabled={!hasUnsavedChanges || isUpdating}>
+            <button className={styles.secondaryButton} onClick={handleReset} disabled={!hasChanges || isUpdating}>
               Сбросить
             </button>
-            <button className={styles.primaryButton} onClick={handleSave} disabled={!hasUnsavedChanges || isUpdating}>
+            <button className={styles.primaryButton} onClick={handleSave} disabled={!hasChanges || isUpdating}>
               {isUpdating ? "Сохранение..." : "Сохранить"}
             </button>
           </div>

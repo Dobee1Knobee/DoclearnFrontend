@@ -12,7 +12,19 @@ interface EducationBlockProps {
 }
 
 export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], onChange }) => {
-
+  
+  const addEducation = () => {
+    const newEducation: Education = {
+      id: `temp_${Date.now()}`,
+      institution: "",
+      degree: "",
+      specialty: "",
+      startDate: "",
+      graduationYear: "",
+      isCurrently: false,
+    }
+    onChange("education", [...education, newEducation])
+  }
 
   const removeEducation = (index: number) => {
     const newEducation = education.filter((_, i) => i !== index)
@@ -52,7 +64,7 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
     <div className={styles.block}>
       <div className={styles.blockHeader}>
         <h3 className={styles.blockTitle}>Образование</h3>
-        <button className={styles.addButton} disabled>
+        <button className={styles.addButton} onClick={addEducation}>
           <Plus size={16} />
           Добавить образование
         </button>
@@ -153,18 +165,21 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
                   </Form.Group>
                 </div>
 
-                <Form.Check
-                  type="checkbox"
-                  label="Обучаюсь в настоящее время"
-                  checked={edu.isCurrently}
-                  onChange={(e) => {
-                    updateEducation(index, "isCurrently", e.target.checked)
-                    if (e.target.checked) {
-                      updateEducation(index, "graduationYear", "")
-                    }
-                  }}
-                  className={styles.checkbox}
-                />
+                <Form.Group className="mb-3">
+                  <Form.Check
+                    type="checkbox"
+                    id={`currently-studying-${index}`}
+                    label="Обучаюсь в настоящее время"
+                    checked={edu.isCurrently || false}
+                    onChange={(e) => {
+                      updateEducation(index, "isCurrently", e.target.checked)
+                      if (e.target.checked) {
+                        updateEducation(index, "graduationYear", "")
+                      }
+                    }}
+                    className={styles.checkbox}
+                  />
+                </Form.Group>
 
                 {dateError && <div className={styles.errorText}>{dateError}</div>}
               </div>
@@ -175,4 +190,5 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
     </div>
   )
 }
+
 

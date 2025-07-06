@@ -21,7 +21,7 @@ export interface User {
   lastName: string
   email: string
   birthday: string
-  placeWork: string
+  placeWork: string //placeStudy
   role: "student" | "doctor" | "admin"
   isVerified: {
     user: boolean
@@ -42,6 +42,8 @@ export interface User {
     followersCount: number
     postsCount?: number
   }
+  contacts: Contact[]   
+  education: Education[]
 }
 
 export interface Achievement {
@@ -54,25 +56,26 @@ export interface Achievement {
 
 
 export interface Contact {
-  type: string
+  type: {
+    type: string
+    label?: string
+  }
   value: string
-  label?: string
+  isPublic?: boolean
 }
 
 export interface Education {
-  id: string
+  id?: string
   institution: string
   degree: string
-  specialty: string
   startDate: string
-  graduationYear: string
+  specialty: string  
+  graduationYear?: string
   isCurrently: boolean
 }
 
 export interface AuthorProfile extends User {
   experience: string
-  courses: Course[]
+  courses?: Course[]
   specialization: string
-  contacts: Contact[]   
-  education: Education[]
 }

@@ -75,6 +75,5 @@ export const ProfileEditPage: React.FC<ProfileEditPageProps> = ({ userId }) => {
       </div>
     )
   }
-
   return <ProfileEditForm profile={profile} />
 }
