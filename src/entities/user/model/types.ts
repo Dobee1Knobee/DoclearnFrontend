@@ -70,7 +70,7 @@ export interface Education {
   degree: string
   startDate: string
   specialty: string  
-  graduationYear?: string
+  graduationYear: string
   isCurrently: boolean
 }
 
