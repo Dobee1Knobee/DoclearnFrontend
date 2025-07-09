@@ -196,6 +196,10 @@
   gap: 1rem;
 }
 
+.checkbox {
+  margin-top: 0.5rem;
+}
+
 /* Education */
 .educationList {
   display: flex;

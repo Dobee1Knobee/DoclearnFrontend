@@ -3,17 +3,17 @@
 /* Контейнер: адаптивная грид-сетка карточек */
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
 }
 
 /* Карточка контакта */
 .item {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.5rem;
   background: #ffffff;
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   border-radius: 0.75rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
   text-decoration: none;
@@ -23,6 +23,14 @@
 .item:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Верхняя часть с иконкой и типом */
+.itemHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Обёртка иконки */
@@ -37,9 +45,24 @@
   border-radius: 50%;
 }
 
-/* Ссылка */
-.link {
+/* Тип контакта */
+.contactType {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Лейбл контакта */
+.contactLabel {
   color: #111827;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+/* Значение контакта */
+.contactValue {
+  color: #5388d8;
   font-size: 0.875rem;
   font-weight: 500;
   word-break: break-all;

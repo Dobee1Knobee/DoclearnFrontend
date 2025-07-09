@@ -26,6 +26,10 @@ export function UserProfileCard({
     router.push(`/profile/${userId}`)
   }
 
+  const handleSettingsClick = () => {
+    router.push(`/profile/${userId}/edit`)
+  }
+
   const menuItems: MenuItem[] = [
     {
       label: "Уведомления",
@@ -48,11 +52,7 @@ export function UserProfileCard({
       icon: <Sun className={styles.icon} />,
       value: "Светлая",
     },
-    {
-      label: "Настройки",
-      href: "#",
-      icon: <Settings className={styles.icon} />,
-    },
+
   ]
 
   const handleLogout = () => {
@@ -101,6 +101,13 @@ export function UserProfileCard({
               </Link>
             ))}
 
+            <button onClick={handleSettingsClick} className={`${styles.menuItem} ${styles.logoutButton}`} type="button">
+              <div className={styles.menuItemLeft}>
+                <Settings className={styles.icon} />
+                <span className={styles.menuItemLabel}>Настройки</span>
+              </div>
+            </button>
+            
             <button type="button" className={`${styles.menuItem} ${styles.logoutButton}`} onClick={handleLogout}>
               <div className={styles.menuItemLeft}>
                 <LogOut className={styles.icon} />

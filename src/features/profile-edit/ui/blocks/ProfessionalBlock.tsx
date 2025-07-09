@@ -115,7 +115,7 @@ export const ProfessionalBlock: React.FC<ProfessionalBlockProps> = ({ data, onCh
               value={specializationFields.field3}
               onChange={(e) => handleSpecializationChange("field3", e.target.value)}
               className={styles.input}
-              placeholder="Третья специализация"
+              placeholder="Категория"
             />
           </div>
         </Form.Group>

@@ -1,53 +1,22 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import type { AuthorProfile } from "@/entities/user/model/types"
+import type { UpdateProfileRequest, UpdateProfileResponse } from "../model/types"
 
-interface UpdateProfileRequest {
-  firstName?: string
-  lastName?: string
-  birthday?: string
-  bio?: string
-  placeWork?: string
-  location?: string
-  experience?: string
-  specialization?: string
-  contacts?: Array<{
-    type: string
-    value: string
-    label?: string
-    isPublic?: boolean
-  }>
-  education?: Array<{
-    id?: string,
-    institution: string
-    degree?: string
-    startDate: string
-    specialty?: string
-    graduationYear?: string
-    isCurrently?: boolean
-  }>
-  avatar?: string
-}
+const baseQuery = fetchBaseQuery({ 
+  baseUrl: "https://dl-back-756832582185.us-east1.run.app",
+  prepareHeaders: (headers) => {
+    const refreshToken = localStorage.getItem("refreshToken")
+    if (refreshToken) {
+      headers.set("Authorization", `Bearer ${refreshToken}`)
+    }
+    headers.set("Content-Type", "application/json")
+    return headers
+  },
+  credentials: "include", 
+})
 
-interface UpdateProfileResponse {
-  success: boolean
-  data: AuthorProfile
-  moderationFields?: string[]
-}
-console.log()
 export const profileEditApi = createApi({
   reducerPath: "profileEditApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://dl-back-756832582185.us-east1.run.app",
-    prepareHeaders: (headers) => {
-      const refreshToken = localStorage.getItem("refreshToken")
-      if (refreshToken) {
-        headers.set("Authorization", `Bearer ${refreshToken}`)
-      }
-      headers.set("Content-Type", "application/json")
-      return headers
-    },
-    credentials: "include", 
-  }),
+  baseQuery,
   tagTypes: ["Profile"],
   endpoints: (builder) => ({
     updateMyProfile: builder.mutation<UpdateProfileResponse, UpdateProfileRequest>({
@@ -58,7 +27,31 @@ export const profileEditApi = createApi({
       }),
       invalidatesTags: ["Profile"],
     }),
+
+    followUser: builder.mutation<{ success: boolean; message: string }, string>({
+      query: (userId) => ({
+        url: `/user/${userId}/follow`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Profile"],
+    }),
+
+    unfollowUser: builder.mutation<{ success: boolean; message: string }, string>({
+      query: (userId) => ({
+        url: `/user/${userId}/follow`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Profile"],
+    }),
+
+    checkFollowStatus: builder.query<{ success: boolean; data: { isFollowing: boolean } }, string>({
+      query: (userId) => ({
+        url: `/user/${userId}/is-following`,
+        method: "GET",
+      }),
+      providesTags: ["Profile"],
+    }),
   }),
 })
 
-export const { useUpdateMyProfileMutation } = profileEditApi
+export const { useUpdateMyProfileMutation, useFollowUserMutation, useUnfollowUserMutation, useCheckFollowStatusQuery } = profileEditApi

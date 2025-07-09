@@ -1,22 +1,27 @@
 "use client"
 
 import type React from "react"
-import type { AuthorProfile } from "@/entities/user/model/types"
+import type { Contact } from "@/entities/user/model/types"
 import { Mail, Phone, Globe, MessageCircle } from "lucide-react"
 import styles from "./ContactsTab.module.css"
 
 interface ContactsTabProps {
-  profile: AuthorProfile
+  contacts: Contact[]
 }
 
-export const ContactsTab: React.FC<ContactsTabProps> = ({ profile }) => {
-  const { contacts } = profile
+export const ContactsTab: React.FC<ContactsTabProps> = ({ contacts }) => {
+  // Показываем только публичные контакты и фильтруем некорректные данные
+  const publicContacts = contacts.filter(
+    (contact) => contact && contact.type && contact.type.type && contact.value && contact.isPublic !== false,
+  )
 
-  if (!contacts.length) {
+  if (publicContacts.length === 0) {
     return <div className={styles.empty}>Не указано</div>
   }
 
   const getContactIcon = (type: string) => {
+    if (!type) return MessageCircle
+
     switch (type.toLowerCase()) {
       case "email":
         return Mail
@@ -32,8 +37,37 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({ profile }) => {
     }
   }
 
-  const getContactHref = (contact: any) => {
-    switch (contact.type.toLowerCase()) {
+  const getContactTypeLabel = (type: string) => {
+    if (!type) return "Контакт"
+
+    switch (type.toLowerCase()) {
+      case "email":
+        return "Email"
+      case "phone":
+        return "Телефон"
+      case "website":
+        return "Веб-сайт"
+      case "telegram":
+        return "Telegram"
+      case "whatsapp":
+        return "WhatsApp"
+      case "vk":
+        return "VKontakte"
+      case "facebook":
+        return "Facebook"
+      case "twitter":
+        return "Twitter"
+      case "instagram":
+        return "Instagram"
+      default:
+        return type
+    }
+  }
+
+  const getContactHref = (contact: Contact) => {
+    if (!contact.type?.type || !contact.value) return "#"
+
+    switch (contact.type.type.toLowerCase()) {
       case "email":
         return `mailto:${contact.value}`
       case "phone":
@@ -47,23 +81,29 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({ profile }) => {
 
   return (
     <div className={styles.container}>
-      {contacts.map((contact, index) => {
-        const Icon = getContactIcon(contact.type)
+      {publicContacts.map((contact, index) => {
+        const Icon = getContactIcon(contact.type.type)
         const href = getContactHref(contact)
-        const isExternal = contact.type.toLowerCase() === "website"
+        const isExternal = contact.type.type?.toLowerCase() === "website"
+        const typeLabel = getContactTypeLabel(contact.type.type)
+        const displayLabel = contact.type.label || typeLabel
 
         return (
           <a
-            key={`${contact.type}-${index}`}
+            key={`${contact.type.type || "contact"}-${index}`}
             href={href}
             target={isExternal ? "_blank" : undefined}
             rel={isExternal ? "noopener noreferrer" : undefined}
             className={styles.item}
           >
-            <span className={styles.iconWrapper}>
-              <Icon size={16} />
-            </span>
-            <span className={styles.link}>{contact.label || contact.value}</span>
+            <div className={styles.itemHeader}>
+              <span className={styles.iconWrapper}>
+                <Icon size={16} />
+              </span>
+              <span className={styles.contactType}>{typeLabel}</span>
+            </div>
+            <div className={styles.contactLabel}>{displayLabel}</div>
+            <div className={styles.contactValue}>{contact.value}</div>
           </a>
         )
       })}
@@ -71,61 +111,108 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({ profile }) => {
   )
 }
 
-// 'use client'
+// "use client"
 
-// import React from 'react'
-// import type { AuthorProfile } from '@/entities/user/model/types'
-// import {
-//   Mail,
-//   Phone,
-//   Globe,
-//   MessageCircle,
-// } from 'lucide-react'
-// import styles from './ContactsTab.module.css'
+// import type React from "react"
+// import type { AuthorProfile } from "@/entities/user/model/types"
+// import { Mail, Phone, Globe, MessageCircle } from "lucide-react"
+// import styles from "./ContactsTab.module.css"
 
 // interface ContactsTabProps {
-//   profile: AuthorProfile;
+//   profile: AuthorProfile
 // }
 
 // export const ContactsTab: React.FC<ContactsTabProps> = ({ profile }) => {
-//   const { contacts } = profile;
+//   const { contacts } = profile
 
 //   if (!contacts.length) {
-//     return <div className={styles.empty}>Контакты отсутствуют</div>;
+//     return <div className={styles.empty}>Не указано</div>
+//   }
+
+//   const getContactIcon = (type: string) => {
+//     switch (type.toLowerCase()) {
+//       case "email":
+//         return Mail
+//       case "phone":
+//         return Phone
+//       case "website":
+//         return Globe
+//       case "telegram":
+//       case "whatsapp":
+//         return MessageCircle
+//       default:
+//         return MessageCircle
+//     }
+//   }
+
+//   const getContactTypeLabel = (type: string) => {
+//     switch (type.toLowerCase()) {
+//       case "email":
+//         return "Email"
+//       case "phone":
+//         return "Телефон"
+//       case "website":
+//         return "Веб-сайт"
+//       case "telegram":
+//         return "Telegram"
+//       case "whatsapp":
+//         return "WhatsApp"
+//       case "vk":
+//         return "VKontakte"
+//       case "facebook":
+//         return "Facebook"
+//       case "twitter":
+//         return "Twitter"
+//       case "instagram":
+//         return "Instagram"
+//       default:
+//         return type
+//     }
+//   }
+
+//   const getContactHref = (contact: any) => {
+//     switch (contact.type.toLowerCase()) {
+//       case "email":
+//         return `mailto:${contact.value}`
+//       case "phone":
+//         return `tel:${contact.value}`
+//       case "website":
+//         return contact.value.startsWith("http") ? contact.value : `https://${contact.value}`
+//       default:
+//         return contact.value
+//     }
 //   }
 
 //   return (
 //     <div className={styles.container}>
-//       {contacts.map((c) => {
-//         const Icon =
-//           c.type === 'email'
-//             ? Mail
-//             : c.type === 'phone'
-//             ? Phone
-//             : c.type === 'website'
-//             ? Globe
-//             : MessageCircle;
-//         const href =
-//           c.type === 'email'
-//             ? `mailto:${c.value}`
-//             : c.type === 'phone'
-//             ? `tel:${c.value}`
-//             : c.value;
+//       {contacts.map((contact, index) => {
+//         const Icon = getContactIcon(contact.type.type)
+//         const href = getContactHref(contact)
+//         const isExternal = contact.type.type.toLowerCase() === "website"
+//         const typeLabel = getContactTypeLabel(contact.type.type)
+//         const displayLabel = contact.type.label || typeLabel
+
 //         return (
 //           <a
-//             key={c.value}
+//             key={`${contact.type}-${index}`}
 //             href={href}
-//             target={c.type === 'website' ? '_blank' : undefined}
-//             rel={c.type === 'website' ? 'noopener noreferrer' : undefined}
+//             target={isExternal ? "_blank" : undefined}
+//             rel={isExternal ? "noopener noreferrer" : undefined}
 //             className={styles.item}
 //           >
-//             <span className={styles.iconWrapper}>
-//               <Icon size={16} />
-//             </span>
-//             <span className={styles.link}>{c.label || c.value}</span>
+//             <div className={styles.itemHeader}>
+//               <span className={styles.iconWrapper}>
+//                 <Icon size={16} />
+//               </span>
+//               <span className={styles.contactType}>{typeLabel}</span>
+//             </div>
+//             <div className={styles.contactLabel}>{displayLabel}</div>
+//             <div className={styles.contactValue}>{contact.value}</div>
 //           </a>
-//         );
+//         )
 //       })}
 //     </div>
-//   );
-// };
+//   )
+// }
+
+

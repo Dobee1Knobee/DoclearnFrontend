@@ -115,7 +115,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
 
       <div className={styles.rightColumn}>
 
-        <div className={styles.section}>
+        <div className={`${styles.section} ${styles.sectionWithOverlay}`}>
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>Приём пациентов</h3>
             <div className={styles.statusBadge}>Принимает сейчас</div>
@@ -168,11 +168,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
             <button className={styles.selectTimeButton}>
               Записаться на приём
             </button>
+            <div className={styles.blurOverlay}>
+              <div className={styles.developmentMessage}>В разработке</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className={`${styles.section} ${styles.achievementsSection}`}>
+      {/* <div className={`${styles.section} ${styles.achievementsSection}`}>
         <div className={styles.achievementsHeader}>
           <h3 className={styles.sectionTitle}>Достижения</h3>
           <button className={styles.addButton}>
@@ -185,7 +188,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
             <div key={a.id} className={styles.tooltipWrapper}>
               <div className={styles.achievementItem}>
                 {(() => {
-                  const Icon = achievementIconMap[a.category] || Award;
+                  const Icon = achievementIconMap[a.category] || Award
                   return <Icon size={24} className={styles.achievementIcon} />
                 })()}
                 <div className={styles.achievementTitle}>{a.title}</div>
@@ -197,7 +200,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
