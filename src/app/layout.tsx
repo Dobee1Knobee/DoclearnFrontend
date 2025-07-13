@@ -1,8 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Montserrat} from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
-import BootstrapClient from '@/app/providers/BootstrapClient';
 import Header from '@/widgets/header/ui/Header';
 import Footer from '@/widgets/footer/Footer';
 import { Providers } from "./providers"
@@ -18,7 +17,6 @@ import { Providers } from "./providers"
 // });
 
 const montserrat = Montserrat({
-    
   variable: '--font-montserrat',
   weight: ['300', '400', '600', '700'],
   subsets: ['latin'],
@@ -30,7 +28,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
         {
-            url: "/logoGoogle.png", 
+            url: "/logoGoogle.webp", 
         },
     ],
 },
@@ -42,15 +40,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body
         className={`${montserrat.variable}  antialiased`}
       >
         <Providers>
           <Header />
           {children}
-          <Footer />
-          <BootstrapClient />
+          {/* <Footer /> */}
         </Providers>
       </body>
     </html>

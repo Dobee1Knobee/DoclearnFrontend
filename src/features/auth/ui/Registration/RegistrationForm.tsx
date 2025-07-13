@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import styles from "../styles/AuthForm.module.css"
-import { useAppDispatch, useAppSelector } from "@/shared/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { registerUser } from "@/features/auth/model/thunks"
 import { clearAuthError } from "@/features/auth/model/slice"
 import { selectLoading, selectError, selectRegistrationEmail } from "@/features/auth/model/selectors"

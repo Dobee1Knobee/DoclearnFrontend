@@ -54,7 +54,6 @@ export interface Achievement {
   category: "education" | "publication" | "rating" | "experience" | "other"
 }
 
-
 export interface Contact {
   type: {
     type: string
@@ -65,11 +64,11 @@ export interface Contact {
 }
 
 export interface Education {
-  id?: string
+  id: string
   institution: string
   degree: string
+  specialty: string
   startDate: string
-  specialty: string  
   graduationYear: string
   isCurrently: boolean
 }
@@ -79,3 +78,19 @@ export interface AuthorProfile extends User {
   courses?: Course[]
   specialization: string
 }
+
+export interface StudentProfile extends User {
+  coursesEnrolled: Course[]
+  gpa?: number // 0-5
+  mentorId?: string
+  programType: "Бакалавриат" | "Магистратура" | "Ординатура" | "Аспирантура"
+}
+
+// export interface UpcomingEvent {
+//   id: string
+//   title: string
+//   type: "conference" | "webinar" | "meeting"
+//   date: string
+//   location?: string
+//   isOnline: boolean
+// }

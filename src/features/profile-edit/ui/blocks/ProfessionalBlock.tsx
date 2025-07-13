@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { Form, Alert } from "react-bootstrap"
-import type { AuthorProfile } from "@/entities/user/model/types"
+import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 
 interface ProfessionalData {
@@ -13,9 +13,11 @@ interface ProfessionalData {
   specialization: string
 }
 
+type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
+
 interface ProfessionalBlockProps {
   data: ProfessionalData
-  onChange: (field: keyof AuthorProfile, value: any) => void
+  onChange: (field: ProfileKeys, value: any) => void
 }
 
 export const ProfessionalBlock: React.FC<ProfessionalBlockProps> = ({ data, onChange }) => {
@@ -40,6 +42,10 @@ export const ProfessionalBlock: React.FC<ProfessionalBlockProps> = ({ data, onCh
     onChange("specialization", combinedSpecialization)
   }
 
+  const handleExperienceChange = (value: string) => {
+    onChange("experience", value)
+  }
+
   const moderationFields = ["placeWork", "specialization"]
 
   return (
@@ -48,8 +54,8 @@ export const ProfessionalBlock: React.FC<ProfessionalBlockProps> = ({ data, onCh
 
       <Alert variant="info" className={styles.moderationAlert}>
         <small>
-          Поля "Место работы" и "Специализация" должны пройти модерацию. До завершения проверки будут отображаться старые
-          значения.
+          Поля "Место работы" и "Специализация" должны пройти модерацию. До завершения проверки будут отображаться
+          старые значения.
         </small>
       </Alert>
 
@@ -84,7 +90,7 @@ export const ProfessionalBlock: React.FC<ProfessionalBlockProps> = ({ data, onCh
           <Form.Control
             type="text"
             value={data.experience}
-            onChange={(e) => onChange("experience", e.target.value)}
+            onChange={(e) => handleExperienceChange(e.target.value)}
             className={styles.input}
             placeholder="Например: 5 лет в кардиологии"
           />

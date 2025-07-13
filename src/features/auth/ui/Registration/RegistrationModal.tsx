@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { Modal } from "react-bootstrap"
 import { X } from 'lucide-react'
-import { useAppDispatch } from "@/shared/hooks"
+import { useAppDispatch } from "@/shared/hooks/hooks"
 import { clearAuthError, clearRegistrationEmail } from "@/features/auth/model/slice"
 import RegistrationForm from "./RegistrationForm"
 import CodeModal from "./CodeModal"
@@ -74,7 +74,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
       </button>
         <Modal.Body>
           <div className="text-center">
-            <img src="/logo.png" alt="DocLearn Logo" className={styles.logo} />
+            <img src="/logo.webp" alt="DocLearn Logo" className={styles.logo} />
             <h2 className={styles.modalTitle}>Регистрация</h2>
             <div className={styles.roleToggle} role="group" aria-label="Выбор роли">
               <button

@@ -2,10 +2,11 @@
 
 import type React from "react"
 import { useState } from "react"
-import { useAppSelector } from "@/shared/hooks"
+import { useAppSelector } from "@/shared/hooks/hooks"
 import { selectUser, selectIsAuthenticated } from "@/features/auth/model/selectors"
 import { useRouter } from "next/navigation"
-import type { AuthorProfile } from "@/entities/user/model/types"
+import Image from "next/image"
+import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import { VerifiedBadge } from "@/shared/ui/VerifiedBadge/VerifiedBadge"
 import {
   useFollowUserMutation,
@@ -18,7 +19,7 @@ import { MapPin, GraduationCap, Briefcase } from "lucide-react"
 import styles from "./ProfileHeader.module.css"
 
 interface ProfileHeaderProps {
-  profile: AuthorProfile
+  profile: AuthorProfile | StudentProfile
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
@@ -46,9 +47,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     avatar,
     firstName,
     lastName,
-    specialization,
     location,
-    experience,
     placeWork,
     rating,
     isVerified,
@@ -57,7 +56,28 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
 
   const fullName = `${firstName} ${lastName}`
 
-  const specText = specialization || "Специализация не указана"
+  const getSpecializationText = () => {
+    if (profile.role === "student") {
+      const studentProfile = profile as StudentProfile
+      return studentProfile.programType || "Программа не указана"
+    } else {
+      const authorProfile = profile as AuthorProfile
+      return authorProfile.specialization || "Специализация не указана"
+    }
+  }
+
+  const getExperienceText = () => {
+    if (profile.role === "student") {
+      const studentProfile = profile as StudentProfile
+      return studentProfile.gpa !== undefined ? `GPA: ${studentProfile.gpa.toFixed(2)}` : "GPA: Не указано"
+    } else {
+      const authorProfile = profile as AuthorProfile
+      return authorProfile.experience || null
+    }
+  }
+
+  const specText = getSpecializationText()
+  const experienceText = getExperienceText()
 
   const handleFollowToggle = async () => {
     if (!isAuthenticated) {
@@ -113,7 +133,14 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     <>
       <div className={styles.container}>
         <div className={styles.left}>
-          <img src={avatar || "/Avatars/Avatar1.jpg"} alt={fullName} className={styles.avatar} />
+          <Image
+            src={avatar || "/Avatars/Avatar1.webp"}
+            alt={fullName}
+            width={120} 
+            height={120} 
+            className={styles.avatar}
+            priority={true}
+          />
         </div>
         <div className={styles.center}>
           <h1 className={styles.name}>
@@ -128,11 +155,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
                 {location || "Не указано"}
               </span>
             </div>
-            {experience && (
+            {experienceText && (
               <div className={styles.metaItem}>
                 <Briefcase size={16} className={styles.metaIcon} />
-                <span className={`${styles.metaText} ${styles.metaTextExperience}`} title={experience}>
-                  {experience}
+                <span className={`${styles.metaText} ${styles.metaTextExperience}`} title={experienceText}>
+                  {experienceText}
                 </span>
               </div>
             )}
@@ -156,19 +183,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
             <div className={`${styles.stat} ${styles.tooltipWrapper}`}>
               <span className={styles.statValueBlue}>{rating || 0}</span>
               <span className={styles.statLabel}>ELO рейтинг</span>
-              <div className={styles.tooltipText}>Рейтинг врачей пока в разработке</div>
+              <div className={styles.tooltipText}>{profile.role === "student" ? "Рейтинг студентов пока в разработке" : "Рейтинг врачей пока в разработке"}</div>
             </div>
           </div>
           
           <div className={styles.actions}>{renderActionButton()}</div>
-          {/* <div className={styles.actions}>
-            <button className={styles.secondaryButton} onClick={() => router.push(`/profile/${_id}/edit`)}> 
-              Редактировать
-            </button>
-             <button className={styles.primaryButton} onClick={() => {}}>
-              Подписаться
-            </button> 
-          </div> */}
       </div>
       <LoginModal
         show={showLoginModal}

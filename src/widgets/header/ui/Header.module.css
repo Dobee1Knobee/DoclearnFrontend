@@ -34,6 +34,22 @@
     height: auto;
   }
 
+  .logoWrapper {
+    flex: 0 0 auto;
+    cursor: pointer;
+    align-self: flex-start;
+    display: inline-block;
+  }
+
+  .logoWrapper picture {
+    display: block;
+  }
+
+  .logoWrapper img {
+    max-width: 100%;
+    height: auto;
+  }
+
   .search {
     flex: 0 1 500px;
     margin: 20px 56px 0 0;

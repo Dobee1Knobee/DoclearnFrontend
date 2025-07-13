@@ -3,7 +3,8 @@
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Button, Spinner } from "react-bootstrap"
-import { useAppDispatch, useAppSelector } from "@/shared/hooks"
+import { CircleCheck } from "lucide-react"
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { forgotPassword } from "../../model/thunks"
 import { clearError } from "../../model/slice"
 import { selectIsLoading, selectError, selectEmailSent, selectSentEmail } from "../../model/selectors"
@@ -56,9 +57,7 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
       <div className="text-center">
         <div className="mb-4">
           <div className="text-success mb-3">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" className="mx-auto">
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-            </svg>
+            <CircleCheck size={64} className="mx-auto" />
           </div>
           <h4 className="mb-3">Письмо отправлено!</h4>
           <p className="text-muted">Мы отправили инструкции по восстановлению пароля на адрес:</p>
@@ -87,7 +86,7 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
           validate: validateEmail,
         }}
         error={errors.email}
-        placeholder="Введите вашу почту"
+        placeholder="Введите свою почту"
         type="email"
       />
 

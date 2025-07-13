@@ -4,6 +4,7 @@ import React from 'react'
 import type { AuthorProfile } from '@/entities/user/model/types'
 import styles from './CasesTab.module.css'
 
+
 interface CasesTabProps {
   profile: AuthorProfile
 }

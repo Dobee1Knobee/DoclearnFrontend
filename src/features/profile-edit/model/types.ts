@@ -1,4 +1,4 @@
-import type { Contact, Education, AuthorProfile } from "@/entities/user/model/types"
+import type { Contact, Education, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 
 export interface UpdateProfileRequest {
   firstName?: string
@@ -9,6 +9,8 @@ export interface UpdateProfileRequest {
   location?: string
   experience?: string
   specialization?: string
+  gpa?: number
+  programType?: "Бакалавриат" | "Магистратура" | "Ординатура" | "Аспирантура"
   contacts?: Contact[]
   education?: Education[]
   avatar?: string
@@ -16,6 +18,6 @@ export interface UpdateProfileRequest {
 
 export interface UpdateProfileResponse {
   success: boolean
-  data: AuthorProfile 
+  data: AuthorProfile | StudentProfile
   moderationFields?: string[]
 }

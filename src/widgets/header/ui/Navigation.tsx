@@ -3,12 +3,8 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import styles from './Header.module.css';
-// import { MdOutlineFeed } from "react-icons/md"
-// import { RiArticleLine } from "react-icons/ri"
-// import { HiOutlineNewspaper } from "react-icons/hi2"
 import { Newspaper, MessageSquare, FileText, BookOpen } from "lucide-react"
 
-import { GoBook } from "react-icons/go";
 
 export default function Navigation({isAuthenticated = false}) {
   const pathname = usePathname()

@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { Form } from "react-bootstrap"
 import { Controller, type Control, type FieldError } from "react-hook-form"
-import { IoEye, IoEyeOff } from "react-icons/io5"
+import { EyeOff, Eye } from "lucide-react"
 import styles from "../styles/AuthForm.module.css"
 
 interface PasswordInputProps {
@@ -40,7 +40,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ name, label, contr
           )}
         />
         <span className={`${styles.passwordToggleIcon} ${error ? styles.hasError : ''}`} onClick={toggleShowPassword}>
-          {showPassword ? <IoEyeOff /> : <IoEye />}
+          {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
         </span>
       </div>
       <Form.Control.Feedback type="invalid" className={styles.feedbackInvalid}>

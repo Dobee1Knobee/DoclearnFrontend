@@ -17,6 +17,7 @@ const httpRefresh = axios.create({
 });
 
 let getRefreshToken: () => string | null = () => null;
+
 let onLogout: () => void = () => {};
 export function configureHttp(options: {
   getRefreshToken: () => string | null;

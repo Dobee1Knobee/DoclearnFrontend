@@ -1,12 +1,11 @@
-import { ArticleAggregator } from "@/widgets/ArticleAggregator/ui/ArticleAggregator"
-
+import { UnderDevelopment } from "@/shared/ui/UnderDevelopment/UnderDevelopment";
 export default function AggregatorPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div style={{ marginTop: "7rem", marginBottom: "5rem" }}>
-        <ArticleAggregator />
-      </div>
+    <div> 
+      <UnderDevelopment 
+        title="Агрегатор в разработке"
+        description="Мы готовим для вас агрегатор научных статей"
+      />
     </div>
   )
 }
-

@@ -4,11 +4,10 @@ import type React from "react"
 import { useEffect} from "react"
 import { useForm } from "react-hook-form"
 import { Button, Spinner } from "react-bootstrap"
-import { useAppDispatch, useAppSelector } from "@/shared/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { loginUser } from "@/features/auth/model/thunks"
 import { clearAuthError } from "@/features/auth/model/slice";
 import { selectLoading, selectError, selectIsAuthenticated, selectUser } from "@/features/auth/model/selectors"
-import { IoEye, IoEyeOff } from "react-icons/io5"
 import { FormInput } from "../inputs/FormInput"
 import { PasswordInput } from "../inputs/PasswordInput"
 import { validateEmail, validatePassword } from "@/shared/lib/validation"
@@ -41,8 +40,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onForgotPassword }) =>
       password: "",
     },
   })
-
-  // const watchedFields = watch()
 
   useEffect(() => {
     dispatch(clearAuthError())

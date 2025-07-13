@@ -5,29 +5,32 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type { UserProfile, MenuItem } from "../../model/types"
-import { DEFAULT_PROFILE } from "../../model/constants"
 import styles from "./UserProfileCard.module.css"
 
 interface UserProfileCardProps extends Partial<UserProfile> {
   userId?: string
   onLogout?: () => void
+  onClose?: () => void
 }
 
 export function UserProfileCard({
-  name = DEFAULT_PROFILE.name,
-  role = DEFAULT_PROFILE.role,
-  avatar = DEFAULT_PROFILE.avatar,
+  name,
+  role,
+  avatar ,
   userId,
   onLogout,
+  onClose,
 }: UserProfileCardProps) {
   const router = useRouter()
 
   const handleProfileClick = () => {
     router.push(`/profile/${userId}`)
+    onClose?.()
   }
 
   const handleSettingsClick = () => {
     router.push(`/profile/${userId}/edit`)
+    onClose?.()
   }
 
   const menuItems: MenuItem[] = [
@@ -59,6 +62,7 @@ export function UserProfileCard({
     if (onLogout) {
       onLogout()
     }
+    onClose?.()
   }
 
   return (
@@ -69,7 +73,7 @@ export function UserProfileCard({
             <div className={styles.avatarContainer}>
               <Image
                 src={avatar || "/placeholder.svg"}
-                alt={name}
+                alt={name || "Аватарка"}
                 width={64}
                 height={64}
                 className={styles.avatarImage}

@@ -4,7 +4,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { X } from "lucide-react";
-import { useAppDispatch } from "@/shared/hooks";
+import { useAppDispatch } from "@/shared/hooks/hooks";
 import { clearAuthError } from "@/features/auth/model/slice";
 import LoginForm from "./LoginForm";
 import styles from "../styles/AuthModal.module.css";
@@ -51,7 +51,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
       </button>
       <Modal.Body>
         <div className="text-center">
-          <img src="/logo.png" alt="DocLearn Logo" className={styles.logo} />
+          <img src="/logo.webp" alt="DocLearn Logo" className={styles.logo} />
           <h2 className={styles.modalTitle}>Войти</h2>
         </div>
         <LoginForm onSuccess={onSuccess} onForgotPassword={onForgotPassword} />

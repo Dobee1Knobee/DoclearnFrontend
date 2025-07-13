@@ -6,6 +6,7 @@ const uppercaseRegex = /[A-Z]/
 const digitRegex = /[0-9]/
 const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
 const cyrillicRegex = /[а-яё]/i
+const phoneRegex = /^\+?[\d\s\-()]{10,}$/
 
 export const validateName = (value: string): true | string => {
   if (!value) return errorMessages.required
@@ -28,3 +29,19 @@ export const validatePassword = (value: string) => {
   return true
 }
 
+
+export const validatePhone = (value: string): true | string => {
+  if (!value) return errorMessages.required
+  if (!phoneRegex.test(value)) return "Некорректный номер телефона"
+  return true
+}
+
+export const validateUrl = (value: string): true | string => {
+  if (!value) return errorMessages.required
+  try {
+    new URL(value.startsWith("http") ? value : `https://${value}`)
+    return true
+  } catch {
+    return "Некорректный URL"
+  }
+}

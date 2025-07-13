@@ -1,0 +1,336 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.controls {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #5388d8;
+  box-shadow: 0 0 0 3px rgba(83, 136, 216, 0.1);
+}
+
+.filterSelect {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: white;
+  min-width: 150px;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #5388d8;
+}
+
+.tableContainer {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tableHeaderCell {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.tableRow {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s;
+}
+
+.tableRow:hover {
+  background: #f9fafb;
+}
+
+.tableCell {
+  padding: 1rem;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+}
+
+.userName {
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.userEmail {
+  color: #6b7280;
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.roleBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.roleStudent {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.roleDoctor {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.roleAdmin {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.statusActive {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.statusBlocked {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.verifiedIcon {
+  color: #10b981;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewButton {
+  background: rgba(83, 136, 216, 0.1);
+  color: #5388d8;
+}
+
+.viewButton:hover {
+  background: rgba(83, 136, 216, 0.2);
+}
+
+.editButton {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.editButton:hover {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+.blockButton {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.blockButton:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.paginationInfo {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.placeholder {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+}
+
+.placeholderIcon {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.placeholderTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.placeholderText {
+  font-size: 0.875rem;
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .searchInput {
+    min-width: auto;
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  .tableHeaderCell,
+  .tableCell {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .userInfo {
+    gap: 0.5rem;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .actions {
+    gap: 0.25rem;
+  }
+
+  .actionButton {
+    padding: 0.375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    gap: 1rem;
+  }
+
+  .controls {
+    padding: 1rem;
+  }
+
+  .tableHeaderCell,
+  .tableCell {
+    padding: 0.5rem 0.375rem;
+    font-size: 0.8125rem;
+  }
+
+  .userName {
+    font-size: 0.875rem;
+  }
+
+  .userEmail {
+    font-size: 0.75rem;
+  }
+
+  .roleBadge,
+  .statusBadge {
+    font-size: 0.6875rem;
+    padding: 0.1875rem 0.5rem;
+  }
+}

@@ -5,7 +5,7 @@ import { Modal, Button, Form, Spinner } from "react-bootstrap"
 import { X } from "lucide-react";
 import { useForm, Controller } from "react-hook-form"
 import styles from "../styles/AuthCode.module.css"
-import { useAppDispatch, useAppSelector } from "@/shared/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { verifyUserEmail} from "@/features/auth/model/thunks"
 import { clearAuthError } from "@/features/auth/model/slice";
 import { selectLoading, selectError } from "@/features/auth/model/selectors"
@@ -106,7 +106,7 @@ const CodeModal: React.FC<CodeModalProps> = ({ show, handleClose, email }) => {
       </button>
       <Modal.Body>
         <div className="text-center">
-          <img src="/logo.png" alt="Logo" className={styles.logoModalCode} />
+          <img src="/logo.webp" alt="Logo" className={styles.logoModalCode} />
           <h2 className="modal-code-title mb-4">Введите код подтверждения</h2>
           <h3 className={`${styles.modalCodeTitle} mb-4`} style={{ fontSize: 18, marginTop: -10 }}>
             Код отправлен на почту {email}
