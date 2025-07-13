@@ -19,8 +19,8 @@ const areContactsEqual = (contacts1: Contact[], contacts2: Contact[]): boolean =
   return contacts1.every((contact1, index) => {
     const contact2 = contacts2[index]
     return (
-      contact1.type.type === contact2.type.type &&
-      contact1.type.label === contact2.type.label &&
+      contact1.type === contact2.type &&
+      contact1.label === contact2.label &&
       contact1.value === contact2.value &&
       Boolean(contact1.isPublic) === Boolean(contact2.isPublic)
     )

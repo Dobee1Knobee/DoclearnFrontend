@@ -55,13 +55,19 @@ export interface Achievement {
 }
 
 export interface Contact {
-  type: {
-    type: string
-    label?: string
-  }
+  id: string
+  type: string
+  label?: string
   value: string
   isPublic?: boolean
 }
+
+// export interface Contact1 {
+//   // type: "email" | "phone" | "website" | "vk" | "telegram" | "whatsapp" | "facebook" | "twitter" | "instagram" | string
+//   type: string
+//   value: string
+//   label?: string
+// }
 
 export interface Education {
   id: string
