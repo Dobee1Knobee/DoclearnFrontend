@@ -60,7 +60,7 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
         return errors
       }
 
-      switch (contact.type.type) {
+      switch (contact.type) {
         case "email":
           const emailValidation = validateEmail(contact.value)
           if (emailValidation !== true) {
@@ -106,10 +106,9 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
 
   const addContact = () => {
     const newContact: Contact = {
-      type: {
-        type: "email",
-        label: "Email",
-      },
+      id: `temp_${Date.now()}`,
+      type: "email",
+      label: "Email",
       value: "",
       isPublic: true,
     }
@@ -149,10 +148,8 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
     const newContacts = [...contacts]
     newContacts[index] = {
       ...newContacts[index],
-      type: {
-        type: typeValue,
-        label: contactType?.label || typeValue,
-      },
+      type: typeValue,
+      label: contactType?.label || typeValue,
     }
     onChange("contacts", newContacts)
   }
@@ -183,16 +180,16 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
 
       <div className={styles.contactsList}>
         {contacts.map((contact, index) => {
-          const contactType = contactTypes.find((t) => t.value === contact.type.type)
+          const contactType = contactTypes.find((t) => t.value === contact.type)
           const Icon = contactType?.icon || MessageCircle
           const error = validateContactItem(contact, index, touchedFields).value
 
           return (
-            <div key={index} className={styles.contactItem}>
+            <div key={contact.id || index} className={styles.contactItem}>
               <div className={styles.contactHeader}>
                 <Icon size={16} className={styles.contactIcon} />
                 <Form.Select
-                  value={contact.type.type}
+                  value={contact.type}
                   onChange={(e) => updateContactType(index, e.target.value)}
                   className={styles.contactTypeSelect}
                 >
@@ -216,11 +213,11 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
                 <Form.Group>
                   <Form.Label className={styles.label}>Значение</Form.Label>
                   <Form.Control
-                    type={contact.type.type === "email" ? "email" : contact.type.type === "phone" ? "tel" : "text"}
+                    type={contact.type === "email" ? "email" : contact.type === "phone" ? "tel" : "text"}
                     value={contact.value}
                     onChange={(e) => {
                       let value = e.target.value
-                      if (contact.type.type === "phone") {
+                      if (contact.type === "phone") {
                         value = formatPhoneNumber(value)
                       }
                       updateContact(index, "value", value)
@@ -228,11 +225,11 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
                     onBlur={() => handleFieldBlur(index, "value")}
                     className={`${styles.input} ${validateContactItem(contact, index, touchedFields).value ? styles.inputError : ""}`}
                     placeholder={
-                      contact.type.type === "email"
+                      contact.type === "email"
                         ? "example@email.com"
-                        : contact.type.type === "phone"
+                        : contact.type === "phone"
                           ? "+7 (999) 123-45-67"
-                          : contact.type.type === "website"
+                          : contact.type === "website"
                             ? "https://example.com"
                             : "Введите значение"
                     }
@@ -246,13 +243,8 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
                   <Form.Label className={styles.label}>Подпись (необязательно)</Form.Label>
                   <Form.Control
                     type="text"
-                    value={contact.type.label || ""}
-                    onChange={(e) =>
-                      updateContact(index, "type", {
-                        ...contact.type,
-                        label: e.target.value,
-                      })
-                    }
+                    value={contact.label || ""}
+                    onChange={(e) => updateContact(index, "label", e.target.value)}
                     className={styles.input}
                     placeholder="Например: Рабочий телефон"
                   />

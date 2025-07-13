@@ -12,7 +12,7 @@ interface ContactsTabProps {
 export const ContactsTab: React.FC<ContactsTabProps> = ({ contacts }) => {
   // Показываем только публичные контакты и фильтруем некорректные данные
   const publicContacts = contacts.filter(
-    (contact) => contact && contact.type && contact.type.type && contact.value && contact.isPublic !== false,
+    (contact) => contact && contact.type && contact.value && contact.isPublic !== false,
   )
 
   if (publicContacts.length === 0) {
@@ -65,9 +65,9 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({ contacts }) => {
   }
 
   const getContactHref = (contact: Contact) => {
-    if (!contact.type?.type || !contact.value) return "#"
+    if (!contact.type || !contact.value) return "#"
 
-    switch (contact.type.type.toLowerCase()) {
+    switch (contact.type.toLowerCase()) {
       case "email":
         return `mailto:${contact.value}`
       case "phone":
@@ -81,16 +81,16 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({ contacts }) => {
 
   return (
     <div className={styles.container}>
-      {publicContacts.map((contact, index) => {
-        const Icon = getContactIcon(contact.type.type)
+      {publicContacts.map((contact) => {
+        const Icon = getContactIcon(contact.type)
         const href = getContactHref(contact)
-        const isExternal = contact.type.type?.toLowerCase() === "website"
-        const typeLabel = getContactTypeLabel(contact.type.type)
-        const displayLabel = contact.type.label || typeLabel
+        const isExternal = contact.type?.toLowerCase() === "website"
+        const typeLabel = getContactTypeLabel(contact.type)
+        const displayLabel = contact.label || typeLabel
 
         return (
           <a
-            key={`${contact.type.type || "contact"}-${index}`}
+            key={contact.id}
             href={href}
             target={isExternal ? "_blank" : undefined}
             rel={isExternal ? "noopener noreferrer" : undefined}
