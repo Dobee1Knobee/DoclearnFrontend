@@ -1,13 +1,14 @@
-import { demoData } from "@/entities/post/model/mocks"
-import { PostFeed } from "@/widgets/PostFeed/ui/PostFeed"
+import { UnderDevelopment } from "@/shared/ui/UnderDevelopment/UnderDevelopment";
 
 export default function FeedPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div style={{ marginTop: "7rem" }}>
-        <PostFeed initialPosts={demoData} />
-      </div>
+    <div >
+      <UnderDevelopment 
+        title="Лента публикаций в разработке"
+        description="Мы готовим для вас ленту публикаций"
+      />
     </div>
   )
 }
+
 

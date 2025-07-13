@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { Button, Spinner, Alert } from "react-bootstrap"
-import { useAppDispatch, useAppSelector } from "@/shared/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { resetPassword } from "../../model/thunks"
 import { clearError } from "../../model/slice"
 import { selectIsLoading, selectError, selectPasswordReset } from "../../model/selectors"
@@ -87,7 +87,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       <div className="card">
         <div className="card-body p-5">
           <div className="text-center mb-4">
-            <img src="/logo.png" alt="DocLearn Logo" style={{ width: "200px", marginBottom: "2rem" }} />
+            <img src="/logo.webp" alt="DocLearn Logo" style={{ width: "200px", marginBottom: "2rem" }} />
             <h2>Создание нового пароля</h2>
             <p className="text-muted">Введите новый пароль для вашего аккаунта</p>
           </div>

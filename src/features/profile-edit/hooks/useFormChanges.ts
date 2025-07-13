@@ -1,13 +1,18 @@
 "use client"
 
 import { useState, useRef, useCallback, useMemo } from "react"
-import type { Contact, Education, AuthorProfile } from "@/entities/user/model/types"
+import type { Contact, Education, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+
+type ProfileUnion = AuthorProfile | StudentProfile
+
+type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
 }
 
-// Функции для глубокого сравнения массивов
+type ProfileChanges = DeepPartial<AuthorProfile> & DeepPartial<StudentProfile>
+
 const areContactsEqual = (contacts1: Contact[], contacts2: Contact[]): boolean => {
   if (contacts1.length !== contacts2.length) return false
 
@@ -38,51 +43,51 @@ const areEducationEqual = (edu1: Education[], edu2: Education[]): boolean => {
   })
 }
 
-// Хук специально для работы с профилем автора
-export const useFormChanges = (initialData: AuthorProfile) => {
-  const [formData, setFormData] = useState<AuthorProfile>(() => ({
+const isValidContact = (contact: Contact): boolean => {
+  return Boolean(contact.value && contact.value.trim() !== "")
+}
+
+const isValidEducation = (edu: Education): boolean => {
+  return Boolean(
+    edu.institution.trim() &&
+      edu.degree.trim() &&
+      edu.specialty.trim() &&
+      edu.startDate &&
+      (edu.isCurrently || edu.graduationYear),
+  )
+}
+
+export const useFormChanges = (initialData: ProfileUnion) => {
+  const [formData, setFormData] = useState<ProfileUnion>(() => ({
     ...initialData,
     contacts: initialData.contacts || [],
     education: initialData.education || [],
     bio: initialData.bio || "",
   }))
 
-  const originalData = useRef<AuthorProfile>(initialData)
+  const originalData = useRef<ProfileUnion>(initialData)
 
-  // Обновляем исходные данные только при получении новых данных извне
-  const updateOriginalData = useCallback((newData: AuthorProfile) => {
+  const updateOriginalData = useCallback((newData: ProfileUnion) => {
     originalData.current = newData
     setFormData({
       ...newData,
-    //   contacts: newData.contacts || [],
-    //   education: newData.education || [],
+      contacts: newData.contacts || [],
+      education: newData.education || [],
       bio: newData.bio || "",
     })
   }, [])
 
-  // Функция для обновления отдельного поля
-  const updateField = useCallback((field: keyof AuthorProfile, value: any) => {
+  const updateField = useCallback((field: ProfileKeys, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }, [])
 
-  // Функция для получения только измененных полей
-  const getChangedFields = useCallback((): DeepPartial<AuthorProfile> => {
-    const changes: DeepPartial<AuthorProfile> = {}
+  const getChangedFields = useCallback((): ProfileChanges => {
+    const changes: ProfileChanges = {}
     const original = originalData.current
 
-    // Типобезопасный список простых полей
-    const simpleFields: (keyof AuthorProfile)[] = [
-      "firstName",
-      "lastName",
-      "bio",
-      "placeWork",
-      "location",
-      "experience",
-      "specialization",
-      "avatar",
-    ]
+    const commonFields: (keyof ProfileUnion)[] = ["firstName", "lastName", "bio", "placeWork", "location", "avatar"]
 
-    simpleFields.forEach((field) => {
+    commonFields.forEach((field) => {
       const originalValue = original[field] || ""
       const currentValue = formData[field] || ""
 
@@ -91,21 +96,50 @@ export const useFormChanges = (initialData: AuthorProfile) => {
       }
     })
 
-    // Специальная обработка даты рождения
+    if (original.role === "student" && formData.role === "student") {
+      const originalStudent = original as StudentProfile
+      const currentStudent = formData as StudentProfile
+
+      if (originalStudent.gpa !== currentStudent.gpa) {
+        changes.gpa = currentStudent.gpa
+      }
+
+      if (originalStudent.programType !== currentStudent.programType) {
+        changes.programType = currentStudent.programType
+      }
+    }
+    else if (
+      (original.role === "doctor" || original.role === "admin") &&
+      (formData.role === "doctor" || formData.role === "admin")
+    ) {
+      const originalAuthor = original as AuthorProfile
+      const currentAuthor = formData as AuthorProfile
+
+      const originalExperience = originalAuthor.experience || ""
+      const currentExperience = currentAuthor.experience || ""
+      if (originalExperience !== currentExperience) {
+        changes.experience = currentExperience
+      }
+
+      const originalSpecialization = originalAuthor.specialization || ""
+      const currentSpecialization = currentAuthor.specialization || ""
+      if (originalSpecialization !== currentSpecialization) {
+        changes.specialization = currentSpecialization
+      }
+    }
+
     const originalBirthday = original.birthday?.split("T")[0] || ""
     const currentBirthday = formData.birthday?.split("T")[0] || ""
     if (originalBirthday !== currentBirthday) {
       changes.birthday = currentBirthday
     }
 
-    // Глубокое сравнение контактов
     const originalContacts = original.contacts || []
     const currentContacts = formData.contacts || []
     if (!areContactsEqual(originalContacts, currentContacts)) {
       changes.contacts = currentContacts
     }
 
-    // Глубокое сравнение образования
     const originalEducation = original.education || []
     const currentEducation = formData.education || []
     if (!areEducationEqual(originalEducation, currentEducation)) {
@@ -115,12 +149,10 @@ export const useFormChanges = (initialData: AuthorProfile) => {
     return changes
   }, [formData])
 
-  // Проверка наличия изменений
   const hasChanges = useMemo(() => {
     return Object.keys(getChangedFields()).length > 0
   }, [getChangedFields])
 
-  // Сброс к исходным данным
   const resetToOriginal = useCallback(() => {
     setFormData({
       ...originalData.current,
@@ -130,20 +162,27 @@ export const useFormChanges = (initialData: AuthorProfile) => {
     })
   }, [])
 
-  // Получение данных для отправки (только измененные поля, очищенные от пустых значений)
   const getDataToSend = useCallback(() => {
     const changedFields = getChangedFields()
-    const cleanedData: Partial<AuthorProfile> = {}
+    const cleanedData: Record<string, any> = {}
 
     Object.entries(changedFields).forEach(([key, value]) => {
-      const typedKey = key as keyof AuthorProfile
-
-      if (Array.isArray(value)) {
+      if (key === "contacts" && Array.isArray(value)) {
+        const validContacts = (value as Contact[]).filter(isValidContact)
+        if (validContacts.length > 0) {
+          cleanedData[key] = validContacts
+        }
+      } else if (key === "education" && Array.isArray(value)) {
+        const validEducation = (value as Education[]).filter(isValidEducation)
+        if (validEducation.length > 0) {
+          cleanedData[key] = validEducation
+        }
+      } else if (Array.isArray(value)) {
         if (value.length > 0) {
-          cleanedData[typedKey] = value as any
+          cleanedData[key] = value
         }
       } else if (value !== "" && value !== null && value !== undefined) {
-        cleanedData[typedKey] = value as any
+        cleanedData[key] = value
       }
     })
 

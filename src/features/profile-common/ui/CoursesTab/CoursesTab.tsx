@@ -11,18 +11,18 @@ interface CoursesTabProps {
 export const CoursesTab: React.FC<CoursesTabProps> = ({ profile }) => {
   const { courses } = profile
 
-  if (!courses.length) {
-    return <div className={styles.empty}>Курсов нет</div>
-  }
+  // if (!courses.length) {
+  //   return <div className={styles.empty}>Курсов нет</div>
+  // }
 
   return (
     <div className={styles.container}>
-      {courses.map((course) => (
+      <div className={styles.empty}>Курсов нет</div>
+      {/* {courses.map((course) => (
         <div key={course.id} className={styles.item}>
           <h3 className={styles.title}>{course.title}</h3>
           {('description' in course) && (
             <p className={styles.description}>
-              {/* если в типе есть описание */}
               {(course as any).description}
             </p>
           )}
@@ -32,7 +32,7 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ profile }) => {
             </div>
           )}
         </div>
-      ))}
+      ))} */}
     </div>
   )
 }

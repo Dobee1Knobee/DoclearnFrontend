@@ -4,7 +4,6 @@
 }
 
 .header {
-
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e5e7eb;
@@ -17,34 +16,24 @@
   margin: 0;
 }
 
-
 .alert {
   margin-bottom: 1.5rem;
 }
 
-.content {
+.topSection {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 300px 1fr; 
   gap: 2rem;
+  margin-bottom: 2rem; 
 }
 
-.leftColumn {
-  display: flex;
-  flex-direction: column;
-}
-
-.rightColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
 
 .bottomActions {
-  grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 0.5rem 0;
+  margin-top: 2rem; 
 }
 
 .primaryButton,
@@ -111,42 +100,54 @@
   cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  .actions {
-    justify-content: stretch;
-  }
-
-  .actions button {
-    flex: 1;
-  }
-
-  .content {
+@media (max-width: 768px) and (min-width: 481px) {
+  .topSection {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     text-align: center;
+  }
+
+  .bottomActions {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .bottomActions button {
+    min-width: 140px;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .topSection {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .bottomActions {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
   }
 
   .bottomActions button {
     width: 100%;
-  }
-
-  .title {
-    font-size: 1.5rem;
+    max-width: none;
   }
 }

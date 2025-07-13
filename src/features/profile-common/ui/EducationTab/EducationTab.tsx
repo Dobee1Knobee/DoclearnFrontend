@@ -17,12 +17,13 @@ export const EducationTab: React.FC<EducationTabProps> = ({ education }) => {
     try {
       return new Date(dateString).getFullYear()
     } catch {
-      return dateString // Если не удалось распарсить, возвращаем как есть
+      return dateString 
     }
   }
 
   return (
     <div className={styles.container}>
+      
       {education.map((edu) => (
         <div key={edu.id} className={styles.item}>
           <div className={styles.institution}>{edu.institution}</div>
@@ -30,7 +31,7 @@ export const EducationTab: React.FC<EducationTabProps> = ({ education }) => {
             {edu.degree}, {edu.specialty}
           </div>
           <div className={styles.period}>
-            {formatYear(edu.startDate)} – {edu.isCurrently ? "наст. вр." : formatYear(edu.graduationYear)}
+            {edu.startDate} – {edu.isCurrently ? "наст. вр." : edu.graduationYear}
           </div>
         </div>
       ))}

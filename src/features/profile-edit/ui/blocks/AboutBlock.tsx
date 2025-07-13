@@ -2,12 +2,14 @@
 
 import type React from "react"
 import { Form } from "react-bootstrap"
-import type { AuthorProfile } from "@/entities/user/model/types"
+import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
+
+type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
 
 interface AboutBlockProps {
   bio: string
-  onChange: (field: keyof AuthorProfile, value: any) => void
+  onChange: (field: ProfileKeys, value: any) => void
 }
 
 export const AboutBlock: React.FC<AboutBlockProps> = ({ bio, onChange }) => {

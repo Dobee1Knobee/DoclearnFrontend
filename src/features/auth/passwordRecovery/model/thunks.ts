@@ -21,7 +21,6 @@ export const validateResetToken = createAsyncThunk<void, { token: string }>(
   "passwordRecovery/validateResetToken",
   async ({ token }, { rejectWithValue }) => {
     try {
-      // Отправляем GET /auth/validate-token?token=...
       await http.get("/auth/validate-token", { params: { token } });
     } catch (error: any) {
       return rejectWithValue(

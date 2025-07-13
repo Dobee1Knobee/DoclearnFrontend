@@ -1,0 +1,174 @@
+.container {
+  display: flex;
+  min-height: calc(100vh - 12rem);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  gap: 2rem;
+}
+
+.sidebar {
+  width: 280px;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  height: fit-content;
+  position: sticky;
+  top: 8rem;
+}
+
+.sidebarTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sidebarIcon {
+  color: #5388d8;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: #6b7280;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.navItem:hover {
+  background: rgba(83, 136, 216, 0.1);
+  color: #5388d8;
+}
+
+.navItem.active {
+  background: #5388d8;
+  color: white;
+}
+
+.navIcon {
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.accessDenied {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.accessDeniedIcon {
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.accessDeniedTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.accessDeniedText {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  background: #5388d8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.backButton:hover {
+  background: #4070b8;
+  color: white;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 0 0.5rem;
+    gap: 1rem;
+  }
+
+  .sidebar {
+    width: 100%;
+    position: static;
+    padding: 1rem;
+  }
+
+  .sidebarTitle {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .nav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.25rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .navItem {
+    flex-shrink: 0;
+    min-width: fit-content;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.25rem;
+  }
+
+  .sidebar {
+    padding: 0.75rem;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .navItem {
+    padding: 0.5rem;
+    font-size: 0.8125rem;
+  }
+}

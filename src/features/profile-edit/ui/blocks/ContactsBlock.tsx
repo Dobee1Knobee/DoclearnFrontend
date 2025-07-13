@@ -3,12 +3,24 @@
 import type React from "react"
 import { Form, Button, Alert } from "react-bootstrap"
 import { Plus, Trash2, Mail, Phone, Globe, MessageCircle } from "lucide-react"
-import type { Contact, AuthorProfile } from "@/entities/user/model/types"
+import type { Contact, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
+import { useState } from "react"
+import { validateEmail, validatePhone, validateUrl } from "@/shared/lib/validation"
+
+interface ContactTouched {
+  [key: string]: {
+    value?: boolean
+    type?: boolean
+  }
+}
+
+type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
 
 interface ContactsBlockProps {
   contacts: Contact[]
-  onChange: (field: keyof AuthorProfile, value: any) => void
+  onChange: (field: ProfileKeys, value: any) => void
+  onValidationChange?: (hasErrors: boolean) => void
 }
 
 const contactTypes = [
@@ -23,7 +35,75 @@ const contactTypes = [
   { value: "instagram", label: "Instagram", icon: MessageCircle },
 ]
 
-export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onChange }) => {
+export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onChange, onValidationChange }) => {
+  const [touchedFields, setTouchedFields] = useState<ContactTouched>({})
+
+  const handleFieldBlur = (index: number, fieldName: "value" | "type") => {
+    const newTouchedFields = {
+      ...touchedFields,
+      [index]: {
+        ...touchedFields[index],
+        [fieldName]: true,
+      },
+    }
+    setTouchedFields(newTouchedFields)
+    checkValidation(contacts, newTouchedFields)
+  }
+
+  const validateContactItem = (contact: Contact, index: number, touched: ContactTouched) => {
+    const errors: Record<string, string> = {}
+    const fieldTouched = touched[index] || {}
+
+    if (fieldTouched.value) {
+      if (!contact.value.trim()) {
+        errors.value = "Значение обязательно"
+        return errors
+      }
+
+      switch (contact.type.type) {
+        case "email":
+          const emailValidation = validateEmail(contact.value)
+          if (emailValidation !== true) {
+            errors.value = emailValidation
+          }
+          break
+        case "phone":
+          const phoneValidation = validatePhone(contact.value)
+          if (phoneValidation !== true) {
+            errors.value = phoneValidation
+          }
+          break
+        case "website":
+          const urlValidation = validateUrl(contact.value)
+          if (urlValidation !== true) {
+            errors.value = urlValidation
+          }
+          break
+      }
+    }
+
+    return errors
+  }
+
+  const checkValidation = (contactsList: Contact[], touched: ContactTouched) => {
+    let hasErrors = false
+
+    contactsList.forEach((contact, index) => {
+      const errors = validateContactItem(contact, index, touched)
+      if (Object.keys(errors).length > 0) {
+        hasErrors = true
+      }
+    })
+
+    contactsList.forEach((contact) => {
+      if (!contact.value.trim()) {
+        hasErrors = true
+      }
+    })
+
+    onValidationChange?.(hasErrors)
+  }
+
   const addContact = () => {
     const newContact: Contact = {
       type: {
@@ -39,12 +119,29 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
   const removeContact = (index: number) => {
     const newContacts = contacts.filter((_, i) => i !== index)
     onChange("contacts", newContacts)
+
+    const newTouchedFields = { ...touchedFields }
+    delete newTouchedFields[index]
+
+    const reindexedTouchedFields: ContactTouched = {}
+    Object.keys(newTouchedFields).forEach((key) => {
+      const oldIndex = Number.parseInt(key)
+      if (oldIndex > index) {
+        reindexedTouchedFields[oldIndex - 1] = newTouchedFields[oldIndex]
+      } else if (oldIndex < index) {
+        reindexedTouchedFields[oldIndex] = newTouchedFields[oldIndex]
+      }
+    })
+
+    setTouchedFields(reindexedTouchedFields)
+    checkValidation(newContacts, reindexedTouchedFields)
   }
 
   const updateContact = (index: number, field: keyof Contact, value: any) => {
     const newContacts = [...contacts]
     newContacts[index] = { ...newContacts[index], [field]: value }
     onChange("contacts", newContacts)
+    checkValidation(newContacts, touchedFields)
   }
 
   const updateContactType = (index: number, typeValue: string) => {
@@ -58,28 +155,6 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
       },
     }
     onChange("contacts", newContacts)
-  }
-
-  const validateContact = (contact: Contact) => {
-    if (!contact.value.trim()) return "Значение обязательно"
-
-    switch (contact.type.type) {
-      case "email":
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        return emailRegex.test(contact.value) ? "" : "Некорректный email"
-      case "phone":
-        const phoneRegex = /^\+?[\d\s\-()]{10,}$/
-        return phoneRegex.test(contact.value) ? "" : "Некорректный номер телефона"
-      case "website":
-        try {
-          new URL(contact.value.startsWith("http") ? contact.value : `https://${contact.value}`)
-          return ""
-        } catch {
-          return "Некорректный URL"
-        }
-      default:
-        return ""
-    }
   }
 
   const formatPhoneNumber = (value: string) => {
@@ -110,7 +185,7 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
         {contacts.map((contact, index) => {
           const contactType = contactTypes.find((t) => t.value === contact.type.type)
           const Icon = contactType?.icon || MessageCircle
-          const error = validateContact(contact)
+          const error = validateContactItem(contact, index, touchedFields).value
 
           return (
             <div key={index} className={styles.contactItem}>
@@ -150,7 +225,8 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
                       }
                       updateContact(index, "value", value)
                     }}
-                    className={`${styles.input} ${error ? styles.inputError : ""}`}
+                    onBlur={() => handleFieldBlur(index, "value")}
+                    className={`${styles.input} ${validateContactItem(contact, index, touchedFields).value ? styles.inputError : ""}`}
                     placeholder={
                       contact.type.type === "email"
                         ? "example@email.com"
@@ -161,7 +237,9 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
                             : "Введите значение"
                     }
                   />
-                  {error && <div className={styles.errorText}>{error}</div>}
+                  {validateContactItem(contact, index, touchedFields).value && (
+                    <div className={styles.errorText}>{validateContactItem(contact, index, touchedFields).value}</div>
+                  )}
                 </Form.Group>
 
                 <Form.Group>

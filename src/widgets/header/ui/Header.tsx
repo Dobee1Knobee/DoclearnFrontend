@@ -8,9 +8,9 @@ import Logo from "./Logo"
 import Navigation from "./Navigation"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
 import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
-import { ForgotPasswordModal } from "@/features/auth/passwordRecovery/ui/ForgotPasswordModal"
+import { ForgotPasswordModal } from "@/features/auth/passwordRecovery/ui/ForgotPasswordModal/ForgotPasswordModal"
 import { UserProfileCard } from "@/entities/user/ui/UserProfileCard/UserProfileCard"
-import { useAppDispatch, useAppSelector } from "@/shared/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { logoutUser } from "@/features/auth/model/thunks"
 import { selectIsAuthenticated, selectUser, selectLoading } from "@/features/auth/model/selectors"
 
@@ -55,6 +55,8 @@ export default function Header() {
 
   const toggleProfilePopup = () => setShowProfilePopup(!showProfilePopup)
 
+  const closeProfilePopup = () => setShowProfilePopup(false)
+
   const handleLogout = () => {
     dispatch(logoutUser())
     setShowProfilePopup(false)
@@ -91,7 +93,7 @@ export default function Header() {
           <div className={styles.avatarContainer} ref={profilePopupRef}>
             <div className={styles.avatarWrapper} onClick={toggleProfilePopup}>
               <Image
-                src={user.avatar || "/Avatars/Avatar1.jpg"}
+                src={user.avatar || "/Avatars/Avatar1.webp"}
                 alt="User Avatar"
                 width={45}
                 height={45}
@@ -103,9 +105,10 @@ export default function Header() {
                 <UserProfileCard
                   name={`${user.firstName} ${user.lastName}`}
                   role={user.role === "student" ? "Студент" : user.role === "doctor" ? "Врач" : "Администратор"}
-                  avatar={user.avatar || "/Avatars/Avatar1.jpg"}
+                  avatar={user.avatar || "/Avatars/Avatar1.webp"}
                   userId={user._id}
                   onLogout={handleLogout}
+                  onClose={closeProfilePopup}
                 />
               </div>
             )}

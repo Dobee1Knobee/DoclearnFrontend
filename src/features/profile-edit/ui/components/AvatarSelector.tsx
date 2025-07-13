@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import Image from "next/image"
-import { Modal } from "react-bootstrap"
+import { Modal, Button } from "react-bootstrap"
 import styles from "./AvatarSelector.module.css"
 import { Plus } from "lucide-react"
 
@@ -16,7 +16,7 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({ currentAvatar, o
   const [showModal, setShowModal] = useState(false)
   const [selectedAvatar, setSelectedAvatar] = useState(currentAvatar)
 
-  const avatars = Array.from({ length: 22 }, (_, i) => `/Avatars/Avatar${i + 1}.jpg`)
+  const avatars = Array.from({ length: 22 }, (_, i) => `/Avatars/Avatar${i + 1}.webp`)
 
   const handleSave = () => {
     onAvatarChange(selectedAvatar)
@@ -29,18 +29,13 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({ currentAvatar, o
   }
 
   const handleRandomAvatar = () => {
-    // Исключаем текущий аватар из списка доступных
     const availableAvatars = avatars.filter((avatar) => avatar !== currentAvatar)
 
-    // Если все аватары уже использованы (что маловероятно с 22 аватарками),
-    // используем полный список
     const avatarsToChooseFrom = availableAvatars.length > 0 ? availableAvatars : avatars
 
-    // Выбираем случайный аватар
     const randomIndex = Math.floor(Math.random() * avatarsToChooseFrom.length)
     const randomAvatar = avatarsToChooseFrom[randomIndex]
 
-    // Сразу применяем изменение
     onAvatarChange(randomAvatar)
   }
 

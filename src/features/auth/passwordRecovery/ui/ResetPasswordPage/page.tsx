@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import { useAppDispatch, useAppSelector } from "@/shared/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { validateResetToken } from "../../model/thunks"
 import { resetState } from "../../model/slice"
 import { selectIsLoading, selectError, selectTokenValid } from "../../model/selectors"

@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import desktopLogo from "@/../../public/logo.png"
-import mobileLogo from "@/../../public/logoGoogle.png"
+import desktopLogo from "@/../../public/logo.webp"
+import mobileLogo from "@/../../public/logoGoogle.webp"
 import styles from "./Header.module.css"
 
 const Logo = () => {

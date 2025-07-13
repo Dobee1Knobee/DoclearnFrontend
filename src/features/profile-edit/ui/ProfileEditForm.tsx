@@ -3,10 +3,11 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import type { AuthorProfile } from "@/entities/user/model/types"
+import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import { PersonalInfoBlock } from "./blocks/PersonalInfoBlock"
 import { AboutBlock } from "./blocks/AboutBlock"
 import { ProfessionalBlock } from "./blocks/ProfessionalBlock"
+import { StudentInfoBlock } from "./blocks/StudentInfoBlock"
 import { ContactsBlock } from "./blocks/ContactsBlock"
 import { EducationBlock } from "./blocks/EducationBlock"
 import { AvatarSelector } from "./components/AvatarSelector"
@@ -17,7 +18,7 @@ import { Alert } from "react-bootstrap"
 import styles from "./ProfileEditForm.module.css"
 
 interface ProfileEditFormProps {
-  profile: AuthorProfile
+  profile: AuthorProfile | StudentProfile
 }
 
 export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => {
@@ -28,48 +29,66 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
     useFormChanges(profile)
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle")
   const [errorMessage, setErrorMessage] = useState("")
+  const [hasValidationErrors, setHasValidationErrors] = useState(false)
+  const [educationErrors, setEducationErrors] = useState(false)
+  const [contactsErrors, setContactsErrors] = useState(false)
 
   useEffect(() => {
     updateOriginalData(profile)
   }, [profile, updateOriginalData])
+
+  const handleEducationValidationChange = (hasErrors: boolean) => {
+    setEducationErrors(hasErrors)
+    setHasValidationErrors(hasErrors || contactsErrors)
+  }
+
+  const handleContactsValidationChange = (hasErrors: boolean) => {
+    setContactsErrors(hasErrors)
+    setHasValidationErrors(educationErrors || hasErrors)
+  }
+
+  const handleValidationChange = (hasErrors: boolean) => {
+    setHasValidationErrors(hasErrors)
+  }
 
   const handleSave = async () => {
     try {
       setSaveStatus("idle")
       setErrorMessage("")
 
-      // Получаем только измененные поля
       const dataToSend = getDataToSend()
 
       console.log("Отправляем только измененные поля:", dataToSend)
 
-      // Если нет изменений, не отправляем запрос
       if (Object.keys(dataToSend).length === 0) {
         console.log("Нет изменений для отправки")
         return
       }
 
-      // Отправка на сервер
       const result = await updateProfile(dataToSend).unwrap()
 
       setSaveStatus("success")
 
-      // Перенаправление через 2 секунды
       setTimeout(() => {
         router.push(`/profile/${profile._id}`)
       }, 2000)
     } catch (error: any) {
       console.error("Update profile error:", error)
       setSaveStatus("error")
-      setErrorMessage(error?.data?.error || error?.data?.message || "Произошла ошибка при сохранении")
+
+      if (error?.status === 401 || error?.data?.code === "MISSING_TOKEN") {
+        setErrorMessage("Сессия истекла. Пожалуйста, перезагрузите страницу или попробуйте позже.")
+      } else {
+        setErrorMessage(error?.data?.error || error?.data?.message || "Произошла ошибка при сохранении")
+      }
     }
   }
 
-  // Сброс формы
   const handleReset = () => {
     resetToOriginal()
     setSaveStatus("idle")
     setErrorMessage("")
+    setHasValidationErrors(false)
   }
 
   const handleCancel = () => {
@@ -81,6 +100,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
       router.push(`/profile/${profile._id}`)
     }
   }
+
+  const isSaveDisabled = !hasChanges || isUpdating || hasValidationErrors
+
+  const isStudentProfile = profile.role === "student"
+
   return (
     <>
       <UnsavedChangesWarning hasUnsavedChanges={hasChanges} />
@@ -102,15 +126,14 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
           </Alert>
         )}
 
-        <div className={styles.content}>
-          <div className={styles.leftColumn}>
+        <div className={styles.topSection}>
+          <div className={styles.avatarWrapper}>
             <AvatarSelector
-              currentAvatar={formData.avatar || "/Avatars/Avatar1.jpg"}
+              currentAvatar={formData.avatar || "/Avatars/Avatar1.webp"}
               onAvatarChange={(avatar) => updateField("avatar", avatar)}
             />
           </div>
-
-          <div className={styles.rightColumn}>
+          <div className={styles.personalInfoWrapper}>
             <PersonalInfoBlock
               data={{
                 firstName: formData.firstName,
@@ -119,36 +142,60 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
               }}
               onChange={updateField}
             />
-
-            <AboutBlock bio={formData.bio || ""} onChange={updateField} />
-
-            <ProfessionalBlock
-              data={{
-                placeWork: formData.placeWork,
-                location: formData.location || "",
-                experience: formData.experience || "",
-                specialization: formData.specialization || "",
-              }}
-              onChange={updateField}
-            />
-
-            <ContactsBlock contacts={formData.contacts || []} onChange={updateField} />
-
-            <EducationBlock education={formData.education || []} onChange={updateField} />
-          
           </div>
+        </div>
 
-          <div className={styles.bottomActions}>
-            <button className={styles.cancelButton} onClick={handleCancel} disabled={isUpdating}>
-              Отмена
-            </button>
-            <button className={styles.secondaryButton} onClick={handleReset} disabled={!hasChanges || isUpdating}>
-              Сбросить
-            </button>
-            <button className={styles.primaryButton} onClick={handleSave} disabled={!hasChanges || isUpdating}>
-              {isUpdating ? "Сохранение..." : "Сохранить"}
-            </button>
-          </div>
+        <AboutBlock bio={formData.bio || ""} onChange={updateField} />
+
+        {isStudentProfile ? (
+          <StudentInfoBlock
+            data={{
+              placeWork: formData.placeWork,
+              location: formData.location || "",
+              gpa: (formData as StudentProfile).gpa,
+              programType: (formData as StudentProfile).programType || "Бакалавриат",
+            }}
+            onChange={updateField}
+          />
+        ) : (
+          <ProfessionalBlock
+            data={{
+              placeWork: formData.placeWork,
+              location: formData.location || "",
+              experience: (formData as AuthorProfile).experience || "",
+              specialization: (formData as AuthorProfile).specialization || "",
+            }}
+            onChange={updateField}
+          />
+        )}
+
+        <ContactsBlock
+          contacts={formData.contacts || []}
+          onChange={updateField}
+          onValidationChange={handleContactsValidationChange}
+        />
+
+        <EducationBlock
+          education={formData.education || []}
+          onChange={updateField}
+          onValidationChange={handleEducationValidationChange}
+        />
+
+        <div className={styles.bottomActions}>
+          <button className={styles.cancelButton} onClick={handleCancel} disabled={isUpdating}>
+            Отмена
+          </button>
+          <button className={styles.secondaryButton} onClick={handleReset} disabled={!hasChanges || isUpdating}>
+            Сбросить
+          </button>
+          <button
+            className={styles.primaryButton}
+            onClick={handleSave}
+            disabled={isSaveDisabled}
+            title={hasValidationErrors ? "Исправьте ошибки в форме" : undefined}
+          >
+            {isUpdating ? "Сохранение..." : "Сохранить"}
+          </button>
         </div>
       </div>
     </>

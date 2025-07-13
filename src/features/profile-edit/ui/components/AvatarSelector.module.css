@@ -121,3 +121,77 @@
 .addButton:hover {
   background: rgba(83, 136, 216, 0.1);
 }
+
+@media (max-width: 768px) and (min-width: 481px) {
+  .container {
+    padding: 1.25rem;
+    height: auto;
+    min-height: 240px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+  }
+
+  .title {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .avatarImage {
+    width: 140px;
+    height: 140px;
+    border-width: 3px;
+  }
+
+  .addButton {
+    background: none;
+    color: #5388d8;
+    width: auto;
+    max-width: none;
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .addButton:hover {
+    background: rgba(83, 136, 216, 0.1);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+    height: auto;
+    min-height: 200px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+  }
+
+  .title {
+    font-size: 0.9375rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .avatarImage {
+    width: 120px; 
+    height: 120px; 
+    border-width: 3px;
+  }
+
+  .overlay {
+    font-size: 0.8125rem;
+  }
+
+  .addButton {
+    background: none;
+    color: #5388d8;
+    width: auto;
+    max-width: none;
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .addButton:hover {
+    background: rgba(83, 136, 216, 0.1);
+  }
+}

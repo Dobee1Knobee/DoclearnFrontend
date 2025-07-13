@@ -145,6 +145,7 @@
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
+  margin-top: -1.375rem;
   border-radius: 4px;
   transition: background-color 0.2s;
 }
@@ -242,27 +243,35 @@
   margin-top: 0.5rem;
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
+  .block {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .blockHeader {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
   .formGrid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .formRow {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .contactFields {
     grid-template-columns: 1fr;
-  }
-
-  .blockHeader {
-    flex-direction: column;
-    align-items: stretch;
     gap: 1rem;
   }
 
   .specializationGrid {
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 }
+

@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { Form } from "react-bootstrap"
-import type { AuthorProfile } from "@/entities/user/model/types"
+import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 
 interface PersonalInfoData {
@@ -11,9 +11,10 @@ interface PersonalInfoData {
   birthday: string
 }
 
+
 interface PersonalInfoBlockProps {
   data: PersonalInfoData
-  onChange: (field: keyof AuthorProfile, value: any) => void
+  onChange: (field: ProfileKeys, value: any) => void
 }
 
 export const PersonalInfoBlock: React.FC<PersonalInfoBlockProps> = ({ data, onChange }) => {
@@ -32,18 +33,8 @@ export const PersonalInfoBlock: React.FC<PersonalInfoBlockProps> = ({ data, onCh
 
   const moderationFields = ["firstName", "lastName"]
 
-  // const validateAge = (birthday: string) => {
-  //   const age = calculateAge(birthday)
-  //   if (typeof age === "number") {
-  //     if (age < 16) return "Возраст должен быть не менее 16 лет"
-  //     if (age > 100) return "Проверьте правильность даты рождения"
-  //   }
-  //   return ""
-  // }
-  
   return (
     <div className={styles.block}>
-      
       <h3 className={styles.blockTitle}>Личная информация</h3>
       <div className={styles.formGrid}>
         <Form.Group>
@@ -82,10 +73,6 @@ export const PersonalInfoBlock: React.FC<PersonalInfoBlockProps> = ({ data, onCh
             onChange={(e) => onChange("birthday", e.target.value)}
             className={styles.input}
           />
-          {/* {data.birthday && <div className={styles.ageDisplay}>Возраст: {calculateAge(data.birthday)} лет</div>}
-          {data.birthday && validateAge(data.birthday) && (
-            <div className={styles.errorText}>{validateAge(data.birthday)}</div>
-          )} */}
         </Form.Group>
       </div>
     </div>
