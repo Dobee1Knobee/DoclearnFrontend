@@ -76,6 +76,17 @@ export function AdminUsers() {
   const [roleFilter, setRoleFilter] = useState<UserRole>("all")
   const [statusFilter, setStatusFilter] = useState<UserStatus>("all")
 
+  // const filteredUsers = mockUsers.filter((user) => {
+  //   const matchesSearch =
+  //     user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     user.email.toLowerCase().includes(searchTerm.toLowerCase())
+
+  //   const matchesRole = roleFilter === "all" || user.role === roleFilter
+  //   const matchesStatus = statusFilter === "all" || user.status === statusFilter
+
+  //   return matchesSearch && matchesRole && matchesStatus
+  // })
 
   const getRoleBadgeClass = (role: string) => {
     switch (role) {
@@ -278,6 +289,11 @@ export function AdminUsers() {
         </div>
       )}
 
+      {/* <div className={styles.pagination}>
+        <span className={styles.paginationInfo}>
+          Показано {filteredUsers.length} из {mockUsers.length} пользователей
+        </span>
+      </div> */}
     </div>
   )
 }

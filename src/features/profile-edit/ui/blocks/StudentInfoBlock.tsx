@@ -12,6 +12,7 @@ interface StudentInfoData {
   programType: "Бакалавриат" | "Магистратура" | "Ординатура" | "Аспирантура"
 }
 
+type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
 
 interface StudentInfoBlockProps {
   data: StudentInfoData
@@ -46,6 +47,7 @@ export const StudentInfoBlock: React.FC<StudentInfoBlockProps> = ({ data, onChan
     const numValue = Number.parseFloat(value)
     if (!Number.isNaN(numValue)) {
       const roundedValue = Math.round(numValue * 100) / 100
+      onChange("gpa", roundedValue)
     }
   }
 

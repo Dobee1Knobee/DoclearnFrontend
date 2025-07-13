@@ -41,8 +41,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onForgotPassword }) =>
     },
   })
 
-  // const watchedFields = watch()
-
   useEffect(() => {
     dispatch(clearAuthError())
   }, [dispatch])

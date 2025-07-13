@@ -11,6 +11,7 @@ interface PersonalInfoData {
   birthday: string
 }
 
+type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
 
 interface PersonalInfoBlockProps {
   data: PersonalInfoData

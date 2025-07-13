@@ -13,6 +13,7 @@ interface ProfessionalData {
   specialization: string
 }
 
+type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
 
 interface ProfessionalBlockProps {
   data: ProfessionalData
