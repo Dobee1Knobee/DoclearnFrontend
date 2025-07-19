@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useEffect } from "react";
+import type React from "react"
+import { useEffect } from "react"
 import { Button, Spinner } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import styles from "../styles/AuthForm.module.css"
@@ -10,11 +11,11 @@ import { clearAuthError } from "@/features/auth/model/slice"
 import { selectLoading, selectError, selectRegistrationEmail } from "@/features/auth/model/selectors"
 import { FormInput } from "../inputs/FormInput"
 import { PasswordInput } from "../inputs/PasswordInput"
-import { validateName, validateEmail, validatePassword } from "@/shared/lib/validation"
+import { validateName, validateOptionalName, validateEmail, validatePassword } from "@/shared/lib/validation"
 import { errorMessages } from "@/shared/lib/errorMessages"
 import type { RegisterDto } from "@/features/auth/model/types"
 
-interface RegistrationFormData extends Omit<RegisterDto, "role"> {
+interface RegistrationFormData extends Omit<RegisterDto, "role" | "defaultAvatarPath"> {
   confirmPassword: string
   role: RegisterDto["role"]
 }
@@ -42,6 +43,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
     defaultValues: {
       firstName: "",
       lastName: "",
+      middleName: "", 
       birthday: "",
       placeWork: "",
       email: "",
@@ -69,12 +71,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
 
   const onSubmit = (data: RegistrationFormData) => {
     const { confirmPassword, ...registerData } = data
-      console.log(">> Registration payload:", {
-        registerData,
-      })
+    console.log(">> Registration payload:", {
+      registerData,
+    })
     const formattedData = {
       ...registerData,
-      birthday: registerData.birthday, 
+      birthday: registerData.birthday,
+      defaultAvatarPath: "/Avatars/Avatar1.webp",
+      middleName: registerData.middleName || undefined,
     }
     dispatch(registerUser(formattedData))
   }
@@ -105,6 +109,17 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ role, onSuccess }) 
         }}
         error={errors.lastName}
         placeholder="Введите фамилию"
+      />
+
+      <FormInput
+        name="middleName"
+        label="Отчество"
+        control={control}
+        rules={{
+          validate: validateOptionalName, 
+        }}
+        error={errors.middleName}
+        placeholder="Введите отчество, если оно есть"
       />
 
       <FormInput

@@ -8,7 +8,7 @@ interface VerifiedBadgeProps {
 export function VerifiedBadge({ className = "" }: VerifiedBadgeProps) {
   return (
     <span className={styles.badge}>
-      <Image src="/logoGoogle.webp" alt="Verified" width={16} height={16} className={`${className}`} />
+      <Image src="/logoGoogle.webp" alt="Verified" width={20} height={20} className={`${className}`} />
     </span>
   )
 }

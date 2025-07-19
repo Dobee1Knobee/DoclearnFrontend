@@ -1,13 +1,13 @@
-import React from 'react';
-import { ClientProfilePage } from '@/features/profile-common/ui/ClientProfilePage';
+import { ClientProfilePage } from '@/features/profile-common/ui/ClientProfilePage'
 
-export default function ProfilePage({
-  params,
-}: {
-  params: { id: string };
-}) {
+type RouteParams = Promise<{ id: string }>
+
+export default async function ProfilePage(
+  { params }: { params: RouteParams }
+) {
+  const { id } = await params
   return (
-    <div className="container mx-auto px-4 py-8" style={{ marginTop: '7rem', marginBottom: '5rem',maxWidth: '1200px' }}>
+    <div className="container mx-auto px-4 py-8" style={{ marginTop: '7rem', marginBottom: '5rem', maxWidth: '1200px' }}>
       <ClientProfilePage />
     </div>
   )

@@ -14,10 +14,19 @@ export interface UpdateProfileRequest {
   contacts?: Contact[]
   education?: Education[]
   avatar?: string
+  defaultAvatarPath?: string
 }
 
 export interface UpdateProfileResponse {
   success: boolean
   data: AuthorProfile | StudentProfile
   moderationFields?: string[]
+}
+
+export interface UploadAvatarResponse {
+  success: boolean
+  data: {
+    message: string
+    avatarUrl: string
+  }
 }

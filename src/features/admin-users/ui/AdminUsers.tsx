@@ -12,6 +12,7 @@ const mockUsers = [
     lastName: "Петрова",
     email: "anna.petrova@example.com",
     avatar: "/Avatars/Avatar1.webp",
+    defaultAvatarPath: "/Avatars/Avatar1.webp",
     role: "doctor" as const,
     status: "active" as const,
     isVerified: { doctor: true, user: true, student: false },
@@ -24,6 +25,7 @@ const mockUsers = [
     lastName: "Иванов",
     email: "mikhail.ivanov@example.com",
     avatar: "/Avatars/Avatar2.webp",
+    defaultAvatarPath: "/Avatars/Avatar2.webp",
     role: "student" as const,
     status: "active" as const,
     isVerified: { doctor: false, user: true, student: true },
@@ -36,6 +38,7 @@ const mockUsers = [
     lastName: "Сидорова",
     email: "elena.sidorova@example.com",
     avatar: "/Avatars/Avatar3.webp",
+    defaultAvatarPath: "/Avatars/Avatar3.webp",
     role: "doctor" as const,
     status: "blocked" as const,
     isVerified: { doctor: true, user: true, student: false },
@@ -48,6 +51,7 @@ const mockUsers = [
     lastName: "Козлов",
     email: "dmitry.kozlov@example.com",
     avatar: "/Avatars/Avatar4.webp",
+    defaultAvatarPath: "/Avatars/Avatar4.webp",
     role: "student" as const,
     status: "active" as const,
     isVerified: { doctor: false, user: false, student: false },
@@ -60,6 +64,7 @@ const mockUsers = [
     lastName: "Морозова",
     email: "olga.morozova@example.com",
     avatar: "/Avatars/Avatar5.webp",
+    defaultAvatarPath: "/Avatars/Avatar5.webp",
     role: "admin" as const,
     status: "active" as const,
     isVerified: { doctor: false, user: true, student: false },
@@ -140,14 +145,9 @@ export function AdminUsers() {
     return new Date(dateString).toLocaleDateString("ru-RU")
   }
 
-  const handleViewUser = (userId: string) => {
-  }
-
-  const handleEditUser = (userId: string) => {
-  }
-
-  const handleBlockUser = (userId: string) => {
-  }
+  const handleViewUser = (_userId: string) => {}
+  const handleEditUser = (_userId: string) => {}
+  const handleBlockUser = (_userId: string) => {}
 
   return (
     <div className={styles.container}>
@@ -227,7 +227,7 @@ export function AdminUsers() {
                   <td className={styles.tableCell}>
                     <div className={styles.userInfo}>
                       <Image
-                        src={user.avatar || "/placeholder.svg"}
+                        src={user.avatar || user.defaultAvatarPath}
                         alt={`${user.firstName} ${user.lastName}`}
                         width={40}
                         height={40}

@@ -1,14 +1,16 @@
 "use client"
 
-import React, { useRef, useEffect } from "react";
+import type React from "react"
+import { useRef, useEffect } from "react"
 import { Modal, Button, Form, Spinner } from "react-bootstrap"
-import { X } from "lucide-react";
+import { X } from "lucide-react"
 import { useForm, Controller } from "react-hook-form"
 import styles from "../styles/AuthCode.module.css"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
-import { verifyUserEmail} from "@/features/auth/model/thunks"
-import { clearAuthError } from "@/features/auth/model/slice";
+import { verifyUserEmail } from "@/features/auth/model/thunks"
+import { clearAuthError } from "@/features/auth/model/slice"
 import { selectLoading, selectError } from "@/features/auth/model/selectors"
+import Image from "next/image"
 
 interface CodeFormData {
   code: string[]
@@ -65,7 +67,7 @@ const CodeModal: React.FC<CodeModalProps> = ({ show, handleClose, email }) => {
       inputsRef.current[index - 1]?.focus()
     }
   }
-  // вставка 
+  // вставка
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault()
     const pastedData = e.clipboardData.getData("text").slice(0, 6)
@@ -92,21 +94,19 @@ const CodeModal: React.FC<CodeModalProps> = ({ show, handleClose, email }) => {
     }
   }
 
-
   return (
     <Modal show={show} onHide={loading ? undefined : handleClose} centered backdrop={loading ? "static" : true}>
-      <button 
-        type="button" 
-        className={styles.closeButton} 
-        onClick={handleClose} 
-        aria-label="Закрыть" 
-        disabled={loading}
+      <button
+        type="button"
+        className={styles.closeButton}
+        onClick={handleClose}
+        aria-label="Закрыть"
       >
-        <X size={20}/>
+        <X size={20} />
       </button>
       <Modal.Body>
         <div className="text-center">
-          <img src="/logo.webp" alt="Logo" className={styles.logoModalCode} />
+          <Image src="/logo.webp" alt="Logo" className={styles.logoModalCode} width={200} height={100} />
           <h2 className="modal-code-title mb-4">Введите код подтверждения</h2>
           <h3 className={`${styles.modalCodeTitle} mb-4`} style={{ fontSize: 18, marginTop: -10 }}>
             Код отправлен на почту {email}
@@ -169,4 +169,3 @@ const CodeModal: React.FC<CodeModalProps> = ({ show, handleClose, email }) => {
 }
 
 export default CodeModal
-

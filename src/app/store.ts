@@ -15,7 +15,7 @@
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(authorProfileApi.middleware, profileEditApi.middleware),
-  });
+  })
 
   configureHttp({
     getRefreshToken: () => localStorage.getItem('refreshToken'),

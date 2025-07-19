@@ -1,4 +1,4 @@
-import { UnderDevelopment } from "@/shared/ui/UnderDevelopment/UnderDevelopment";
+import { UnderDevelopment } from "@/shared/ui/UnderDevelopment/UnderDevelopment"
 
 export default function FeedPage() {
   return (

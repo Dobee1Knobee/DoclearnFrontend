@@ -20,8 +20,7 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({ profile }) => {
 
   const isOwner = currentUser?._id === profile._id
 
-  const handleUploadSuccess = (file: File) => {
-  }
+  const handleUploadSuccess = () => {}
 
   const handleUploadError = (error: string) => {
     console.error("Upload error:", error)

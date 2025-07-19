@@ -6,14 +6,13 @@ import { useForm } from "react-hook-form"
 import { Button, Spinner } from "react-bootstrap"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { loginUser } from "@/features/auth/model/thunks"
-import { clearAuthError } from "@/features/auth/model/slice";
+import { clearAuthError } from "@/features/auth/model/slice"
 import { selectLoading, selectError, selectIsAuthenticated, selectUser } from "@/features/auth/model/selectors"
 import { FormInput } from "../inputs/FormInput"
 import { PasswordInput } from "../inputs/PasswordInput"
 import { validateEmail, validatePassword } from "@/shared/lib/validation"
 import type { LoginDto } from "@/features/auth/model/types"
 import styles from "../styles/AuthForm.module.css"
-
 
 interface LoginFormProps {
   onSuccess: (userId: string) => void
@@ -27,11 +26,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onForgotPassword }) =>
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const user = useAppSelector(selectUser)
 
-
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LoginDto>({
     mode: "onChange",

@@ -9,8 +9,14 @@ const cyrillicRegex = /[а-яё]/i
 const phoneRegex = /^\+?[\d\s\-()]{10,}$/
 
 export const validateName = (value: string): true | string => {
-  if (!value) return errorMessages.required
-  if (!nameRegex.test(value)) return errorMessages.invalidName
+  if (!value || value.trim() === "") return errorMessages.required
+  if (!nameRegex.test(value.trim())) return errorMessages.invalidName
+  return true
+}
+
+export const validateOptionalName = (value: string): true | string => {
+  if (!value || value.trim() === "") return true
+  if (!nameRegex.test(value.trim())) return errorMessages.invalidName
   return true
 }
 

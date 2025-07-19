@@ -8,6 +8,7 @@ import styles from "./FormBlock.module.css"
 interface PersonalInfoData {
   firstName: string
   lastName: string
+  middleName?: string 
   birthday: string
 }
 
@@ -32,7 +33,7 @@ export const PersonalInfoBlock: React.FC<PersonalInfoBlockProps> = ({ data, onCh
     return age
   }
 
-  const moderationFields = ["firstName", "lastName"]
+  const moderationFields = ["firstName", "lastName", "middleName"]
 
   return (
     <div className={styles.block}>
@@ -63,6 +64,20 @@ export const PersonalInfoBlock: React.FC<PersonalInfoBlockProps> = ({ data, onCh
             onChange={(e) => onChange("lastName", e.target.value)}
             className={styles.input}
             placeholder="Введите фамилию"
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label className={styles.label}>
+            Отчество
+            {moderationFields.includes("middleName") && <span className={styles.moderationBadge}>Модерация</span>}
+          </Form.Label>
+          <Form.Control
+            type="text"
+            value={data.middleName || ""}
+            onChange={(e) => onChange("middleName", e.target.value)}
+            className={styles.input}
+            placeholder="Введите отчество"
           />
         </Form.Group>
 

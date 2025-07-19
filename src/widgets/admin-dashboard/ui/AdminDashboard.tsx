@@ -4,11 +4,11 @@ import { useState } from "react"
 import { useAppSelector } from "@/shared/hooks/hooks"
 import { selectUser, selectIsAuthenticated } from "@/features/auth/model/selectors"
 import { BarChart3, Users, Shield, Settings, TrendingUp, ShieldAlert, ArrowLeft } from "lucide-react"
-import { AdminOverview } from "@/features/admin-overview/ui/AdminOverview"
 import { AdminUsers } from "@/features/admin-users/ui/AdminUsers"
 import { AdminModeration } from "@/features/admin-moderation/ui/AdminModeration"
 import { AdminPlaceholder } from "@/shared/ui/AdminPlaceholder/AdminPlaceholder"
 import styles from "./AdminDashboard.module.css"
+import Link from "next/link"
 
 type AdminSection = "overview" | "users" | "moderation" | "settings" | "analytics"
 
@@ -53,10 +53,10 @@ export function AdminDashboard() {
             <ShieldAlert size={64} className={styles.accessDeniedIcon} />
             <h2 className={styles.accessDeniedTitle}>Доступ запрещен</h2>
             <p className={styles.accessDeniedText}>У вас нет прав для доступа к административной панели</p>
-            <a href="/" className={styles.backButton}>
+            <Link href="/" className={styles.backButton}>
               <ArrowLeft size={16} style={{ marginRight: "0.5rem" }} />
               Вернуться на главную
-            </a>
+            </Link>
           </div>
         </div>
       </div>

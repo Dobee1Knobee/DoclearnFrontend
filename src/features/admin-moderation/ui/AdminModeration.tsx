@@ -16,6 +16,7 @@ const mockDocuments = [
       id: "1",
       name: "Анна Петрова",
       avatar: "/Avatars/Avatar1.webp",
+      defaultAvatarPath: "/Avatars/Avatar1.webp",
     },
     submittedAt: "2024-01-20T10:30:00Z",
     fileName: "diploma_petrova.pdf",
@@ -29,6 +30,7 @@ const mockDocuments = [
       id: "2",
       name: "Михаил Иванов",
       avatar: "/Avatars/Avatar2.webp",
+      defaultAvatarPath: "/Avatars/Avatar2.webp",
     },
     submittedAt: "2024-01-19T15:45:00Z",
     fileName: "certificate_ivanov.pdf",
@@ -45,6 +47,7 @@ const mockProfiles = [
       id: "3",
       name: "Елена Сидорова",
       avatar: "/Avatars/Avatar3.webp",
+      defaultAvatarPath: "/Avatars/Avatar3.webp",
     },
     submittedAt: "2024-01-21T09:15:00Z",
     changes: {
@@ -62,6 +65,7 @@ const mockProfiles = [
       id: "4",
       name: "Дмитрий Козлов",
       avatar: "/Avatars/Avatar4.webp",
+      defaultAvatarPath: "/Avatars/Avatar4.webp",
     },
     submittedAt: "2024-01-20T14:20:00Z",
     changes: {
@@ -96,15 +100,9 @@ export function AdminModeration() {
     }
     return labels[field] || field
   }
-
-  const handleApprove = (id: string, type: string) => {
-  }
-
-  const handleReject = (id: string, type: string) => {
-  }
-
-  const handleView = (id: string, type: string) => {
-  }
+  const handleApprove = (id: string, type: string) => {}
+  const handleReject = (id: string, type: string) => {}
+  const handleView = (id: string, type: string) => {}
 
   const renderDocuments = () => {
     if (mockDocuments.length === 0) {
@@ -127,7 +125,7 @@ export function AdminModeration() {
                 <div className={styles.itemMeta}>
                   <div className={styles.itemUser}>
                     <Image
-                      src={item.user.avatar || "/placeholder.svg"}
+                      src={item.user.avatar || item.user.defaultAvatarPath}
                       alt={item.user.name}
                       width={24}
                       height={24}
@@ -198,7 +196,7 @@ export function AdminModeration() {
                 <div className={styles.itemMeta}>
                   <div className={styles.itemUser}>
                     <Image
-                      src={item.user.avatar || "/placeholder.svg"}
+                      src={item.user.avatar || item.user.defaultAvatarPath}
                       alt={item.user.name}
                       width={24}
                       height={24}

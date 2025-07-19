@@ -1,13 +1,15 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import type React from "react"
+import { useState, useEffect } from "react"
 import { Modal } from "react-bootstrap"
-import { X } from 'lucide-react'
+import { X } from "lucide-react"
 import { useAppDispatch } from "@/shared/hooks/hooks"
 import { clearAuthError, clearRegistrationEmail } from "@/features/auth/model/slice"
 import RegistrationForm from "./RegistrationForm"
 import CodeModal from "./CodeModal"
 import styles from "../styles/AuthModal.module.css"
+import Image from "next/image"
 
 interface RegistrationModalProps {
   show: boolean
@@ -15,11 +17,7 @@ interface RegistrationModalProps {
   switchToLogin: () => void
 }
 
-const RegistrationModal: React.FC<RegistrationModalProps> = ({
-  show,
-  handleClose,
-  switchToLogin
-}) => {
+const RegistrationModal: React.FC<RegistrationModalProps> = ({ show, handleClose, switchToLogin }) => {
   const dispatch = useAppDispatch()
   const [role, setRole] = useState<"student" | "doctor">("student")
   const [showCodeModal, setShowCodeModal] = useState(false)
@@ -57,24 +55,13 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
   return (
     <>
-      <Modal
-        show={show}
-        onHide={handleMainModalClose} 
-        centered
-        className={styles.customModal}
-        backdrop="static"
-      >
-        <button 
-        type="button" 
-        className={styles.closeButton} 
-        onClick={handleMainModalClose} 
-        aria-label="Закрыть" 
-      >
-        <X size={20}/>
-      </button>
+      <Modal show={show} onHide={handleMainModalClose} centered className={styles.customModal} backdrop="static">
+        <button type="button" className={styles.closeButton} onClick={handleMainModalClose} aria-label="Закрыть">
+          <X size={20} />
+        </button>
         <Modal.Body>
           <div className="text-center">
-            <img src="/logo.webp" alt="DocLearn Logo" className={styles.logo} />
+            <Image src="/logo.webp" alt="DocLearn Logo" className={styles.logo} width={200} height={100} />
             <h2 className={styles.modalTitle}>Регистрация</h2>
             <div className={styles.roleToggle} role="group" aria-label="Выбор роли">
               <button
@@ -103,7 +90,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
             href="#"
             onClick={(e) => {
               e.preventDefault()
-              handleMainModalClose() 
+              handleMainModalClose()
               switchToLogin()
             }}
             className={styles.loginLink}
@@ -119,4 +106,3 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
 }
 
 export default RegistrationModal
-

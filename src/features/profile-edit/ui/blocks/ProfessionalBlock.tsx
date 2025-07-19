@@ -54,7 +54,7 @@ export const ProfessionalBlock: React.FC<ProfessionalBlockProps> = ({ data, onCh
 
       <Alert variant="info" className={styles.moderationAlert}>
         <small>
-          Поля "Место работы" и "Специализация" должны пройти модерацию. До завершения проверки будут отображаться
+          Поля &quot;Место работы&quot; и &quot;Специализация&quot; должны пройти модерацию. До завершения проверки будут отображаться
           старые значения.
         </small>
       </Alert>

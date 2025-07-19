@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import http from "@/shared/api/http"
-import type { ForgotPasswordDto, ResetPasswordDto, ValidateTokenDto } from "./types"
+import type { ForgotPasswordDto, ResetPasswordDto } from "./types"
 
 export const forgotPassword = createAsyncThunk<{ email: string }, ForgotPasswordDto>(
   "passwordRecovery/forgotPassword",
@@ -21,15 +21,14 @@ export const validateResetToken = createAsyncThunk<void, { token: string }>(
   "passwordRecovery/validateResetToken",
   async ({ token }, { rejectWithValue }) => {
     try {
-      await http.get("/auth/validate-token", { params: { token } });
+      await http.get("/auth/validate-token", { params: { token } })
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message
-          || "Недействительный или истёкший токен"
-      );
+        error.response?.data?.message || "Недействительный или истёкший токен"
+      )
     }
   },
-);
+)
 
 export const resetPassword = createAsyncThunk<void, ResetPasswordDto>(
   "passwordRecovery/resetPassword",

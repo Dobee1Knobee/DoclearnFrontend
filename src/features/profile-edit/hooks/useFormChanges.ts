@@ -58,11 +58,12 @@ const isValidEducation = (edu: Education): boolean => {
 }
 
 export const useFormChanges = (initialData: ProfileUnion) => {
-  const [formData, setFormData] = useState<ProfileUnion>(() => ({
+  const [formData, setFormData] = useState<ProfileUnion & { uploadedAvatarFile?: File | null }>(() => ({
     ...initialData,
     contacts: initialData.contacts || [],
     education: initialData.education || [],
     bio: initialData.bio || "",
+    uploadedAvatarFile: null,
   }))
 
   const originalData = useRef<ProfileUnion>(initialData)
@@ -74,6 +75,7 @@ export const useFormChanges = (initialData: ProfileUnion) => {
       contacts: newData.contacts || [],
       education: newData.education || [],
       bio: newData.bio || "",
+      uploadedAvatarFile: null,
     })
   }, [])
 
@@ -85,7 +87,16 @@ export const useFormChanges = (initialData: ProfileUnion) => {
     const changes: ProfileChanges = {}
     const original = originalData.current
 
-    const commonFields: (keyof ProfileUnion)[] = ["firstName", "lastName", "bio", "placeWork", "location", "avatar"]
+    const commonFields: (keyof ProfileUnion)[] = [
+      "firstName",
+      "lastName",
+      "middleName",
+      "bio",
+      "placeWork",
+      "location",
+      "avatar",
+      "defaultAvatarPath",
+    ]
 
     commonFields.forEach((field) => {
       const originalValue = original[field] || ""
@@ -107,8 +118,7 @@ export const useFormChanges = (initialData: ProfileUnion) => {
       if (originalStudent.programType !== currentStudent.programType) {
         changes.programType = currentStudent.programType
       }
-    }
-    else if (
+    } else if (
       (original.role === "doctor" || original.role === "admin") &&
       (formData.role === "doctor" || formData.role === "admin")
     ) {
@@ -150,8 +160,10 @@ export const useFormChanges = (initialData: ProfileUnion) => {
   }, [formData])
 
   const hasChanges = useMemo(() => {
-    return Object.keys(getChangedFields()).length > 0
-  }, [getChangedFields])
+    const profileChanges = Object.keys(getChangedFields()).length > 0
+    const hasUploadedFile = Boolean(formData.uploadedAvatarFile)
+    return profileChanges || hasUploadedFile
+  }, [getChangedFields, formData.uploadedAvatarFile])
 
   const resetToOriginal = useCallback(() => {
     setFormData({
@@ -159,6 +171,7 @@ export const useFormChanges = (initialData: ProfileUnion) => {
       contacts: originalData.current.contacts || [],
       education: originalData.current.education || [],
       bio: originalData.current.bio || "",
+      uploadedAvatarFile: null,
     })
   }, [])
 
@@ -168,12 +181,18 @@ export const useFormChanges = (initialData: ProfileUnion) => {
 
     Object.entries(changedFields).forEach(([key, value]) => {
       if (key === "contacts" && Array.isArray(value)) {
-        const validContacts = (value as Contact[]).filter(isValidContact)
+        const validContacts = (value as Contact[]).filter(isValidContact).map(({ _id, ...rest }) => rest)
         if (validContacts.length > 0) {
           cleanedData[key] = validContacts
         }
       } else if (key === "education" && Array.isArray(value)) {
-        const validEducation = (value as Education[]).filter(isValidEducation)
+        const validEducation = (value as Education[]).filter(isValidEducation).map(({ id, ...rest }) => {
+          if (rest.isCurrently) {
+            const { graduationYear, ...educationWithoutGraduationYear } = rest
+            return educationWithoutGraduationYear
+          }
+          return rest
+        })
         if (validEducation.length > 0) {
           cleanedData[key] = validEducation
         }
@@ -189,6 +208,14 @@ export const useFormChanges = (initialData: ProfileUnion) => {
     return cleanedData
   }, [getChangedFields])
 
+  const setUploadedAvatarFile = useCallback((file: File | null) => {
+    setFormData((prev) => ({ ...prev, uploadedAvatarFile: file }))
+  }, [])
+
+  const clearUploadedAvatarFile = useCallback(() => {
+    setFormData((prev) => ({ ...prev, uploadedAvatarFile: null }))
+  }, [])
+
   return {
     formData,
     updateField,
@@ -197,5 +224,7 @@ export const useFormChanges = (initialData: ProfileUnion) => {
     hasChanges,
     resetToOriginal,
     updateOriginalData,
+    setUploadedAvatarFile,
+    clearUploadedAvatarFile,
   }
 }

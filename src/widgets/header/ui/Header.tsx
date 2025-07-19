@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Button } from "react-bootstrap"
+import { Button, Spinner } from "react-bootstrap"
 import Image from "next/image"
 import styles from "./Header.module.css"
 import Logo from "./Logo"
@@ -57,12 +57,11 @@ export default function Header() {
 
   const closeProfilePopup = () => setShowProfilePopup(false)
 
-  const handleLogout = () => {
-    dispatch(logoutUser())
+  const handleLogout = async () => {
+    await dispatch(logoutUser())
     setShowProfilePopup(false)
   }
 
-  // Закрытие попапа при клике вне его
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profilePopupRef.current && !profilePopupRef.current.contains(event.target as Node)) {
@@ -87,13 +86,13 @@ export default function Header() {
 
         {isLoading && !isAuthenticated ? (
           <Button className={styles.button} disabled>
-            Загрузка...
+            <Spinner animation="border" size="sm" />
           </Button>
         ) : isAuthenticated && user ? (
           <div className={styles.avatarContainer} ref={profilePopupRef}>
             <div className={styles.avatarWrapper} onClick={toggleProfilePopup}>
               <Image
-                src={user.avatar || "/Avatars/Avatar1.webp"}
+                src={user.avatar || user.defaultAvatarPath}
                 alt="User Avatar"
                 width={45}
                 height={45}
@@ -103,9 +102,10 @@ export default function Header() {
             {showProfilePopup && (
               <div className={styles.profilePopup}>
                 <UserProfileCard
-                  name={`${user.firstName} ${user.lastName}`}
+                  name={`${user.firstName} ${user.lastName} ${user.middleName}`}
                   role={user.role === "student" ? "Студент" : user.role === "doctor" ? "Врач" : "Администратор"}
-                  avatar={user.avatar || "/Avatars/Avatar1.webp"}
+                  avatar={user.avatar}
+                  defaultAvatarPath={user.defaultAvatarPath}
                   userId={user._id}
                   onLogout={handleLogout}
                   onClose={closeProfilePopup}
