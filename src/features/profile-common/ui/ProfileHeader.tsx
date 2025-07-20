@@ -32,6 +32,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [showRegisterModal, setShowRegisterModal] = useState(false)
   const [showContactsModal, setShowContactsModal] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
   const [followUser, { isLoading: isFollowLoading }] = useFollowUserMutation()
   const [unfollowUser, { isLoading: isUnfollowLoading }] = useUnfollowUserMutation()
 
@@ -44,8 +45,19 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
 
   const isFollowing = followStatusData?.data?.isFollowing || false
 
-  const { _id, avatar, defaultAvatarPath, firstName, lastName, middleName,
-  location, placeWork, rating, isVerified, stats } = profile
+  const {
+    _id,
+    avatar,
+    defaultAvatarPath,
+    firstName,
+    lastName,
+    middleName,
+    location,
+    placeWork,
+    rating,
+    isVerified,
+    stats,
+  } = profile
 
   const fullName = `${lastName} ${firstName} ${middleName}`
 
@@ -78,16 +90,26 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
       return
     }
 
+    if (isProcessing || isFollowLoading || isUnfollowLoading) {
+      return 
+    }
+
+    setIsProcessing(true)
+
     try {
       if (isFollowing) {
-        const result = await unfollowUser(_id).unwrap()
+        await unfollowUser(_id).unwrap()
       } else {
-        const result = await followUser(_id).unwrap()
+        await followUser(_id).unwrap()
       }
 
-      refetchFollowStatus()
+      await refetchFollowStatus()
     } catch (error: any) {
       console.error("Ошибка при изменении подписки:", error)
+    } finally {
+      setTimeout(() => {
+        setIsProcessing(false)
+      }, 100)
     }
   }
 
@@ -101,7 +123,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   }
 
   const renderActionButton = () => {
-    const isButtonLoading = isFollowLoading || isUnfollowLoading
+    const isButtonLoading = isFollowLoading || isUnfollowLoading || isProcessing
     const publicContacts =
       profile.contacts?.filter((contact) => contact && contact.type && contact.value && contact.isPublic !== false) ||
       []
@@ -111,7 +133,12 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     if (!isAuthenticated) {
       return (
         <div className={styles.actions}>
-          <button className={styles.primaryButton} onClick={() => setShowLoginModal(true)} disabled={isButtonLoading}>
+          <button
+            className={styles.primaryButton}
+            onClick={() => setShowLoginModal(true)}
+            disabled={isButtonLoading}
+            style={{ pointerEvents: isButtonLoading ? "none" : "auto" }}
+          >
             {isButtonLoading ? <Spinner animation="border" size="sm" /> : "Подписаться"}
           </button>
           {hasPublicContacts && (
@@ -148,6 +175,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
           className={isFollowing ? styles.secondaryButton : styles.primaryButton}
           onClick={handleFollowToggle}
           disabled={isButtonLoading}
+          style={{ pointerEvents: isButtonLoading ? "none" : "auto" }}
         >
           {isButtonLoading ? <Spinner animation="border" size="sm" /> : isFollowing ? "Отписаться" : "Подписаться"}
         </button>
