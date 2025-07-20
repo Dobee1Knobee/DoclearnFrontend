@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAppSelector } from "@/shared/hooks/hooks"
 import { selectUser, selectIsAuthenticated } from "@/features/auth/model/selectors"
 import { useRouter } from "next/navigation"
@@ -35,6 +35,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const [isProcessing, setIsProcessing] = useState(false)
   const [followUser, { isLoading: isFollowLoading }] = useFollowUserMutation()
   const [unfollowUser, { isLoading: isUnfollowLoading }] = useUnfollowUserMutation()
+
+  const [localFollowersCount, setLocalFollowersCount] = useState<number | null>(null)
 
   const isOwnProfile = currentUser?._id === profile._id
   const shouldCheckFollowStatus = isAuthenticated && !isOwnProfile
@@ -91,7 +93,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     }
 
     if (isProcessing || isFollowLoading || isUnfollowLoading) {
-      return 
+      return
     }
 
     setIsProcessing(true)
@@ -99,8 +101,12 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     try {
       if (isFollowing) {
         await unfollowUser(_id).unwrap()
+        const currentCount = localFollowersCount !== null ? localFollowersCount : stats?.followersCount || 0
+        setLocalFollowersCount(currentCount - 1)
       } else {
         await followUser(_id).unwrap()
+        const currentCount = localFollowersCount !== null ? localFollowersCount : stats?.followersCount || 0
+        setLocalFollowersCount(currentCount + 1)
       }
 
       await refetchFollowStatus()
@@ -188,6 +194,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     )
   }
 
+  useEffect(() => {
+    setLocalFollowersCount(null)
+  }, [profile._id])
+
   return (
     <>
       <div className={styles.container}>
@@ -232,7 +242,9 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
         </div>
         <div className={styles.statsBlock}>
           <div className={styles.stat}>
-            <span className={styles.statValue}>{stats?.followersCount || 0}</span>
+            <span className={styles.statValue}>
+              {localFollowersCount !== null ? localFollowersCount : stats?.followersCount || 0}
+            </span>
             <span className={styles.statLabel}>Подписчики</span>
           </div>
           <div className={styles.stat}>
