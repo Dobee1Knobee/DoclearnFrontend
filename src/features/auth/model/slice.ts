@@ -1,7 +1,7 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { loginUser, registerUser, verifyUserEmail, checkAuthStatus, logoutUser } from './thunks'
-import type { User } from '@/entities/user/model/types'
-import type { UpdateUserFieldsPayload } from './types'
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import { loginUser, registerUser, verifyUserEmail, checkAuthStatus, logoutUser } from "./thunks"
+import type { User, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { UpdateUserFieldsPayload } from "./types"
 
 interface AuthState {
   user: User | null
@@ -36,7 +36,7 @@ export const authSlice = createSlice({
     },
     updateUserFields(state, action: PayloadAction<UpdateUserFieldsPayload>) {
       if (state.user) {
-        const { defaultAvatarPath, location, birthday, bio, contacts, experience, programType } = action.payload
+        const { defaultAvatarPath, location, birthday, bio, contacts, experience, programType, stats } = action.payload
 
         if (defaultAvatarPath !== undefined) {
           state.user.defaultAvatarPath = defaultAvatarPath
@@ -53,13 +53,17 @@ export const authSlice = createSlice({
         if (contacts !== undefined) {
           state.user.contacts = contacts
         }
-
-        // специфичные поля (для разных ролей)
+        if (stats !== undefined) {
+          state.user.stats = {
+            ...state.user.stats,
+            ...stats,
+          }
+        }
         if (experience !== undefined && state.user.role === "doctor") {
-          ;(state.user as any).experience = experience
+          ;(state.user as AuthorProfile).experience = experience
         }
         if (programType !== undefined && state.user.role === "student") {
-          ;(state.user as any).programType = programType
+          ;(state.user as StudentProfile).programType = programType
         }
       }
     },

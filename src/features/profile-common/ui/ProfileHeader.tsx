@@ -2,8 +2,9 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { useAppSelector } from "@/shared/hooks/hooks"
+import { useAppSelector, useAppDispatch } from "@/shared/hooks/hooks"
 import { selectUser, selectIsAuthenticated } from "@/features/auth/model/selectors"
+import { updateUserFields } from "@/features/auth/model/slice"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
@@ -27,6 +28,7 @@ interface ProfileHeaderProps {
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const currentUser = useAppSelector(selectUser)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
+  const dispatch = useAppDispatch()
   const router = useRouter()
 
   const [showLoginModal, setShowLoginModal] = useState(false)
@@ -86,6 +88,22 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const specText = getSpecializationText()
   const experienceText = getExperienceText()
 
+  const updateCurrentUserFollowingCount = (increment: boolean) => {
+    if (currentUser?.stats) {
+      const currentFollowingCount = currentUser.stats.followingCount || 0
+      const newFollowingCount = increment ? currentFollowingCount + 1 : currentFollowingCount - 1
+
+      dispatch(
+        updateUserFields({
+          stats: {
+            ...currentUser.stats,
+            followingCount: Math.max(0, newFollowingCount),
+          },
+        }),
+      )
+    }
+  }
+
   const handleFollowToggle = async () => {
     if (!isAuthenticated) {
       setShowLoginModal(true)
@@ -93,7 +111,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     }
 
     if (isProcessing || isFollowLoading || isUnfollowLoading) {
-      return
+      return 
     }
 
     setIsProcessing(true)
@@ -103,10 +121,12 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
         await unfollowUser(_id).unwrap()
         const currentCount = localFollowersCount !== null ? localFollowersCount : stats?.followersCount || 0
         setLocalFollowersCount(currentCount - 1)
+        updateCurrentUserFollowingCount(false)
       } else {
         await followUser(_id).unwrap()
         const currentCount = localFollowersCount !== null ? localFollowersCount : stats?.followersCount || 0
         setLocalFollowersCount(currentCount + 1)
+        updateCurrentUserFollowingCount(true)
       }
 
       await refetchFollowStatus()

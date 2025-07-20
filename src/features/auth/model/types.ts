@@ -29,7 +29,12 @@ export interface UpdateUserFieldsPayload {
   bio?: string
   contacts?: Contact[]
   experience?: string 
-  programType?: string
+  programType?: "Бакалавриат" | "Магистратура" | "Ординатура" | "Аспирантура"
+  stats?: {
+    followingCount: number
+    followersCount: number
+    postsCount?: number
+  }
 }
 
 
