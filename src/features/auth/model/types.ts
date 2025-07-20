@@ -1,3 +1,5 @@
+import type { Contact } from "@/entities/user/model/types"
+
 export interface LoginDto {
   email: string
   password: string
@@ -18,6 +20,16 @@ export interface RegisterDto {
 export interface VerifyDto {
   email: string
   code: string
+}
+
+export interface UpdateUserFieldsPayload {
+  defaultAvatarPath?: string
+  location?: string
+  birthday?: string
+  bio?: string
+  contacts?: Contact[]
+  experience?: string 
+  programType?: string
 }
 
 

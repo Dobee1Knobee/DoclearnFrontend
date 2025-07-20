@@ -19,11 +19,25 @@ export const ProfileEditPage: React.FC<ProfileEditPageProps> = ({ userId }) => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const [mounted, setMounted] = useState(false)
 
-  const { data: profile, isLoading, error } = useGetMyProfileQuery()
+  const {
+    data: profile,
+    isLoading,
+    error,
+    refetch,
+  } = useGetMyProfileQuery(undefined, {
+    refetchOnMountOrArgChange: true, 
+    refetchOnFocus: true, 
+  })
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (mounted && isAuthenticated && currentUser?._id === userId) {
+      refetch()
+    }
+  }, [mounted, isAuthenticated, currentUser, userId, refetch])
 
   useEffect(() => {
     if (mounted && !isAuthenticated) {

@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { UpdateProfileRequest, UpdateProfileResponse, UploadAvatarResponse } from "../model/types"
+import { updateUserFields } from "@/features/auth/model/slice"
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://api.doclearn.ru",
@@ -21,7 +22,7 @@ const baseQuery = fetchBaseQuery({
 
 export const profileEditApi = createApi({
   reducerPath: "profileEditApi",
-  tagTypes: ["Profile"],
+  tagTypes: ["Profile", "UserProfile"],
   baseQuery,
   endpoints: (builder) => ({
     updateMyProfile: builder.mutation<UpdateProfileResponse, UpdateProfileRequest>({
@@ -30,15 +31,58 @@ export const profileEditApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: (result, _error, _arg) => {
-        const tags = [
+      onQueryStarted: async (requestData, { dispatch, queryFulfilled }) => {
+        try {
+          const { data: responseData } = await queryFulfilled
+
+          if (responseData.success) {
+            const fieldsToUpdate: any = {}
+
+            if (requestData.defaultAvatarPath !== undefined) {
+              fieldsToUpdate.defaultAvatarPath = requestData.defaultAvatarPath
+            }
+            if (requestData.location !== undefined) {
+              fieldsToUpdate.location = requestData.location
+            }
+            if (requestData.birthday !== undefined) {
+              fieldsToUpdate.birthday = requestData.birthday
+            }
+            if (requestData.bio !== undefined) {
+              fieldsToUpdate.bio = requestData.bio
+            }
+            if (requestData.contacts !== undefined) {
+              fieldsToUpdate.contacts = requestData.contacts
+            }
+            if (requestData.experience !== undefined) {
+              fieldsToUpdate.experience = requestData.experience
+            }
+            if (requestData.programType !== undefined) {
+              fieldsToUpdate.programType = requestData.programType
+            }
+
+            if (Object.keys(fieldsToUpdate).length > 0) {
+              dispatch(updateUserFields(fieldsToUpdate))
+            }
+          }
+        } catch (error) {
+          console.error("Failed to update profile:", error)
+        }
+      },
+      invalidatesTags: (result, error, arg) => {
+        if (error) return []
+
+        return [
           { type: "Profile" as const, id: "LIST" },
           { type: "Profile" as const, id: "ME" },
+          { type: "Profile" as const, id: "CURRENT" },
+          { type: "UserProfile" as const, id: "LIST" },
+          { type: "UserProfile" as const, id: "ME" },
+          { type: "UserProfile" as const, id: "CURRENT" },
+          { type: "Profile", id: "ME" },
+          { type: "Profile", id: "LIST" },
+          "Profile",
+          "UserProfile",
         ] 
-        if (result?.data?._id) {
-          tags.push({ type: "Profile", id: result.data._id })
-        }
-        return tags
       },
     }),
 
@@ -52,12 +96,21 @@ export const profileEditApi = createApi({
           body: formData,
         }
       },
-      invalidatesTags: (result, _error, _arg) => {
-        const tags = [
+      invalidatesTags: (result, error, arg) => {
+        if (error) return []
+
+        return [
           { type: "Profile" as const, id: "LIST" },
           { type: "Profile" as const, id: "ME" },
+          { type: "Profile" as const, id: "CURRENT" },
+          { type: "UserProfile" as const, id: "LIST" },
+          { type: "UserProfile" as const, id: "ME" },
+          { type: "UserProfile" as const, id: "CURRENT" },
+          { type: "Profile", id: "ME" },
+          { type: "Profile", id: "LIST" },
+          "Profile",
+          "UserProfile",
         ]
-        return tags
       },
     }),
 
@@ -66,7 +119,7 @@ export const profileEditApi = createApi({
         url: `/user/${userId}/follow`,
         method: "POST",
       }),
-      invalidatesTags: (_result, _error, userId) => [{ type: "Profile", id: userId }],
+      invalidatesTags: (_result, _error, userId) => [{ type: "Profile", id: userId }, { type: "UserProfile", id: userId }],
     }),
 
     unfollowUser: builder.mutation<{ success: boolean; message: string }, string>({
@@ -74,7 +127,7 @@ export const profileEditApi = createApi({
         url: `/user/${userId}/follow`,
         method: "DELETE",
       }),
-      invalidatesTags: (_result, _error, userId) => [{ type: "Profile", id: userId }],
+      invalidatesTags: (_result, _error, userId) => [{ type: "Profile", id: userId }, { type: "UserProfile", id: userId },],
     }),
 
     checkFollowStatus: builder.query<{ success: boolean; data: { isFollowing: boolean } }, string>({
@@ -82,7 +135,7 @@ export const profileEditApi = createApi({
         url: `/user/${userId}/is-following`,
         method: "GET",
       }),
-      providesTags: ["Profile"],
+      providesTags: (_result, _error, userId) => [{ type: "Profile", id: userId }, { type: "UserProfile", id: userId },],
     }),
   }),
 })

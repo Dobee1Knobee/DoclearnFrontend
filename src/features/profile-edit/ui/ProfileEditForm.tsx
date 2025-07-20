@@ -39,6 +39,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
   } = useFormChanges(profile)
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle")
   const [errorMessage, setErrorMessage] = useState("")
+  const [moderationMessage, setModerationMessage] = useState("")
   const [avatarSaveStatus, setAvatarSaveStatus] = useState<"idle" | "success" | "error">("idle")
   const [avatarErrorMessage, setAvatarErrorMessage] = useState("")
   const [uploadAvatar, { isLoading: isUploadingAvatar }] = useUploadAvatarMutation()
@@ -50,24 +51,25 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
     updateOriginalData(profile)
   }, [profile, updateOriginalData])
 
+  useEffect(() => {
+    setHasValidationErrors(educationErrors || contactsErrors)
+  }, [educationErrors, contactsErrors])
+
   const handleEducationValidationChange = (hasErrors: boolean) => {
     setEducationErrors(hasErrors)
-    setHasValidationErrors(hasErrors || contactsErrors)
+    
   }
 
   const handleContactsValidationChange = (hasErrors: boolean) => {
     setContactsErrors(hasErrors)
-    setHasValidationErrors(educationErrors || hasErrors)
-  }
-
-  const handleValidationChange = (hasErrors: boolean) => {
-    setHasValidationErrors(hasErrors)
+    
   }
 
   const handleSave = async () => {
     try {
       setSaveStatus("idle")
       setErrorMessage("")
+      setModerationMessage("")
       setAvatarSaveStatus("idle")
       setAvatarErrorMessage("")
 
@@ -79,7 +81,6 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
           const avatarResult = await uploadAvatar(formData.uploadedAvatarFile).unwrap()
 
           updateField("avatar", avatarResult.data.avatarUrl)
-
 
           setAvatarSaveStatus("success")
           avatarUploaded = true
@@ -98,17 +99,16 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
         const result = await updateProfile(dataToSend).unwrap()
         setSaveStatus("success")
 
-        setTimeout(() => {
-          router.push(`/profile/${profile._id}`)
-        }, 2000)
+        if (result.data.requiresModeration) {
+          setModerationMessage("Некоторые поля изменятся после проверки администратора")
+        }
       } else if (!avatarUploaded) {
         console.log("Нет изменений для отправки")
         return
-      } else {
-        setTimeout(() => {
-          router.push(`/profile/${profile._id}`)
-        }, 2000)
       }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      router.push(`/profile/${profile._id}`)
     } catch (error: any) {
       console.error("Update profile error:", error)
       setSaveStatus("error")
@@ -125,6 +125,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
     resetToOriginal()
     setSaveStatus("idle")
     setErrorMessage("")
+    setModerationMessage("")
     setAvatarSaveStatus("idle")
     setAvatarErrorMessage("")
     setHasValidationErrors(false)
@@ -157,6 +158,12 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
         {saveStatus === "success" && (
           <Alert variant="success" className={styles.alert}>
             Профиль успешно обновлен!
+          </Alert>
+        )}
+
+        {moderationMessage && (
+          <Alert variant="info" className={styles.alert}>
+            {moderationMessage}
           </Alert>
         )}
 

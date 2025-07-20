@@ -124,7 +124,6 @@
   }
 }
 
-/* Small mobile devices */
 @media (max-width: 480px) {
   .header {
     margin-bottom: 1.5rem;
