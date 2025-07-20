@@ -47,7 +47,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const { _id, avatar, defaultAvatarPath, firstName, lastName, middleName,
   location, placeWork, rating, isVerified, stats } = profile
 
-  const fullName = `${firstName} ${lastName} ${middleName}`
+  const fullName = `${lastName} ${firstName} ${middleName}`
 
   const getSpecializationText = () => {
     if (profile.role === "student") {

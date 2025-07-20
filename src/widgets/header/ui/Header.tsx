@@ -102,7 +102,7 @@ export default function Header() {
             {showProfilePopup && (
               <div className={styles.profilePopup}>
                 <UserProfileCard
-                  name={`${user.firstName} ${user.lastName} ${user.middleName}`}
+                  name={`${user.lastName} ${user.firstName} ${user.middleName}`}
                   role={user.role === "student" ? "Студент" : user.role === "doctor" ? "Врач" : "Администратор"}
                   avatar={user.avatar}
                   defaultAvatarPath={user.defaultAvatarPath}
