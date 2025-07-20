@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { loginUser, registerUser, verifyUserEmail, checkAuthStatus, logoutUser } from "./thunks"
-import type { User, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { User} from "@/entities/user/model/types"
 import type { UpdateUserFieldsPayload } from "./types"
 
 interface AuthState {
@@ -59,11 +59,11 @@ export const authSlice = createSlice({
             ...stats,
           }
         }
-        if (experience !== undefined && state.user.role === "doctor") {
-          ;(state.user as AuthorProfile).experience = experience
+        if (experience !== undefined && state.user.role === "doctor" || state.user.role === "admin") {
+          ;(state.user as any).experience = experience
         }
-        if (programType !== undefined && state.user.role === "student") {
-          ;(state.user as StudentProfile).programType = programType
+        if (programType !== undefined && state.user.role === "student" || state.user.role === "admin") {
+          ;(state.user as any).programType = programType
         }
       }
     },
