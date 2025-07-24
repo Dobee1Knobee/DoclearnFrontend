@@ -1,5 +1,5 @@
 {
-  "name": "doclearn_mvp",
+  "name": "new_doc_nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,7 +16,7 @@
     "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "react": "^19.0.0",
-    "react-bootstrap": "^2.10.10",
+    "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.60.0",
     "react-icons": "^5.5.0",
@@ -28,7 +28,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.3.5",
+    "eslint-config-next": "15.1.6",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
 }
