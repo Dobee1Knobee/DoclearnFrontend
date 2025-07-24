@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useGetAuthorProfileQuery } from "@/features/author-profile/api/authorProfileApi"
+import { useGetMyProfileQuery } from "@/features/author-profile/api/authorProfileApi"
 import { useAppSelector } from "@/shared/hooks/hooks"
 import { selectUser, selectIsAuthenticated } from "@/features/auth/model/selectors"
 import { Spinner } from "react-bootstrap"
@@ -19,11 +19,25 @@ export const ProfileEditPage: React.FC<ProfileEditPageProps> = ({ userId }) => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const [mounted, setMounted] = useState(false)
 
-  const { data: profile, isLoading, error } = useGetAuthorProfileQuery(userId)
+  const {
+    data: profile,
+    isLoading,
+    error,
+    refetch,
+  } = useGetMyProfileQuery(undefined, {
+    refetchOnMountOrArgChange: true, 
+    refetchOnFocus: true, 
+  })
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (mounted && isAuthenticated && currentUser?._id === userId) {
+      refetch()
+    }
+  }, [mounted, isAuthenticated, currentUser, userId, refetch])
 
   useEffect(() => {
     if (mounted && !isAuthenticated) {

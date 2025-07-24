@@ -8,6 +8,7 @@ import { resetState } from "../../model/slice"
 import { selectIsLoading, selectError, selectTokenValid } from "../../model/selectors"
 import { ResetPasswordForm } from "./ResetPasswordForm"
 import { Spinner, Alert } from "react-bootstrap"
+import Link from "next/link"
 
 export function ResetPasswordPage() {
   const dispatch = useAppDispatch()
@@ -41,9 +42,9 @@ export function ResetPasswordPage() {
         <Alert variant="danger" className="text-center">
           <h4>Недействительная ссылка</h4>
           <p>Ссылка для восстановления пароля недействительна или повреждена.</p>
-          <a href="/" className="btn btn-primary">
+          <Link href="/" className="btn btn-primary">
             Вернуться на главную
-          </a>
+          </Link>
         </Alert>
       </div>
     )
@@ -67,9 +68,9 @@ export function ResetPasswordPage() {
           <h4>Ссылка недействительна</h4>
           <p>{error || "Ссылка для восстановления пароля истекла или недействительна."}</p>
           <p>Пожалуйста, запросите новую ссылку для восстановления пароля.</p>
-          <a href="/" className="btn btn-primary">
+          <Link href="/" className="btn btn-primary">
             Вернуться на главную
-          </a>
+          </Link>
         </Alert>
       </div>
     )

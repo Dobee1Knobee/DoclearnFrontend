@@ -3,18 +3,29 @@
 import type React from "react"
 import { useState } from "react"
 import Image from "next/image"
-import { Modal, Button } from "react-bootstrap"
 import styles from "./AvatarSelector.module.css"
 import { Plus } from "lucide-react"
+import { AvatarUploadModal } from "./AvatarUploadModal"
 
 interface AvatarSelectorProps {
   currentAvatar: string
-  onAvatarChange: (avatar: string) => void
+  defaultAvatarPath: string
+  uploadedAvatarFile: File | null
+  onAvatarChange: (defaultAvatarPath: string) => void
+  onUploadedFileChange: (file: File | null) => void
 }
 
-export const AvatarSelector: React.FC<AvatarSelectorProps> = ({ currentAvatar, onAvatarChange }) => {
+export const AvatarSelector: React.FC<AvatarSelectorProps> 
+= ({ 
+  currentAvatar, 
+  defaultAvatarPath,
+  uploadedAvatarFile, 
+  onAvatarChange,
+  onUploadedFileChange, 
+}) => {
   const [showModal, setShowModal] = useState(false)
-  const [selectedAvatar, setSelectedAvatar] = useState(currentAvatar)
+  const [showUploadModal, setShowUploadModal] = useState(false)
+  const [selectedAvatar, setSelectedAvatar] = useState(defaultAvatarPath)
 
   const avatars = Array.from({ length: 22 }, (_, i) => `/Avatars/Avatar${i + 1}.webp`)
 
@@ -24,21 +35,31 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({ currentAvatar, o
   }
 
   const handleCancel = () => {
-    setSelectedAvatar(currentAvatar)
+    setSelectedAvatar(defaultAvatarPath)
     setShowModal(false)
   }
 
   const handleRandomAvatar = () => {
-    const availableAvatars = avatars.filter((avatar) => avatar !== currentAvatar)
-
+    const availableAvatars = avatars.filter((avatar) => avatar !== defaultAvatarPath)
     const avatarsToChooseFrom = availableAvatars.length > 0 ? availableAvatars : avatars
-
     const randomIndex = Math.floor(Math.random() * avatarsToChooseFrom.length)
     const randomAvatar = avatarsToChooseFrom[randomIndex]
 
     onAvatarChange(randomAvatar)
+    onUploadedFileChange(null)
   }
 
+  const handleUploadSuccess = (file: File) => {
+    onUploadedFileChange(file)
+  }
+
+  const handleUploadError = (error: string) => {
+    console.error("Upload error:", error)
+  }
+
+  const displayAvatar = uploadedAvatarFile
+    ? URL.createObjectURL(uploadedAvatarFile)
+    : currentAvatar || defaultAvatarPath
 
   return (
     <>
@@ -46,7 +67,7 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({ currentAvatar, o
         <h3 className={styles.title}>Аватар</h3>
         <div className={styles.currentAvatar} onClick={() => setShowModal(true)}>
           <Image
-            src={currentAvatar || "/placeholder.svg"}
+            src={displayAvatar || defaultAvatarPath} // src={displayAvatar || "/placeholder.svg"}
             alt="Текущий аватар"
             width={120}
             height={120}
@@ -99,6 +120,13 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({ currentAvatar, o
           </Button>
         </Modal.Footer>
       </Modal> */}
+
+      <AvatarUploadModal
+        show={showUploadModal}
+        onHide={() => setShowUploadModal(false)}
+        onUploadSuccess={handleUploadSuccess}
+        onUploadError={handleUploadError}
+      />
     </>
   )
 }

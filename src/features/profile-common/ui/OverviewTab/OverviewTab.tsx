@@ -1,23 +1,20 @@
 'use client'
 
-import React, { useState } from 'react'
+import type React from "react"
 import type { AuthorProfile, StudentProfile } from '@/entities/user/model/types'
 import { useSelector } from "react-redux"
 import type { RootState } from "@/app/store"
 import {
   Clock,
   Star,
-  Plus,
   DollarSign,
-  GraduationCap,
-  Award,
-  Trophy,
-  FileBadge,
-  Lightbulb,
-  BookDown,
-  LibraryBig,
+  // GraduationCap,
+  // Trophy,
+  // Lightbulb,
+  // LibraryBig,
   User as UserIcon,
 } from 'lucide-react'
+// import {Plus, Award, FileBadge, BookDown,} from 'lucide-react'
 import styles from './OverviewTab.module.css'
 
 interface OverviewTabProps {
@@ -25,19 +22,19 @@ interface OverviewTabProps {
 }
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
-  const [showMore, setShowMore] = useState(false)
+  // const [showMore, setShowMore] = useState(false)
 
   const currentUser = useSelector((state: RootState) => state.auth.user)
-  const isOwner = currentUser?._id === profile._id
+  // const isOwner = currentUser?._id === profile._id
 
-  const formatYear = (date: string) => new Date(date).getFullYear()
+  // const formatYear = (date: string) => new Date(date).getFullYear()
 
-  const getEventIcon = (date: string, type: string) => {
-    const day = new Date(date).getDate()
-    const typeClass = type === 'conference' ? styles.conferenceIcon :
-      type === 'webinar' ? styles.webinarIcon : ''
-    return <div className={`${styles.eventIcon} ${typeClass}`}>{day}</div>
-  }
+  // const getEventIcon = (date: string, type: string) => {
+  //   const day = new Date(date).getDate()
+  //   const typeClass = type === 'conference' ? styles.conferenceIcon :
+  //     type === 'webinar' ? styles.webinarIcon : ''
+  //   return <div className={`${styles.eventIcon} ${typeClass}`}>{day}</div>
+  // }
 
   const appointmentData = {
     consultation: 'от 3 500 ₽',
@@ -46,15 +43,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
     reviewsCount: 127,
     patientsCount: '2 400+',
     availableSlots: ['Сегодня 15:30', 'Завтра 10:00', 'Завтра 14:30'],
-  };
-
-  const achievementIconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-    education: GraduationCap,
-    work: Trophy,
-    rating: Star,
-    content: LibraryBig,
-    patent: Lightbulb,
   }
+
+  // const achievementIconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  //   education: GraduationCap,
+  //   work: Trophy,
+  //   rating: Star,
+  //   content: LibraryBig,
+  //   patent: Lightbulb,
+  // }
 
   return (
     <div className={styles.container}>

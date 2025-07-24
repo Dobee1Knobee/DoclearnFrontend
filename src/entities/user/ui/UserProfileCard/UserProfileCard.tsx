@@ -11,12 +11,14 @@ interface UserProfileCardProps extends Partial<UserProfile> {
   userId?: string
   onLogout?: () => void
   onClose?: () => void
+  defaultAvatarPath: string
 }
 
 export function UserProfileCard({
   name,
   role,
-  avatar ,
+  avatar,
+  defaultAvatarPath,
   userId,
   onLogout,
   onClose,
@@ -55,7 +57,6 @@ export function UserProfileCard({
       icon: <Sun className={styles.icon} />,
       value: "Светлая",
     },
-
   ]
 
   const handleLogout = () => {
@@ -72,7 +73,7 @@ export function UserProfileCard({
           <div className={styles.profileHeader}>
             <div className={styles.avatarContainer}>
               <Image
-                src={avatar || "/placeholder.svg"}
+                src={avatar || defaultAvatarPath}
                 alt={name || "Аватарка"}
                 width={64}
                 height={64}

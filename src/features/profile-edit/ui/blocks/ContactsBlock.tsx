@@ -3,6 +3,7 @@
 import type React from "react"
 import { Form, Button, Alert } from "react-bootstrap"
 import { Plus, Trash2, Mail, Phone, Globe, MessageCircle } from "lucide-react"
+import { Telegram, Whatsapp, Facebook, Instagram, Twitter } from "iconoir-react"
 import type { Contact, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 import { useState } from "react"
@@ -27,12 +28,12 @@ const contactTypes = [
   { value: "email", label: "Email", icon: Mail },
   { value: "phone", label: "Телефон", icon: Phone },
   { value: "website", label: "Веб-сайт", icon: Globe },
-  { value: "telegram", label: "Telegram", icon: MessageCircle },
-  { value: "whatsapp", label: "WhatsApp", icon: MessageCircle },
+  { value: "telegram", label: "Telegram", icon: Telegram },
+  { value: "whatsapp", label: "WhatsApp", icon: Whatsapp },
   { value: "vk", label: "VKontakte", icon: MessageCircle },
-  { value: "facebook", label: "Facebook", icon: MessageCircle },
-  { value: "twitter", label: "Twitter", icon: MessageCircle },
-  { value: "instagram", label: "Instagram", icon: MessageCircle },
+  { value: "facebook", label: "Facebook", icon: Facebook },
+  { value: "twitter", label: "Twitter", icon: Twitter },
+  { value: "instagram", label: "Instagram", icon: Instagram },
 ]
 
 export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onChange, onValidationChange }) => {
@@ -106,7 +107,7 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
 
   const addContact = () => {
     const newContact: Contact = {
-      id: `temp_${Date.now()}`,
+      _id: `temp_${Date.now()}`,
       type: "email",
       label: "Email",
       value: "",
@@ -174,7 +175,7 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
 
       {contacts.length === 0 && (
         <Alert variant="light" className={styles.emptyState}>
-          Контакты не добавлены. Нажмите "Добавить контакт".
+          Контакты не добавлены. Нажмите &quot;Добавить контакт&quot;.
         </Alert>
       )}
 
@@ -185,7 +186,7 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
           const error = validateContactItem(contact, index, touchedFields).value
 
           return (
-            <div key={contact.id || index} className={styles.contactItem}>
+            <div key={contact._id || index} className={styles.contactItem}>
               <div className={styles.contactHeader}>
                 <Icon size={16} className={styles.contactIcon} />
                 <Form.Select

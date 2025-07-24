@@ -13,13 +13,15 @@ export const EducationTab: React.FC<EducationTabProps> = ({ education }) => {
     return <div className={styles.empty}>Образование не указано</div>
   }
 
-  const formatYear = (dateString: string) => {
-    try {
-      return new Date(dateString).getFullYear()
-    } catch {
-      return dateString 
-    }
-  }
+  // const formatYear = (dateString: string) => {
+  //   try {
+  //     return new Date(dateString).getFullYear()
+  //   } catch {
+  //     return dateString 
+  //   }
+  // }
+
+  console.log(education)
 
   return (
     <div className={styles.container}>

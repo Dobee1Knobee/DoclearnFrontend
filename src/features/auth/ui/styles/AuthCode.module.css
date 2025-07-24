@@ -42,6 +42,7 @@
     border: none;
     cursor: pointer;
     padding: 0.25rem;
+    z-index: 1051;
   }
   
   .btnCodeCustom {

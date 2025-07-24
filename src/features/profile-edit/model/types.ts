@@ -1,8 +1,9 @@
-import type { Contact, Education, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { Contact, Education } from "@/entities/user/model/types"
 
 export interface UpdateProfileRequest {
   firstName?: string
   lastName?: string
+  middleName?: string
   birthday?: string
   bio?: string
   placeWork?: string
@@ -14,10 +15,21 @@ export interface UpdateProfileRequest {
   contacts?: Contact[]
   education?: Education[]
   avatar?: string
+  defaultAvatarPath?: string
 }
 
 export interface UpdateProfileResponse {
   success: boolean
-  data: AuthorProfile | StudentProfile
-  moderationFields?: string[]
+  data: {
+    message: string
+    requiresModeration: boolean
+  }
+}
+
+export interface UploadAvatarResponse {
+  success: boolean
+  data: {
+    message: string
+    avatarUrl: string
+  }
 }

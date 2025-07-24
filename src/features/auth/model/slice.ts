@@ -1,6 +1,7 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { loginUser, registerUser, verifyUserEmail, checkAuthStatus, logoutUser } from './thunks'
-import type { User } from '@/entities/user/model/types'
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import { loginUser, registerUser, verifyUserEmail, checkAuthStatus, logoutUser } from "./thunks"
+import type { User} from "@/entities/user/model/types"
+import type { UpdateUserFieldsPayload } from "./types"
 
 interface AuthState {
   user: User | null
@@ -21,7 +22,7 @@ const initialState: AuthState = {
 }
 
 export const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     clearAuthError(state) {
@@ -32,6 +33,39 @@ export const authSlice = createSlice({
     },
     clearRegistrationEmail(state) {
       state.registrationEmail = null
+    },
+    updateUserFields(state, action: PayloadAction<UpdateUserFieldsPayload>) {
+      if (state.user) {
+        const { defaultAvatarPath, location, birthday, bio, contacts, experience, programType, stats } = action.payload
+
+        if (defaultAvatarPath !== undefined) {
+          state.user.defaultAvatarPath = defaultAvatarPath
+        }
+        if (location !== undefined) {
+          state.user.location = location
+        }
+        if (birthday !== undefined) {
+          state.user.birthday = birthday
+        }
+        if (bio !== undefined) {
+          state.user.bio = bio
+        }
+        if (contacts !== undefined) {
+          state.user.contacts = contacts
+        }
+        if (stats !== undefined) {
+          state.user.stats = {
+            ...state.user.stats,
+            ...stats,
+          }
+        }
+        if (experience !== undefined && state.user.role === "doctor" || state.user.role === "admin") {
+          ;(state.user as any).experience = experience
+        }
+        if (programType !== undefined && state.user.role === "student" || state.user.role === "admin") {
+          ;(state.user as any).programType = programType
+        }
+      }
     },
   },
   extraReducers: (b) =>
@@ -104,5 +138,5 @@ export const authSlice = createSlice({
       }),
 })
 
-export const { clearAuthError, setRegistrationEmail, clearRegistrationEmail } = authSlice.actions
+export const { clearAuthError, setRegistrationEmail, clearRegistrationEmail, updateUserFields } = authSlice.actions
 export default authSlice.reducer

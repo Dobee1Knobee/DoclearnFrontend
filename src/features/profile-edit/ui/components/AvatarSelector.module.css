@@ -83,7 +83,7 @@
   object-fit: cover;
 }
 
-.randomButton {
+/* .randomButton {
   background: #5388d8;
   color: white;
   border: none;
@@ -103,7 +103,7 @@
 .randomButton:disabled {
   background: #9ca3af;
   cursor: not-allowed;
-}
+} */
 
 .addButton {
   background: none;

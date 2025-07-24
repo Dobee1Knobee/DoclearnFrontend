@@ -19,6 +19,7 @@ export interface User {
   _id: string
   firstName: string
   lastName: string
+  middleName?: string
   email: string
   birthday: string
   placeWork: string //placeStudy
@@ -30,6 +31,9 @@ export interface User {
   }
   createdAt: string
   avatar?: string
+  defaultAvatarPath: string
+  avatarUrl?: string
+  avatarUrlTimestamp?: number
   location: string
   followers: string[]
   following: string[]
@@ -55,7 +59,7 @@ export interface Achievement {
 }
 
 export interface Contact {
-  id: string
+  _id: string
   type: string
   label?: string
   value: string

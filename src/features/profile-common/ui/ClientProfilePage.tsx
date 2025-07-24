@@ -1,17 +1,50 @@
-'use client'
+"use client"
 
-import React from 'react'
+import type React from "react"
+import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import { useParams } from "next/navigation"
-import { useGetAuthorProfileQuery } from '@/features/author-profile/api/authorProfileApi'
-import { Spinner } from 'react-bootstrap'
-import { ProfileHeader } from './ProfileHeader'
-import { ProfileTabs } from './ProfileTabs'
+import { useGetAuthorProfileQuery } from "@/features/author-profile/api/authorProfileApi"
+import { useAppSelector } from "@/shared/hooks/hooks"
+import { selectUser, selectIsAuthenticated, selectIsInitialized } from "@/features/auth/model/selectors"
+import { Spinner } from "react-bootstrap"
+import { ProfileHeader } from "./ProfileHeader"
+import { ProfileTabs } from "./ProfileTabs"
 
 export const ClientProfilePage: React.FC = () => {
   const params = useParams()
   const userId = params.id as string
 
-  const { data: profile, isLoading, error } = useGetAuthorProfileQuery(userId)
+  const currentUser = useAppSelector(selectUser)
+  const isAuthenticated = useAppSelector(selectIsAuthenticated)
+  const isInitialized = useAppSelector(selectIsInitialized)
+
+  const isOwnProfile = isInitialized && isAuthenticated && currentUser?._id === userId
+
+  const {
+    data: otherProfile,
+    isLoading: isOtherProfileLoading,
+    error: otherProfileError,
+  } = useGetAuthorProfileQuery(userId, {
+    skip: !isInitialized || isOwnProfile,
+  })
+
+  let profile: AuthorProfile | StudentProfile | undefined
+  let isLoading: boolean
+  let error: any
+
+  if (!isInitialized) {
+    isLoading = true
+    error = undefined
+    profile = undefined
+  } else if (isOwnProfile) {
+    isLoading = false
+    error = undefined
+    profile = currentUser as AuthorProfile | StudentProfile
+  } else {
+    isLoading = isOtherProfileLoading
+    error = otherProfileError
+    profile = otherProfile
+  }
 
   if (isLoading) {
     return (

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import type React from 'react'
 import type { AuthorProfile } from '@/entities/user/model/types'
 import styles from './CoursesTab.module.css'
 
@@ -9,7 +9,7 @@ interface CoursesTabProps {
 }
 
 export const CoursesTab: React.FC<CoursesTabProps> = ({ profile }) => {
-  const { courses } = profile
+  // const { courses } = profile
 
   // if (!courses.length) {
   //   return <div className={styles.empty}>Курсов нет</div>

@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; 
+  margin-bottom: 0.125rem;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.userIcon {
+  color: #22c55e;
+  margin-left: 0.5rem;
+}
+
+.studentIcon {
+  color: #a855f7;
+  margin-left: 0.5rem;
+}

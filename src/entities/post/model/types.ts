@@ -5,7 +5,7 @@ export interface PostAuthor {
     isVerified: {
       user: boolean
       doctor: boolean
-      student: boolean,
+      student: boolean
     }
   }
   

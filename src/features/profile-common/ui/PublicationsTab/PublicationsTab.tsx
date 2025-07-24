@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import type React from 'react'
 import type { AuthorProfile, StudentProfile } from '@/entities/user/model/types'
 import styles from './PublicationsTab.module.css'
 
@@ -9,9 +9,9 @@ interface PublicationsTabProps {
 }
 
 export const PublicationsTab: React.FC<PublicationsTabProps> = ({ profile }) => {
-  const { publications } = profile
+  const { publications =[] } = profile
 
-  if (!publications.length) {
+  if (!publications || publications.length === 0) {
     return <div className={styles.empty}>Нет публикаций</div>
   }
 

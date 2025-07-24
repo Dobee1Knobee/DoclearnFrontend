@@ -62,7 +62,7 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
           <h4 className="mb-3">Письмо отправлено!</h4>
           <p className="text-muted">Мы отправили инструкции по восстановлению пароля на адрес:</p>
           <p className="fw-bold">{sentEmail}</p>
-          <p className="text-muted small">Проверьте папку "Спам", если письмо не пришло в течение нескольких минут.</p>
+          <p className="text-muted small">Проверьте папку Спам, если письмо не пришло в течение нескольких минут.</p>
         </div>
       </div>
     )

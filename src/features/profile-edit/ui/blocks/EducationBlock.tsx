@@ -175,7 +175,7 @@ export const EducationBlock: React.FC<EducationBlockProps> = ({ education = [], 
 
       {education.length === 0 && (
         <Alert variant="light" className={styles.emptyState}>
-          Образование не добавлено. Нажмите "Добавить образование".
+          Образование не добавлено. Нажмите &quot;Добавить образование&quot;.
         </Alert>
       )}
 

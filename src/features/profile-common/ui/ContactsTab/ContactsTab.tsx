@@ -10,7 +10,6 @@ interface ContactsTabProps {
 }
 
 export const ContactsTab: React.FC<ContactsTabProps> = ({ contacts }) => {
-  // Показываем только публичные контакты и фильтруем некорректные данные
   const publicContacts = contacts.filter(
     (contact) => contact && contact.type && contact.value && contact.isPublic !== false,
   )
@@ -90,7 +89,7 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({ contacts }) => {
 
         return (
           <a
-            key={contact.id}
+            key={contact._id}
             href={href}
             target={isExternal ? "_blank" : undefined}
             rel={isExternal ? "noopener noreferrer" : undefined}
