@@ -8,6 +8,7 @@ import Logo from "./Logo"
 import Navigation from "./Navigation"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
 import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
+import NewRegistrationModal from "@/features/auth/ui/Registration/NewRegistrationModal"
 import { ForgotPasswordModal } from "@/features/auth/passwordRecovery/ui/ForgotPasswordModal/ForgotPasswordModal"
 import { UserProfileCard } from "@/entities/user/ui/UserProfileCard/UserProfileCard"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
@@ -127,7 +128,9 @@ export default function Header() {
           onForgotPassword={openForgotPasswordModal}
         />
 
-        <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} />
+        {/* <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} /> */}
+
+        <NewRegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} />
 
         <ForgotPasswordModal show={isForgotPasswordVisible} handleClose={closeModals} onBackToLogin={openLoginModal} />
       </div>
