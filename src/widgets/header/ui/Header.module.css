@@ -1,4 +1,4 @@
-.header{
+.header {
     position: fixed;
     top: 0;
     width: 100%;
@@ -15,7 +15,8 @@
     align-items: center;
     justify-content: space-between;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 20px 0 10px;
+    gap: 1rem;
     width: 100%;
   }
 
@@ -52,7 +53,7 @@
 
   .search {
     flex: 0 1 500px;
-    margin: 20px 56px 0 0;
+    margin: 20px 0 0 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -82,11 +83,11 @@
     transform: scale(1.4);
   }
 
-  .iconActive{
+  .iconActive {
     transform: scale(1.4);
   }
 
-  .button{
+  .button {
     flex: 0 0 auto;
     padding: 8px 24px;
     height: 45px;
@@ -102,7 +103,6 @@
   .avatarContainer {
     position: relative;
     margin-top: -15px;
-    margin-left: 48px;
   }
   
   .avatarWrapper {
@@ -140,42 +140,176 @@
   }
 
 
-  @media (max-width: 600px) {
-    .headerContent{
-      padding: 0 0px;
-    }
-  
-    .button {
-      padding: 6px 16px; 
-      height: 35px;
-      font-size: 16px;
-      margin-right: 5px;
-    }
+.desktopLogo {
+  flex: 0 0 auto;
+  margin-top: -20px;
+}
 
-    .avatarContainer {
-      margin-right: 15px;
-    }
-    }
+.desktopSearch {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    @media (max-width: 650px) {
-      .logo img {
-        width: 75px; 
-        height: auto;
-      }
-    }
+.mobileSearchIcon {
+  display: none;
+}
 
+.mobileCenter {
+  display: none;
+}
 
-    @media (max-width: 400px) {
-      .search{
-        margin: 0 10px;
-        margin-top: 20px;
-      }
+.searchIcon {
+  color: #5388d8;
+  font-size: 28px;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+}
 
-      .iconsContainer {
-        gap: 25px; 
-      }
-  
-      .icon {
-        font-size: 24px; 
-      }
-    }
+.searchIcon:hover {
+  color: #3266b6;
+  transform: scale(1.1);
+}
+
+@media (max-width: 650px) {
+  .headerContent {
+    padding: 0 15px;
+  }
+
+  .desktopLogo {
+    display: none;
+  }
+
+  .desktopSearch {
+    display: none;
+  }
+
+  .mobileSearchIcon {
+    display: block;
+    flex: 0 0 auto;
+    margin-top: -20px;
+  }
+
+  .mobileCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+
+  .mobileLogo {
+    display: block;
+    text-align: center;
+  }
+
+  .mobileNavigation {
+    display: block;
+  }
+
+  .iconsContainer {
+    gap: 30px;
+    margin-top: 5px;
+  }
+
+  .button {
+    padding: 6px 16px;
+    height: 35px;
+    font-size: 16px;
+    margin-top: 0;
+  }
+
+  .avatarContainer {
+    margin-left: 0;
+    margin-top: -20px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.mobileSearchOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+  animation: fadeInRight 0.3s ease-out;
+}
+
+.mobileSearchContainer {
+  position: relative;
+  width: calc(100% - 120px); 
+  max-width: 400px;
+  margin: 0 20px;
+}
+
+.mobileSearchInput {
+  width: 100%;
+  height: 45px;
+  padding: 0 50px 0 20px; 
+  border: 2px solid #5388d8;
+  border-radius: 25px;
+  font-size: 16px;
+  font-family: var(--font-montserrat), sans-serif;
+  outline: none;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.mobileSearchInput:focus {
+  border-color: #3266b6;
+}
+
+.mobileSearchInput::placeholder {
+  color: #999;
+}
+
+.mobileSearchClose {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #5388d8;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.mobileSearchClose:hover {
+  background-color: #f0f0f0;
+  color: #3266b6;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 651px) {
+  .mobileSearchOverlay {
+    display: none;
+  }
+}

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Button, Spinner } from "react-bootstrap"
 import Image from "next/image"
+import { Search } from "lucide-react"
 import styles from "./Header.module.css"
 import Logo from "./Logo"
 import Navigation from "./Navigation"
@@ -14,6 +15,7 @@ import { UserProfileCard } from "@/entities/user/ui/UserProfileCard/UserProfileC
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { logoutUser } from "@/features/auth/model/thunks"
 import { selectIsAuthenticated, selectUser, selectLoading } from "@/features/auth/model/selectors"
+import desktopLogo from "@/../../public/logo.webp"
 
 export default function Header() {
   const dispatch = useAppDispatch()
@@ -25,6 +27,7 @@ export default function Header() {
   const [isRegisterVisible, setIsRegisterVisible] = useState(false)
   const [isForgotPasswordVisible, setIsForgotPasswordVisible] = useState(false)
   const [showProfilePopup, setShowProfilePopup] = useState(false)
+  const [showMobileSearch, setShowMobileSearch] = useState(false)
 
   const profilePopupRef = useRef<HTMLDivElement>(null)
 
@@ -63,27 +66,75 @@ export default function Header() {
     setShowProfilePopup(false)
   }
 
+  const openMobileSearch = () => setShowMobileSearch(true)
+  const closeMobileSearch = () => setShowMobileSearch(false)
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profilePopupRef.current && !profilePopupRef.current.contains(event.target as Node)) {
         setShowProfilePopup(false)
       }
+
+      const searchOverlay = document.querySelector(`.${styles.mobileSearchOverlay}`)
+      if (showMobileSearch && searchOverlay && !searchOverlay.contains(event.target as Node)) {
+        setShowMobileSearch(false)
+      }
     }
 
-    if (showProfilePopup) {
+    if (showProfilePopup || showMobileSearch) {
       document.addEventListener("mousedown", handleClickOutside)
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [showProfilePopup])
+  }, [showProfilePopup, showMobileSearch])
 
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
-        <Logo />
-        <Navigation isAuthenticated={isAuthenticated} />
+        <div className={styles.desktopLogo}>
+          <Logo />
+        </div>
+
+        <div className={styles.mobileSearchIcon}>
+          <Search className={styles.searchIcon} onClick={openMobileSearch} />
+        </div>
+
+        <div className={styles.desktopSearch}>
+          <Navigation isAuthenticated={isAuthenticated} />
+        </div>
+
+        <div className={styles.mobileCenter}>
+          <div className={styles.mobileLogo}>
+            <Image
+              src={desktopLogo || "/placeholder.svg"}
+              alt="Logo"
+              width={120}
+              height={60}
+              priority
+              quality={100}
+              style={{
+                objectFit: "contain",
+                height: "auto",
+              }}
+            />
+          </div>
+          <div className={styles.mobileNavigation}>
+            <Navigation isAuthenticated={isAuthenticated} isMobile={true} />
+          </div>
+        </div>
+
+        {showMobileSearch && (
+          <div className={styles.mobileSearchOverlay}>
+            <div className={styles.mobileSearchContainer}>
+              <input type="text" placeholder="Поиск..." className={styles.mobileSearchInput} autoFocus />
+              <button className={styles.mobileSearchClose} onClick={closeMobileSearch} type="button">
+                ×
+              </button>
+            </div>
+          </div>
+        )}
 
         {isLoading && !isAuthenticated ? (
           <Button className={styles.button} disabled>
