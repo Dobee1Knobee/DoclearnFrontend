@@ -4,7 +4,9 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Modal } from "react-bootstrap"
 import { X } from "lucide-react"
+import { FaUserDoctor, FaHospital } from "react-icons/fa6"
 import { useAppDispatch } from "@/shared/hooks/hooks"
+// import { clearAuthError, clearRegistrationEmail } from "@/features/auth/model/slice"
 import SpecialistRegistrationForm from "./SpecialistRegistrationForm"
 import OrganizationRegistrationForm from "./OrganizationRegistrationForm"
 import CodeModal from "./CodeModal"
@@ -26,6 +28,8 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
 
   useEffect(() => {
     if (show) {
+      // dispatch(clearAuthError())
+      // dispatch(clearRegistrationEmail())
       setShowCodeModal(false)
       setEmail("")
       setAccountType("specialist")
@@ -43,12 +47,14 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
   }
 
   const handleCodeModalClose = () => {
+    // dispatch(clearRegistrationEmail())
     setShowCodeModal(false)
     setEmail("")
     switchToLogin()
   }
 
   const handleMainModalClose = () => {
+    // dispatch(clearRegistrationEmail())
     setShowCodeModal(false)
     setEmail("")
     handleClose()
@@ -71,7 +77,7 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
                 type="button"
                 aria-pressed={accountType === "specialist"}
               >
-                Специалист
+                <FaUserDoctor size={32} />
               </button>
               <button
                 className={`${styles.toggleButton} ${accountType === "organization" ? "active" : ""}`}
@@ -79,7 +85,7 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
                 type="button"
                 aria-pressed={accountType === "organization"}
               >
-                Организация
+                <FaHospital size={40} className="pb-2"/>
               </button>
             </div>
           </div>

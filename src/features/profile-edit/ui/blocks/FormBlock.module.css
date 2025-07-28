@@ -134,7 +134,6 @@
   color: #6b7280;
 }
 
-
 .addButton {
   background: none;
   border: none;
@@ -243,6 +242,75 @@
   margin-top: 0.5rem;
 }
 
+/* Interest input container */
+.interestInputContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.addInterestButton {
+  background: #5388d8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+.addInterestButton:hover:not(:disabled) {
+  background: #4a7bc8;
+}
+
+.addInterestButton:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+/* Interest tags */
+.interestTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.interestTag {
+  background: #e0f2fe;
+  color: #0277bd;
+  padding: 0.375rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #b3e5fc;
+}
+
+.removeTagButton {
+  background: none;
+  border: none;
+  color: #0277bd;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  transition: background-color 0.2s;
+}
+
+.removeTagButton:hover {
+  background: rgba(2, 119, 189, 0.1);
+}
+
 @media (max-width: 768px) {
   .block {
     padding: 1.25rem;
@@ -273,5 +341,13 @@
   .specializationGrid {
     gap: 0.75rem;
   }
-}
 
+  .interestInputContainer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .addInterestButton {
+    align-self: flex-start;
+  }
+}

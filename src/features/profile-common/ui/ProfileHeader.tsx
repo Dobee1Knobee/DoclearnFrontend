@@ -221,42 +221,44 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.left}>
-          <Image
-            src={avatar || defaultAvatarPath}
-            alt={fullName}
-            width={120}
-            height={120}
-            className={styles.avatar}
-            priority={true}
-          />
-        </div>
-        <div className={styles.center}>
-          <h1 className={styles.name}>
-            {fullName}
-            <VerifiedStatusIcons isVerified={isVerified} className={styles.verifiedIconsContainer} />
-          </h1>
-          {specText && <div className={styles.specialization}>{specText}</div>}
-          <div className={styles.meta}>
-            <div className={styles.metaItem}>
-              <MapPin size={16} className={styles.metaIcon} />
-              <span className={`${styles.metaText} ${styles.metaTextLocation}`} title={location || "Не указано"}>
-                {location || "Не указано"}
-              </span>
-            </div>
-            {experienceText && (
+        <div className={styles.topRow}>
+          <div className={styles.left}>
+            <Image
+              src={avatar || defaultAvatarPath}
+              alt={fullName}
+              width={120}
+              height={120}
+              className={styles.avatar}
+              priority={true}
+            />
+          </div>
+          <div className={styles.center}>
+            <h1 className={styles.name}>
+              {fullName}
+              <VerifiedStatusIcons isVerified={isVerified} className={styles.verifiedIconsContainer} />
+            </h1>
+            {specText && <div className={styles.specialization}>{specText}</div>}
+            <div className={styles.meta}>
               <div className={styles.metaItem}>
-                <Briefcase size={16} className={styles.metaIcon} />
-                <span className={`${styles.metaText} ${styles.metaTextExperience}`} title={experienceText}>
-                  {experienceText}
+                <MapPin size={16} className={styles.metaIcon} />
+                <span className={`${styles.metaText} ${styles.metaTextLocation}`} title={location || "Не указано"}>
+                  {location || "Не указано"}
                 </span>
               </div>
-            )}
-            <div className={styles.metaItem}>
-              <GraduationCap size={16} className={styles.metaIcon} />
-              <span className={`${styles.metaText} ${styles.metaTextWork}`} title={placeWork || "Не указано"}>
-                {placeWork || "Не указано"}
-              </span>
+              {experienceText && (
+                <div className={styles.metaItem}>
+                  <Briefcase size={16} className={styles.metaIcon} />
+                  <span className={`${styles.metaText} ${styles.metaTextExperience}`} title={experienceText}>
+                    {experienceText}
+                  </span>
+                </div>
+              )}
+              <div className={styles.metaItem}>
+                <GraduationCap size={16} className={styles.metaIcon} />
+                <span className={`${styles.metaText} ${styles.metaTextWork}`} title={placeWork || "Не указано"}>
+                  {placeWork || "Не указано"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
