@@ -37,8 +37,6 @@ export default function Navigation({ isAuthenticated = false, isMobile = false }
   }
 
   return (
-    <div className={styles.search}>
-      <input type="text" className="form-control" placeholder="Поиск по сайту..." style={{ borderColor: "#5388d8" }} />
       <div className={styles.iconsContainer}>
         <Link href="/News">
           <Newspaper className={`${styles.icon} ${pathname === "/News" ? styles.iconActive : ""}`} />
@@ -55,6 +53,5 @@ export default function Navigation({ isAuthenticated = false, isMobile = false }
           </Link>
         )}
       </div>
-    </div>
   )
 }

@@ -3,18 +3,20 @@
 import { useState, useEffect, useRef } from "react"
 import { Button, Spinner } from "react-bootstrap"
 import Image from "next/image"
-import { Search } from "lucide-react"
+import { Search, X } from "lucide-react"
 import styles from "./Header.module.css"
 import Logo from "./Logo"
 import Navigation from "./Navigation"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
 import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
-import NewRegistrationModal from "@/features/auth/ui/Registration/NewRegistrationModal"
 import { ForgotPasswordModal } from "@/features/auth/passwordRecovery/ui/ForgotPasswordModal/ForgotPasswordModal"
 import { UserProfileCard } from "@/entities/user/ui/UserProfileCard/UserProfileCard"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { logoutUser } from "@/features/auth/model/thunks"
 import { selectIsAuthenticated, selectUser, selectLoading } from "@/features/auth/model/selectors"
+import { useSearch } from "@/features/search/hooks/useSearch"
+import { SearchInput } from "@/features/search/ui/SearchInput"
+import { SearchDropdown } from "@/features/search/ui/SearchDropdown"
 import desktopLogo from "@/../../public/logo.webp"
 
 export default function Header() {
@@ -30,6 +32,22 @@ export default function Header() {
   const [showMobileSearch, setShowMobileSearch] = useState(false)
 
   const profilePopupRef = useRef<HTMLDivElement>(null)
+  const desktopSearchRef = useRef<HTMLDivElement>(null)
+
+  const {
+    query,
+    results,
+    totalCount,
+    isLoading: searchLoading,
+    error: searchError,
+    selectedIndex,
+    isOpen: searchOpen,
+    setQuery,
+    selectResult,
+    closeSearch,
+    clearSearch,
+    handleKeyDown,
+  } = useSearch()
 
   const openLoginModal = () => {
     setIsLoginVisible(true)
@@ -67,7 +85,14 @@ export default function Header() {
   }
 
   const openMobileSearch = () => setShowMobileSearch(true)
-  const closeMobileSearch = () => setShowMobileSearch(false)
+  const closeMobileSearch = () => {
+    setShowMobileSearch(false)
+    clearSearch()
+  }
+
+  const handleMobileSearchClose = () => {
+    closeMobileSearch()
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -75,20 +100,25 @@ export default function Header() {
         setShowProfilePopup(false)
       }
 
+      if (desktopSearchRef.current && !desktopSearchRef.current.contains(event.target as Node)) {
+        closeSearch()
+      }
+
       const searchOverlay = document.querySelector(`.${styles.mobileSearchOverlay}`)
       if (showMobileSearch && searchOverlay && !searchOverlay.contains(event.target as Node)) {
-        setShowMobileSearch(false)
+        closeMobileSearch()
+        // setShowMobileSearch(false)
       }
     }
 
-    if (showProfilePopup || showMobileSearch) {
+    if (showProfilePopup || searchOpen || showMobileSearch) {
       document.addEventListener("mousedown", handleClickOutside)
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [showProfilePopup, showMobileSearch])
+  }, [showProfilePopup, searchOpen, showMobileSearch, closeSearch])
 
   return (
     <header className={styles.header}>
@@ -101,7 +131,26 @@ export default function Header() {
           <Search className={styles.searchIcon} onClick={openMobileSearch} />
         </div>
 
-        <div className={styles.desktopSearch}>
+        <div className={styles.search} ref={desktopSearchRef}>
+          <div className={styles.searchContainer}>
+            <SearchInput
+              value={query}
+              onChange={setQuery}
+              onKeyDown={handleKeyDown}
+              placeholder="Поиск пользователей..."
+              className={styles.searchInput}
+            />
+            <SearchDropdown
+              isOpen={searchOpen}
+              results={results}
+              totalCount={totalCount}
+              isLoading={searchLoading}
+              error={searchError}
+              selectedIndex={selectedIndex}
+              onSelectResult={selectResult}
+              onClose={closeSearch}
+            />
+          </div>
           <Navigation isAuthenticated={isAuthenticated} />
         </div>
 
@@ -110,7 +159,7 @@ export default function Header() {
             <Image
               src={desktopLogo || "/placeholder.svg"}
               alt="Logo"
-              width={120}
+              width={140}
               height={60}
               priority
               quality={100}
@@ -128,10 +177,33 @@ export default function Header() {
         {showMobileSearch && (
           <div className={styles.mobileSearchOverlay}>
             <div className={styles.mobileSearchContainer}>
-              <input type="text" placeholder="Поиск..." className={styles.mobileSearchInput} autoFocus />
-              <button className={styles.mobileSearchClose} onClick={closeMobileSearch} type="button">
-                ×
-              </button>
+              <div className={styles.mobileSearchInputContainer}>
+                <SearchInput
+                  value={query}
+                  onChange={setQuery}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Поиск пользователей..."
+                  className={styles.mobileSearchInput}
+                  autoFocus
+                />
+                <button className={styles.mobileSearchClose} onClick={handleMobileSearchClose} type="button">
+                  <X size={20} />
+                </button>
+              </div>
+              <SearchDropdown
+                isOpen={searchOpen || query.length >= 3}
+                results={results}
+                totalCount={totalCount}
+                isLoading={searchLoading}
+                error={searchError}
+                selectedIndex={selectedIndex}
+                onSelectResult={(user) => {
+                  selectResult(user)
+                  closeMobileSearch()
+                }}
+                onClose={closeSearch}
+                isMobile={true}
+              />
             </div>
           </div>
         )}
@@ -179,9 +251,9 @@ export default function Header() {
           onForgotPassword={openForgotPasswordModal}
         />
 
-        {/* <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} /> */}
+        <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} />
 
-        <NewRegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} />
+        {/* <NewRegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} /> */}
 
         <ForgotPasswordModal show={isForgotPasswordVisible} handleClose={closeModals} onBackToLogin={openLoginModal} />
       </div>
