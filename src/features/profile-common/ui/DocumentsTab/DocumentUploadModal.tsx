@@ -42,6 +42,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
         <FileUpload
           onUploadSuccess={handleUploadSuccess}
           onUploadError={onUploadError}
+          onClose={onHide}
           acceptedFileTypes={acceptedFileTypes}
           maxFileSize={maxFileSize}
         />
