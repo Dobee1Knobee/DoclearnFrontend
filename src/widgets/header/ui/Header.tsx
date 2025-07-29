@@ -17,6 +17,7 @@ import { selectIsAuthenticated, selectUser, selectLoading } from "@/features/aut
 import { useSearch } from "@/features/search/hooks/useSearch"
 import { SearchInput } from "@/features/search/ui/SearchInput"
 import { SearchDropdown } from "@/features/search/ui/SearchDropdown"
+import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import desktopLogo from "@/../../public/logo.webp"
 
 export default function Header() {
@@ -24,6 +25,7 @@ export default function Header() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const user = useAppSelector(selectUser)
   const isLoading = useAppSelector(selectLoading)
+  const { getAvatarUrl } = useAvatarCache()
 
   const [isLoginVisible, setIsLoginVisible] = useState(false)
   const [isRegisterVisible, setIsRegisterVisible] = useState(false)
@@ -94,6 +96,8 @@ export default function Header() {
     closeMobileSearch()
   }
 
+  const avatarUrl = user ? getAvatarUrl(user.avatarUrl, user.avatarId, user._id, user.defaultAvatarPath) : "/placeholder.webp"
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profilePopupRef.current && !profilePopupRef.current.contains(event.target as Node)) {
@@ -157,7 +161,7 @@ export default function Header() {
         <div className={styles.mobileCenter}>
           <div className={styles.mobileLogo}>
             <Image
-              src={desktopLogo || "/placeholder.svg"}
+              src={desktopLogo || "/placeholder.webp"}
               alt="Logo"
               width={140}
               height={60}
@@ -216,11 +220,13 @@ export default function Header() {
           <div className={styles.avatarContainer} ref={profilePopupRef}>
             <div className={styles.avatarWrapper} onClick={toggleProfilePopup}>
               <Image
-                src={user.avatar || user.defaultAvatarPath}
+                src={avatarUrl || "/placeholder.webp"}
                 alt="User Avatar"
                 width={45}
                 height={45}
                 className={styles.avatar}
+                priority={false}
+                unoptimized={avatarUrl.startsWith("blob:")}
               />
             </div>
             {showProfilePopup && (
@@ -229,6 +235,8 @@ export default function Header() {
                   name={`${user.lastName} ${user.firstName} ${user.middleName}`}
                   role={user.role === "student" ? "Студент" : user.role === "doctor" ? "Врач" : "Администратор"}
                   avatar={user.avatar}
+                  avatarUrl={user.avatarUrl}
+                  avatarId={user.avatarId}
                   defaultAvatarPath={user.defaultAvatarPath}
                   userId={user._id}
                   onLogout={handleLogout}

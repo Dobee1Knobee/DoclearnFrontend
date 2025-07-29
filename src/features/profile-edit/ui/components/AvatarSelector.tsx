@@ -3,6 +3,8 @@
 import type React from "react"
 import { useState } from "react"
 import Image from "next/image"
+import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
+import type { AvatarFile } from "@/entities/user/model/types"
 import styles from "./AvatarSelector.module.css"
 import { Plus } from "lucide-react"
 import { AvatarUploadModal } from "./AvatarUploadModal"
@@ -13,19 +15,25 @@ interface AvatarSelectorProps {
   uploadedAvatarFile: File | null
   onAvatarChange: (defaultAvatarPath: string) => void
   onUploadedFileChange: (file: File | null) => void
+  userId?: string
+  avatarId?: AvatarFile
+  avatarUrl?: string
 }
 
-export const AvatarSelector: React.FC<AvatarSelectorProps> 
-= ({ 
-  currentAvatar, 
+export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
+  currentAvatar,
   defaultAvatarPath,
-  uploadedAvatarFile, 
+  uploadedAvatarFile,
   onAvatarChange,
-  onUploadedFileChange, 
+  onUploadedFileChange,
+  userId,
+  avatarId,
+  avatarUrl,
 }) => {
   const [showModal, setShowModal] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [selectedAvatar, setSelectedAvatar] = useState(defaultAvatarPath)
+  const { getAvatarUrl } = useAvatarCache()
 
   const avatars = Array.from({ length: 22 }, (_, i) => `/Avatars/Avatar${i + 1}.webp`)
 
@@ -59,7 +67,7 @@ export const AvatarSelector: React.FC<AvatarSelectorProps>
 
   const displayAvatar = uploadedAvatarFile
     ? URL.createObjectURL(uploadedAvatarFile)
-    : currentAvatar || defaultAvatarPath
+    : getAvatarUrl(avatarUrl || currentAvatar, avatarId, userId, defaultAvatarPath)
 
   return (
     <>
@@ -67,7 +75,7 @@ export const AvatarSelector: React.FC<AvatarSelectorProps>
         <h3 className={styles.title}>Аватар</h3>
         <div className={styles.currentAvatar} onClick={() => setShowModal(true)}>
           <Image
-            src={displayAvatar || defaultAvatarPath} // src={displayAvatar || "/placeholder.svg"}
+            src={displayAvatar || "/placeholder.webp"}
             alt="Текущий аватар"
             width={120}
             height={120}
@@ -77,49 +85,16 @@ export const AvatarSelector: React.FC<AvatarSelectorProps>
             <span>Изменить</span>
           </div>
         </div>
-        
-        <button
-          className={styles.addButton}
-          onClick={handleRandomAvatar}
-          type="button"
-        >
-          {/* <Plus size={16} /> */}
+
+        <button className={styles.addButton} onClick={handleRandomAvatar} type="button">
           Случайная аватарка
         </button>
-      </div>
 
-      {/* <Modal show={showModal} onHide={handleCancel} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Выберите аватар</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className={styles.avatarGrid}>
-            {avatars.map((avatar) => (
-              <div
-                key={avatar}
-                className={`${styles.avatarOption} ${selectedAvatar === avatar ? styles.selected : ""}`}
-                onClick={() => setSelectedAvatar(avatar)}
-              >
-                <Image
-                  src={avatar || "/placeholder.svg"}
-                  alt="Аватар"
-                  width={80}
-                  height={80}
-                  className={styles.optionImage}
-                />
-              </div>
-            ))}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCancel}>
-            Отмена
-          </Button>
-          <Button variant="primary" onClick={handleSave}>
-            Сохранить
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
+        <button className={styles.addButton} onClick={() => setShowUploadModal(true)} type="button">
+          {/* <Plus size={16} /> */}
+          Загрузить с компьютера
+        </button>
+      </div>
 
       <AvatarUploadModal
         show={showUploadModal}

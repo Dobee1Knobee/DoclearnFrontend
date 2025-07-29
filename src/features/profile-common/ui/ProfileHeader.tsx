@@ -14,6 +14,7 @@ import {
   useUnfollowUserMutation,
   useCheckFollowStatusQuery,
 } from "@/features/profile-edit/api/profileEditApi"
+import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
 import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
 import { MapPin, GraduationCap, Briefcase } from "lucide-react"
@@ -30,6 +31,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const dispatch = useAppDispatch()
   const router = useRouter()
+  const { getAvatarUrl } = useAvatarCache()
 
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [showRegisterModal, setShowRegisterModal] = useState(false)
@@ -52,6 +54,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const {
     _id,
     avatar,
+    avatarUrl,
+    avatarId,
     defaultAvatarPath,
     firstName,
     lastName,
@@ -64,6 +68,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   } = profile
 
   const fullName = `${lastName} ${firstName} ${middleName}`
+
+  const displayAvatarUrl = getAvatarUrl(avatarUrl || avatar, avatarId, _id, defaultAvatarPath)
 
   const getSpecializationText = () => {
     if (profile.role === "student") {
@@ -111,7 +117,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     }
 
     if (isProcessing || isFollowLoading || isUnfollowLoading) {
-      return 
+      return
     }
 
     setIsProcessing(true)
@@ -224,7 +230,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
         <div className={styles.topRow}>
           <div className={styles.left}>
             <Image
-              src={avatar || defaultAvatarPath}
+              src={displayAvatarUrl || "/placeholder.webp"}
               alt={fullName}
               width={120}
               height={120}
