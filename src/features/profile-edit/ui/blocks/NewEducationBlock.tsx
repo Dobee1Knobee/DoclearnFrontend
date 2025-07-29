@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { Form, Button, Alert } from "react-bootstrap"
-import { Plus, Trash2, GraduationCap } from "lucide-react"
+import { Plus, Trash2, GraduationCap, Upload } from "lucide-react"
 import type { Education, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import type { SpecialistRole } from "@/entities/user/model/newTypes"
 import styles from "./FormBlock.module.css"
@@ -35,6 +35,7 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
 }) => {
   const currentYear = new Date().getFullYear()
   const [touchedFields, setTouchedFields] = useState<FieldTouched>({})
+  const [showUploadModal, setShowUploadModal] = useState(false)
 
   const isStudent = role === "student"
   const canAddMore = !isStudent || education.length === 0
@@ -201,15 +202,23 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
           return (
             <div key={edu.id || index} className={styles.educationItem}>
               <div className={styles.educationHeader}>
-                <GraduationCap size={16} className={styles.educationIcon} />
+                <GraduationCap size={20} className={styles.educationIcon} />
                 <span className={styles.educationNumber}>Образование {index + 1}</span>
+                <Button 
+                  variant="primary" 
+                  onClick={() => setShowUploadModal(true)}
+                  className={styles.uploadButton}
+                >
+                  <Upload size={16} className={styles.uploadIcon} />
+                  Подтвердить образование
+                </Button>
                 <Button
                   variant="outline-danger"
                   size="sm"
                   onClick={() => removeEducation(index)}
                   className={styles.removeButton}
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={18} />
                 </Button>
               </div>
 

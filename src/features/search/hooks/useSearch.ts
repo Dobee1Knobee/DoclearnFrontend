@@ -37,7 +37,7 @@ export const useSearch = () => {
 
   const performSearch = useCallback(
     async (query: string) => {
-      if (query.length < 3) {
+      if (query.length < 2) {
         setState((prev) => ({
           ...prev,
           results: [],
