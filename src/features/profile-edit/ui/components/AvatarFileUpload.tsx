@@ -173,7 +173,7 @@ export const AvatarFileUpload: React.FC<AvatarFileUploadProps> = ({
 
           <div className={styles.previewContainer}>
             <Image
-              src={previewUrl || "/placeholder.svg"}
+              src={previewUrl || "/placeholder.webp"}
               alt="Превью аватара"
               width={120}
               height={120}
