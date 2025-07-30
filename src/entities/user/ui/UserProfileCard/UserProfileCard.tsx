@@ -4,11 +4,15 @@ import { LogOut, Settings, FileText, Bookmark, User, Sun, BellRing } from "lucid
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import type { UserProfile, MenuItem } from "../../model/types"
+import { useState } from "react"
+import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
+import type { UserProfile, MenuItem, AvatarFile } from "../../model/types"
 import styles from "./UserProfileCard.module.css"
 
 interface UserProfileCardProps extends Partial<UserProfile> {
   userId?: string
+  avatarUrl?: string
+  avatarId?: AvatarFile
   onLogout?: () => void
   onClose?: () => void
   defaultAvatarPath: string
@@ -18,12 +22,16 @@ export function UserProfileCard({
   name,
   role,
   avatar,
+  avatarUrl,
+  avatarId,
   defaultAvatarPath,
   userId,
   onLogout,
   onClose,
 }: UserProfileCardProps) {
   const router = useRouter()
+  const { getAvatarUrl } = useAvatarCache()
+  const [imageError, setImageError] = useState(false)
 
   const handleProfileClick = () => {
     router.push(`/profile/${userId}`)
@@ -66,6 +74,15 @@ export function UserProfileCard({
     onClose?.()
   }
 
+  const handleImageError = () => {
+    console.warn("Avatar image failed to load for user:", userId)
+    setImageError(true)
+  }
+
+  const displayAvatarUrl = imageError
+    ? "/placeholder.webp"
+    : getAvatarUrl(avatarUrl || avatar, avatarId, userId, defaultAvatarPath)
+
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileCard}>
@@ -73,11 +90,14 @@ export function UserProfileCard({
           <div className={styles.profileHeader}>
             <div className={styles.avatarContainer}>
               <Image
-                src={avatar || defaultAvatarPath}
+                src={displayAvatarUrl || "/placeholder.webp"}
                 alt={name || "Аватарка"}
                 width={64}
                 height={64}
                 className={styles.avatarImage}
+                onError={handleImageError}
+                priority={false}
+                unoptimized={displayAvatarUrl.startsWith("blob:")}
               />
             </div>
             <div className={styles.profileInfo}>
@@ -112,7 +132,7 @@ export function UserProfileCard({
                 <span className={styles.menuItemLabel}>Настройки</span>
               </div>
             </button>
-            
+
             <button type="button" className={`${styles.menuItem} ${styles.logoutButton}`} onClick={handleLogout}>
               <div className={styles.menuItemLeft}>
                 <LogOut className={styles.icon} />

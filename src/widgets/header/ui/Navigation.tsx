@@ -2,40 +2,56 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import styles from './Header.module.css';
+import styles from "./Header.module.css"
 import { Newspaper, MessageSquare, FileText, BookOpen } from "lucide-react"
 
+interface NavigationProps {
+  isAuthenticated?: boolean
+  isMobile?: boolean
+}
 
-export default function Navigation({isAuthenticated = false}) {
+export default function Navigation({ isAuthenticated = false, isMobile = false }: NavigationProps) {
   const pathname = usePathname()
 
   const isAggregatorActive = pathname.startsWith("/Aggregator")
 
+  if (isMobile) {
     return (
-      <div className={styles.search}>
-        <input 
-          type="text" 
-          className="form-control"
-          placeholder="Поиск по сайту..." 
-          style={{borderColor:'#5388d8'}}
-        />
-        <div className={styles.iconsContainer}>
-          <Link href="/News">
-            <Newspaper className={`${styles.icon} ${pathname === "/News" ? styles.iconActive : ""}`} />
+      <div className={styles.iconsContainer}>
+        <Link href="/News">
+          <Newspaper className={`${styles.icon} ${pathname === "/News" ? styles.iconActive : ""}`} />
+        </Link>
+        <Link href="/Feed">
+          <MessageSquare className={`${styles.icon} ${pathname === "/Feed" ? styles.iconActive : ""}`} />
+        </Link>
+        <Link href="/Aggregator">
+          <FileText className={`${styles.icon} ${isAggregatorActive ? styles.iconActive : ""}`} />
+        </Link>
+        {isAuthenticated && (
+          <Link href="/Learn">
+            <BookOpen className={`${styles.icon} ${pathname === "/Learn" ? styles.iconActive : ""}`} />
           </Link>
-          <Link href="/Feed">
-            <MessageSquare className={`${styles.icon} ${pathname === "/Feed" ? styles.iconActive : ""}`} />
-          </Link>
-          <Link href="/Aggregator">
-            <FileText className={`${styles.icon} ${isAggregatorActive ? styles.iconActive : ""}`} />
-          </Link>
-          {isAuthenticated && (
-            <Link href="/Learn">
-              <BookOpen className={`${styles.icon} ${pathname === "/Learn" ? styles.iconActive : ""}`} />
-            </Link>
-          )}
-        </div>
+        )}
       </div>
-    );
+    )
   }
-  
+
+  return (
+      <div className={styles.iconsContainer}>
+        <Link href="/News">
+          <Newspaper className={`${styles.icon} ${pathname === "/News" ? styles.iconActive : ""}`} />
+        </Link>
+        <Link href="/Feed">
+          <MessageSquare className={`${styles.icon} ${pathname === "/Feed" ? styles.iconActive : ""}`} />
+        </Link>
+        <Link href="/Aggregator">
+          <FileText className={`${styles.icon} ${isAggregatorActive ? styles.iconActive : ""}`} />
+        </Link>
+        {isAuthenticated && (
+          <Link href="/Learn">
+            <BookOpen className={`${styles.icon} ${pathname === "/Learn" ? styles.iconActive : ""}`} />
+          </Link>
+        )}
+      </div>
+  )
+}

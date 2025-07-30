@@ -43,7 +43,6 @@ export const ScientificStatusBlock: React.FC<ScientificStatusBlockProps> = ({
     const updated = { ...scientificStatus, [field]: value }
     onChange("scientificStatus", updated)
 
-    // Валидация ученой степени
     if (field === "degree") {
       if (!value) {
         setDegreeError("Ученая степень обязательна")

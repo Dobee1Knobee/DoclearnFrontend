@@ -10,6 +10,7 @@ type UploadStatus = "idle" | "dragging" | "uploading" | "success" | "error"
 interface FileUploadProps {
   onUploadSuccess?: (file: File) => void
   onUploadError?: (error: string) => void
+  onClose?: () => void
   acceptedFileTypes?: string[]
   maxFileSize?: number
 }
@@ -17,6 +18,7 @@ interface FileUploadProps {
 export const FileUpload: React.FC<FileUploadProps> = ({
   onUploadSuccess,
   onUploadError,
+  onClose,
   acceptedFileTypes = [],
   maxFileSize = 5 * 1024 * 1024,
 }) => {
@@ -150,8 +152,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     triggerFileInput()
   }
 
-  const handleGoBack = () => {
+  const handleClose = () => {
     resetState()
+    onClose?.()
   }
 
   const getFileTypeDisplay = (type: string) => {
@@ -193,8 +196,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             <button onClick={handleUploadNewFile} type="button" className={styles.uploadNewButton}>
               Загрузить новый файл
             </button>
-            <button onClick={handleGoBack} type="button" className={styles.goBackButton}>
-              Вернуться назад
+            <button onClick={handleClose} type="button" className={styles.goBackButton}>
+              Закрыть
             </button>
           </div>
         </div>

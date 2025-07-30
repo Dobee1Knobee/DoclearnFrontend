@@ -14,6 +14,7 @@ import { AvatarSelector } from "./components/AvatarSelector"
 import { UnsavedChangesWarning } from "./components/UnsavedChangesWarning"
 import { useUpdateMyProfileMutation, useUploadAvatarMutation } from "../api/profileEditApi"
 import { useFormChanges } from "@/features/profile-edit/hooks/useFormChanges"
+import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import { Alert } from "react-bootstrap"
 import styles from "./ProfileEditForm.module.css"
 import { useScrollToHash } from "@/shared/hooks/useScrollToHash"
@@ -26,6 +27,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
   useScrollToHash()
   const router = useRouter()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateMyProfileMutation()
+  const { cacheAvatar } = useAvatarCache()
 
   const {
     formData,
@@ -57,12 +59,10 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
 
   const handleEducationValidationChange = (hasErrors: boolean) => {
     setEducationErrors(hasErrors)
-    
   }
 
   const handleContactsValidationChange = (hasErrors: boolean) => {
     setContactsErrors(hasErrors)
-    
   }
 
   const handleSave = async () => {
@@ -75,15 +75,18 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
 
       const dataToSend = getDataToSend()
       let avatarUploaded = false
+      let newAvatarUrl = ""
 
       if (formData.uploadedAvatarFile) {
         try {
           const avatarResult = await uploadAvatar(formData.uploadedAvatarFile).unwrap()
+          newAvatarUrl = avatarResult.data.avatarUrl
 
-          updateField("avatar", avatarResult.data.avatarUrl)
-
+          updateField("avatar", newAvatarUrl)
           setAvatarSaveStatus("success")
           avatarUploaded = true
+
+          await cacheAvatar(newAvatarUrl, profile._id)
 
           clearUploadedAvatarFile()
         } catch (avatarError: any) {
@@ -196,6 +199,9 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile }) => 
                 clearUploadedAvatarFile()
               }}
               onUploadedFileChange={setUploadedAvatarFile}
+              userId={profile._id}
+              avatarId={profile.avatarId}
+              avatarUrl={profile.avatarUrl}
             />
           </div>
           <div className={styles.personalInfoWrapper}>

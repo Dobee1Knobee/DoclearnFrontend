@@ -1,0 +1,49 @@
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.spinner {
+  color: #5388d8;
+  margin-right: 8px;
+}
+
+.text {
+  font-size: 14px;
+  color: #666;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.showAllContainer {
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.showAllButton {
+  width: 100%;
+  padding: 8px 16px;
+  background-color: #f8f9ff;
+  border: 1px solid #5388d8;
+  border-radius: 6px;
+  color: #5388d8;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.showAllButton:hover:not(.disabled) {
+  background-color: #5388d8;
+  color: white;
+}
+
+.showAllButton.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
