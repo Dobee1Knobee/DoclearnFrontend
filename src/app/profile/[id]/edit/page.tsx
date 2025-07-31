@@ -13,8 +13,8 @@ export default async function EditProfileRoute({
       className="container mx-auto px-4 py-8"
       style={{ marginTop: "7rem", marginBottom: "5rem", maxWidth: "1200px" }}
     >
-      <ProfileEditPage userId={id} />
-      {/* <NewProfileEditPage userId={id}/> */}
+      {/* <ProfileEditPage userId={id} /> */}
+      <NewProfileEditPage userId={id}/>
     </div>
   )
 }
