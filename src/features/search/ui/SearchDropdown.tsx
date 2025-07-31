@@ -76,7 +76,7 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
         {totalCount > 5 && (
           <ShowAllButton
             totalCount={totalCount}
-            onClick={() => {}} // Пока неактивна
+            onClick={() => {}}
             disabled={true}
           />
         )}

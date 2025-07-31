@@ -246,10 +246,12 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
       setSaveStatus("idle")
       setErrorMessage("")
 
+      // console.log("Сохраняем данные профиля:", formData)
 
       setSaveStatus("success")
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
+      // router.push(`/profile/${profile._id}`)
     } catch (error: any) {
       console.error("Update profile error:", error)
       setSaveStatus("error")
@@ -269,10 +271,10 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
   const handleCancel = () => {
     if (hasChanges) {
       if (window.confirm("У вас есть несохраненные изменения. Вы уверены, что хотите выйти?")) {
-        router.push(`/profile/${profile._id}`)
+        // router.push(`/profile/${profile._id}`)
       }
     } else {
-      router.push(`/profile/${profile._id}`)
+      // router.push(`/profile/${profile._id}`)
     }
   }
 
