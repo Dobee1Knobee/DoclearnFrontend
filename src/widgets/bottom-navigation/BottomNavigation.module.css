@@ -1,0 +1,48 @@
+.bottomNavigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid #e0e0e0;
+  z-index: 1000;
+  display: none;
+}
+
+
+.iconsContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
+}
+
+.icon {
+  color: #5388d8;
+  font-size: 28px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transition: color 0.2s;
+  transition: transform 0.2s;
+}
+
+.icon:hover {
+  color: #3266b6;
+  transform: scale(1.4);
+}
+
+.iconActive {
+  transform: scale(1.4);
+}
+
+@media (max-width: 650px) {
+  .bottomNavigation {
+    display: block;
+  }
+}
+
+

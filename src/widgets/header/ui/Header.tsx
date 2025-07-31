@@ -19,6 +19,7 @@ import { SearchInput } from "@/features/search/ui/SearchInput"
 import { SearchDropdown } from "@/features/search/ui/SearchDropdown"
 import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import desktopLogo from "@/../../public/logo.webp"
+import Link from "next/link"
 
 export default function Header() {
   const dispatch = useAppDispatch()
@@ -159,23 +160,28 @@ export default function Header() {
         </div>
 
         <div className={styles.mobileCenter}>
-          <div className={styles.mobileLogo}>
-            <Image
-              src={desktopLogo || "/placeholder.webp"}
-              alt="Logo"
-              width={140}
-              height={60}
-              priority
-              quality={100}
-              style={{
-                objectFit: "contain",
-                height: "auto",
-              }}
-            />
-          </div>
-          <div className={styles.mobileNavigation}>
+            <Link
+              href="/"
+              aria-label="На главную"
+              className={styles.mobileLogo}
+              prefetch
+            >
+              <Image
+                src={desktopLogo || "/placeholder.webp"}
+                alt="Logo"
+                width={140}
+                height={60}
+                priority
+                quality={100}
+                style={{
+                  objectFit: "contain",
+                  height: "auto",
+                }}
+              />
+            </Link>
+          {/* <div className={styles.mobileNavigation}>
             <Navigation isAuthenticated={isAuthenticated} isMobile={true} />
-          </div>
+          </div> */}
         </div>
 
         {showMobileSearch && (
