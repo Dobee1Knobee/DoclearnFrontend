@@ -1,11 +1,11 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { useState, useRef, useCallback } from "react"
 import { UploadCloud, FileIcon, X, CircleCheck } from "lucide-react"
 import styles from "./FileUpload.module.css"
 
-type UploadStatus = "idle" | "dragging" | "uploading" | "success" | "error"
+type UploadStatus = "idle" | "uploading" | "success" | "error"
 
 interface FileUploadProps {
   onUploadSuccess?: (file: File) => void
@@ -13,6 +13,9 @@ interface FileUploadProps {
   onClose?: () => void
   acceptedFileTypes?: string[]
   maxFileSize?: number
+  onSubmit?: () => void
+  uploadStatus?: UploadStatus
+  selectedFile?: File | null
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -21,12 +24,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   onClose,
   acceptedFileTypes = [],
   maxFileSize = 5 * 1024 * 1024,
+  onSubmit,
+  uploadStatus = "idle",
+  selectedFile: externalSelectedFile,
 }) => {
-  const [file, setFile] = useState<File | null>(null)
+  const [internalFile, setInternalFile] = useState<File | null>(null)
   const [status, setStatus] = useState<UploadStatus>("idle")
   const [progress, setProgress] = useState(0)
   const [error, setError] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const file = externalSelectedFile || internalFile
+  const currentStatus = uploadStatus !== "idle" ? uploadStatus : status
 
   const formatBytes = (bytes: number, decimals = 2): string => {
     if (!bytes) return "0 Bytes"
@@ -62,15 +72,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     return true
   }
 
-  const simulateUpload = (uploadingFile: File) => {
+  const simulateProgress = () => {
     let currentProgress = 0
     const interval = setInterval(() => {
       currentProgress += Math.random() * 15 + 5
       if (currentProgress >= 100) {
         clearInterval(interval)
         setProgress(100)
-        setStatus("success")
-        onUploadSuccess?.(uploadingFile)
       } else {
         setProgress(currentProgress)
       }
@@ -81,52 +89,48 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     if (!selectedFile) return
 
     if (!handleFileValidation(selectedFile)) {
-      setFile(null)
+      setInternalFile(null)
       return
     }
 
-    setFile(selectedFile)
+    setInternalFile(selectedFile)
     setError(null)
-    setStatus("uploading")
+    setStatus("idle")
     setProgress(0)
-    simulateUpload(selectedFile)
+    onUploadSuccess?.(selectedFile)
   }
 
   const handleDragOver = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault()
       e.stopPropagation()
-      if (status !== "uploading" && status !== "success") {
-        setStatus("dragging")
+      if (currentStatus !== "uploading" && currentStatus !== "success") {
+        setIsDragging(true)
       }
     },
-    [status],
+    [currentStatus],
   )
 
-  const handleDragLeave = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      if (status === "dragging") {
-        setStatus("idle")
-      }
-    },
-    [status],
-  )
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }, [])
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault()
       e.stopPropagation()
-      if (status === "uploading" || status === "success") return
+      setIsDragging(false)
 
-      setStatus("idle")
+      if (currentStatus === "uploading" || currentStatus === "success") return
+
       const droppedFile = e.dataTransfer.files?.[0]
       if (droppedFile) {
         handleFileSelect(droppedFile)
       }
     },
-    [status],
+    [currentStatus],
   )
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,26 +140,29 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   }
 
   const triggerFileInput = () => {
-    if (status === "uploading") return
+    if (currentStatus === "uploading") return
     fileInputRef.current?.click()
   }
 
   const resetState = () => {
-    setFile(null)
+    setInternalFile(null)
     setStatus("idle")
     setProgress(0)
     setError(null)
+    setTimeout(() => {
+      triggerFileInput()
+    }, 100)
   }
 
-  const handleUploadNewFile = () => {
-    resetState()
-    triggerFileInput()
-  }
+  // const handleUploadNewFile = () => {
+  //   resetState()
+  //   triggerFileInput()
+  // }
 
-  const handleClose = () => {
-    resetState()
-    onClose?.()
-  }
+  // const handleCloseModal = () => {
+  //   resetState()
+  //   onClose?.()
+  // }
 
   const getFileTypeDisplay = (type: string) => {
     const typeMap: Record<string, string> = {
@@ -167,7 +174,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     return typeMap[type] || type.split("/")[1]?.toUpperCase() || "Unknown"
   }
 
-  if (file && status === "success") {
+  React.useEffect(() => {
+    if (uploadStatus === "uploading") {
+      simulateProgress()
+    }
+  }, [uploadStatus])
+
+  if (file && currentStatus === "success") {
     return (
       <div className={styles.container}>
         <div className={styles.successContainer}>
@@ -192,14 +205,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             </div>
           </div>
 
-          <div className={styles.actionButtons}>
+          {/* <div className={styles.actionButtons}>
             <button onClick={handleUploadNewFile} type="button" className={styles.uploadNewButton}>
               Загрузить новый файл
             </button>
-            <button onClick={handleClose} type="button" className={styles.goBackButton}>
+            <button onClick={handleCloseModal} type="button" className={styles.goBackButton}>
               Закрыть
             </button>
-          </div>
+          </div> */}
         </div>
 
         <input
@@ -213,7 +226,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     )
   }
 
-  if (status === "uploading" && file) {
+  if (currentStatus === "uploading" && file) {
     return (
       <div className={styles.container}>
         <div className={styles.uploadingContainer}>
@@ -241,23 +254,26 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             {file.name}
           </p>
           <p className={styles.uploadingProgress}>{Math.round(progress)}%</p>
-
-          <button onClick={resetState} type="button" className={styles.cancelButton}>
-            Отменить
-          </button>
         </div>
       </div>
     )
   }
 
-  if (status === "error") {
+  const handleTryAgain = () => {
+    resetState()
+    if (externalSelectedFile) {
+      onUploadSuccess?.(null as any)
+    }
+  }
+
+  if (currentStatus === "error") {
     return (
       <div className={styles.container}>
         <div className={styles.errorContainer}>
           <X className={styles.errorIcon} />
           <h3 className={styles.errorTitle}>Ошибка загрузки</h3>
           <p className={styles.errorText}>{error || "Произошла неизвестная ошибка"}</p>
-          <button onClick={resetState} type="button" className={styles.tryAgainButton}>
+          <button onClick={handleTryAgain} type="button" className={styles.tryAgainButton}>
             Попробовать снова
           </button>
         </div>
@@ -265,10 +281,51 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     )
   }
 
+  if (file && currentStatus === "idle") {
+    return (
+      <div className={styles.container}>
+        <div className={styles.selectedFileContainer}>
+          <div className={styles.fileInfo}>
+            <div className={styles.fileIconWrapper}>
+              <FileIcon size={24} />
+            </div>
+            <div className={styles.fileDetails}>
+              <p className={styles.fileName} title={file.name}>
+                {file.name}
+              </p>
+              <div className={styles.fileMetadata}>
+                <span className={styles.fileSize}>{formatBytes(file.size)}</span>
+                <span className={styles.fileDivider}>•</span>
+                <span className={styles.fileType}>{getFileTypeDisplay(file.type)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.actionButtons}>
+            <button onClick={onSubmit} type="button" className={styles.uploadButton}>
+              Загрузить документ
+            </button>
+            <button onClick={resetState} type="button" className={styles.changeFileButton}>
+              Выбрать другой файл
+            </button>
+          </div>
+        </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          className={styles.hiddenInput}
+          onChange={handleFileInputChange}
+          accept={acceptedFileTypes.join(",")}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <div
-        className={`${styles.dropzone} ${status === "dragging" ? styles.dragging : ""}`}
+        className={`${styles.dropzone} ${isDragging ? styles.dragging : ""}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}

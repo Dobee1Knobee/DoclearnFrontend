@@ -8,6 +8,7 @@ import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
 import { useAppSelector } from "@/shared/hooks/hooks"
 import { selectUser } from "@/features/auth/model/selectors"
 import { DocumentUploadModal } from "./DocumentUploadModal"
+import { DocumentCard } from "./DocumentCard"
 import styles from "./DocumentsTab.module.css"
 
 interface DocumentsTabProps {
@@ -19,11 +20,22 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({ profile }) => {
   const currentUser = useAppSelector(selectUser)
 
   const isOwner = currentUser?._id === profile._id
+  const documents = profile.documents || []
 
-  const handleUploadSuccess = () => {}
+  const handleUploadSuccess = () => {
+    // setShowUploadModal(false)
+  }
 
   const handleUploadError = (error: string) => {
     console.error("Upload error:", error)
+  }
+
+  const handleDownloadDocument = (documentId: string) => {
+    console.log("Download document:", documentId)
+  }
+
+  const handleDeleteDocument = (documentId: string) => {
+    console.log("Delete document:", documentId)
   }
 
   if (isOwner) {
@@ -38,11 +50,26 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({ profile }) => {
         </div>
 
         <div className={styles.content}>
-          <div className={styles.empty}>
-            <Upload size={48} className={styles.emptyIcon} />
-            <h4 className={styles.emptyTitle}>Документы не загружены</h4>
-            <p className={styles.emptyText}>Загрузите документы для подтверждения квалификации</p>
-          </div>
+          {documents.length > 0 ? (
+            <div className={styles.documentsGrid}>
+              {documents.map((document) => (
+                <DocumentCard
+                  key={document._id}
+                  document={document}
+                  onDownload={handleDownloadDocument}
+                  onDelete={handleDeleteDocument}
+                  showActions={true}
+                  showVisibility={true}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.empty}>
+              <Upload size={48} className={styles.emptyIcon} />
+              <h4 className={styles.emptyTitle}>Документы не загружены</h4>
+              <p className={styles.emptyText}>Загрузите документы для подтверждения квалификации</p>
+            </div>
+          )}
         </div>
 
         <DocumentUploadModal
@@ -58,11 +85,28 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({ profile }) => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.empty}>
-          <FileText size={48} className={styles.emptyIcon} />
-          <h4 className={styles.emptyTitle}>Документов нет</h4>
-          <p className={styles.emptyText}>Пользователь не загрузил документы или они находятся на модерации</p>
-        </div>
+        {documents.length > 0 ? (
+          <div className={styles.documentsGrid}>
+            {documents
+              .filter((doc) => doc.isPublic)
+              .map((document) => (
+                <DocumentCard
+                  key={document._id}
+                  document={document}
+                  onDownload={handleDownloadDocument}
+                  onDelete={handleDeleteDocument}
+                  showActions={false}
+                  showVisibility={false}
+                />
+              ))}
+          </div>
+        ) : (
+          <div className={styles.empty}>
+            <FileText size={48} className={styles.emptyIcon} />
+            <h4 className={styles.emptyTitle}>Документов нет</h4>
+            <p className={styles.emptyText}>Пользователь не загрузил документы или они находятся на модерации</p>
+          </div>
+        )}
       </div>
     </div>
   )
