@@ -15,6 +15,33 @@ export interface UserProfile {
   avatar: string
 }
 
+export interface AvatarFile {
+  _id: string
+  fileName: string
+  originalName: string
+  fileType: string
+  size: number
+  mimetype: string
+  userId: string
+  uploadedAt: string
+  isDeleted: boolean
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
+export type DocumentCategory = "diploma" | "certificate" | "license" | "id" | "other"
+
+export interface Document {
+  _id: string
+  file: string
+  category: DocumentCategory
+  label?: string
+  isPublic: boolean
+  uploadedAt: string
+}
+
+
 export interface User {
   _id: string
   firstName: string
@@ -34,6 +61,7 @@ export interface User {
   defaultAvatarPath: string
   avatarUrl?: string
   avatarUrlTimestamp?: number
+  avatarId?: AvatarFile
   location: string
   followers: string[]
   following: string[]
@@ -46,8 +74,10 @@ export interface User {
     followersCount: number
     postsCount?: number
   }
-  contacts: Contact[]   
+  contacts: Contact[]
   education: Education[]
+  documents: Document[]
+}
 }
 
 export interface Achievement {

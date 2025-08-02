@@ -47,6 +47,13 @@
   min-height: 300px;
 }
 
+.documentsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
 .empty {
   display: flex;
   flex-direction: column;
@@ -76,6 +83,12 @@
   margin: 0;
 }
 
+@media (max-width: 1200px) {
+  .documentsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -85,5 +98,20 @@
 
   .uploadButton {
     justify-content: center;
+  }
+
+  .documentsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    gap: 1rem;
+  }
+
+  .documentsGrid {
+    gap: 0.75rem;
   }
 }

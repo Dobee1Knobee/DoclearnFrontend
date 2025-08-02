@@ -1,6 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { UpdateProfileRequest, UpdateProfileResponse, UploadAvatarResponse } from "../model/types"
+import type { DocumentCategory } from "@/entities/user/model/types"
 import { updateUserFields } from "@/features/auth/model/slice"
+
+interface UploadDocumentRequest {
+  document: File
+  category: DocumentCategory
+  label?: string
+  isPublic: boolean
+}
+
+interface UploadDocumentResponse {
+  message: string
+}
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://api.doclearn.ru",
@@ -11,7 +23,7 @@ const baseQuery = fetchBaseQuery({
       headers.set("Authorization", `Bearer ${refreshToken}`)
     }
 
-    if (endpoint !== "uploadAvatar") {
+    if (endpoint !== "uploadAvatar" && endpoint !== "uploadDocument") {
       headers.set("Content-Type", "application/json")
     }
 
@@ -82,7 +94,7 @@ export const profileEditApi = createApi({
           { type: "Profile", id: "LIST" },
           "Profile",
           "UserProfile",
-        ] 
+        ]
       },
     }),
 
@@ -114,12 +126,46 @@ export const profileEditApi = createApi({
       },
     }),
 
+    uploadDocument: builder.mutation<UploadDocumentResponse, UploadDocumentRequest>({
+      query: ({ document, category, label, isPublic }) => {
+        const formData = new FormData()
+        formData.append("document", document)
+        formData.append("category", category)
+        if (label) {
+          formData.append("label", label)
+        }
+        formData.append("isPublic", isPublic.toString())
+        return {
+          url: "/user/upload-document-profile",
+          method: "POST",
+          body: formData,
+        }
+      },
+      invalidatesTags: (result, error, arg) => {
+        if (error) return []
+
+        return [
+          { type: "Profile" as const, id: "LIST" },
+          { type: "Profile" as const, id: "ME" },
+          { type: "Profile" as const, id: "CURRENT" },
+          { type: "UserProfile" as const, id: "LIST" },
+          { type: "UserProfile" as const, id: "ME" },
+          { type: "UserProfile" as const, id: "CURRENT" },
+          "Profile",
+          "UserProfile",
+        ]
+      },
+    }),
+
     followUser: builder.mutation<{ success: boolean; message: string }, string>({
       query: (userId) => ({
         url: `/user/${userId}/follow`,
         method: "POST",
       }),
-      invalidatesTags: (_result, _error, userId) => [{ type: "Profile", id: userId }, { type: "UserProfile", id: userId }],
+      invalidatesTags: (_result, _error, userId) => [
+        { type: "Profile", id: userId },
+        { type: "UserProfile", id: userId },
+      ],
     }),
 
     unfollowUser: builder.mutation<{ success: boolean; message: string }, string>({
@@ -127,7 +173,10 @@ export const profileEditApi = createApi({
         url: `/user/${userId}/follow`,
         method: "DELETE",
       }),
-      invalidatesTags: (_result, _error, userId) => [{ type: "Profile", id: userId }, { type: "UserProfile", id: userId },],
+      invalidatesTags: (_result, _error, userId) => [
+        { type: "Profile", id: userId },
+        { type: "UserProfile", id: userId },
+      ],
     }),
 
     checkFollowStatus: builder.query<{ success: boolean; data: { isFollowing: boolean } }, string>({
@@ -135,7 +184,10 @@ export const profileEditApi = createApi({
         url: `/user/${userId}/is-following`,
         method: "GET",
       }),
-      providesTags: (_result, _error, userId) => [{ type: "Profile", id: userId }, { type: "UserProfile", id: userId },],
+      providesTags: (_result, _error, userId) => [
+        { type: "Profile", id: userId },
+        { type: "UserProfile", id: userId },
+      ],
     }),
   }),
 })
@@ -146,4 +198,5 @@ export const {
   useUnfollowUserMutation,
   useCheckFollowStatusQuery,
   useUploadAvatarMutation,
+  useUploadDocumentMutation,
 } = profileEditApi

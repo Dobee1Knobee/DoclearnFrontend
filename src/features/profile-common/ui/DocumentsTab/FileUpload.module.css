@@ -4,7 +4,6 @@
   margin: 0 auto;
 }
 
-/* Dropzone styles */
 .dropzone {
   border: 2px dashed #d1d5db;
   border-radius: 12px;
@@ -61,7 +60,11 @@
   margin: 0;
 }
 
-/* Uploading styles */
+.selectedFileContainer {
+  text-align: center;
+  padding: 1rem 2rem 2rem;
+}
+
 .uploadingContainer {
   text-align: center;
   padding: 1rem 2rem 2rem;
@@ -148,7 +151,6 @@
   color: #374151;
 }
 
-/* Success styles */
 .successContainer {
   text-align: center;
   padding: 1rem 2rem 2rem;
@@ -226,7 +228,9 @@
 }
 
 .uploadNewButton,
-.goBackButton {
+.goBackButton,
+.uploadButton,
+.changeFileButton {
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
@@ -237,27 +241,30 @@
   border: none;
 }
 
-.uploadNewButton {
+.uploadNewButton,
+.uploadButton {
   background: #5388d8;
   color: white;
 }
 
-.uploadNewButton:hover {
+.uploadNewButton:hover,
+.uploadButton:hover {
   background: #4070b8;
 }
 
-.goBackButton {
+.goBackButton,
+.changeFileButton {
   background: #f8fafc;
   color: #374151;
   border: 1px solid #d1d5db;
 }
 
-.goBackButton:hover {
+.goBackButton:hover,
+.changeFileButton:hover {
   background: #e5e7eb;
   border-color: #9ca3af;
 }
 
-/* Error styles */
 .errorContainer {
   text-align: center;
   padding: 1rem 2rem 2rem;
@@ -302,7 +309,6 @@
   background: #4070b8;
 }
 
-/* Hidden input */
 .hiddenInput {
   position: absolute;
   width: 1px;
@@ -315,7 +321,6 @@
   border: 0;
 }
 
-/* Mobile responsiveness */
 @media (max-width: 480px) {
   .dropzone {
     padding: 2rem 1rem;
@@ -323,7 +328,8 @@
 
   .uploadingContainer,
   .successContainer,
-  .errorContainer {
+  .errorContainer,
+  .selectedFileContainer {
     padding: 1.5rem;
   }
 
