@@ -6,7 +6,7 @@ import styles from "./Header.module.css"
 import Logo from "./Logo"
 import Navigation from "./Navigation"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
-import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
+// import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
 
 export default function HeaderLogin() {
   const [isLoginVisible, setIsLoginVisible] = useState(false)
@@ -60,7 +60,7 @@ export default function HeaderLogin() {
           onSuccess={handleLoginSuccess}
         />
 
-        <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} />
+        {/* <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} /> */}
       </div>
     </header>
   )
