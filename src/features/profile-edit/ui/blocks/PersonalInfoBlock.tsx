@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { Form } from "react-bootstrap"
-import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { SpecialistUser } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 
 interface PersonalInfoData {
@@ -12,7 +12,7 @@ interface PersonalInfoData {
   birthday: string
 }
 
-type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
+type ProfileKeys = keyof SpecialistUser
 
 interface PersonalInfoBlockProps {
   data: PersonalInfoData

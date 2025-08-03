@@ -51,5 +51,5 @@ export const NewProfileEditPage: React.FC<NewProfileEditPageProps> = ({ userId }
     return null
   }
 
-  return <NewProfileEditForm />
+  return <NewProfileEditForm profile={currentUser} />
 }

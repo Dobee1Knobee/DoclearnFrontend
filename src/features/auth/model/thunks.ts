@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
 import http from "@/shared/api/http"
-import type { User } from "@/entities/user/model/types"
+import type { SpecialistUser } from "@/entities/user/model/types"
 import type { LoginDto, RegisterDto, VerifyDto } from "./types"
 import { clearAuthError, setRegistrationEmail } from "./slice"
 
@@ -9,31 +9,31 @@ interface RefreshTokenResponse {
   refreshToken: string
 }
 
-interface UserResponse {
+interface SpecialistUserResponse {
   success: boolean
-  data: User
+  data: SpecialistUser
 }
 
 interface ErrorResponse {
   message?: string
 }
 
-interface LoginResponse {
-  user: User
+interface LoginSpecialistResponse {
+  user: SpecialistUser
   refreshToken: string
 }
 
-async function fetchProfile(): Promise<User> {
-  const { data } = await http.get<UserResponse>("/user/me")
+async function fetchProfile(): Promise<SpecialistUser> {
+  const { data } = await http.get<SpecialistUserResponse>("/user/me")
   console.log("Данные от /user/me:", data.data)
   return data.data
 }
 
-export const loginUser = createAsyncThunk<User, LoginDto, { rejectValue: string }>(
+export const loginUser = createAsyncThunk<SpecialistUser, LoginDto, { rejectValue: string }>(
   "auth/loginUser",
   async (dto, { rejectWithValue }) => {
     try {
-      const response = await http.post<LoginResponse>("/auth/login", dto)
+      const response = await http.post<LoginSpecialistResponse>("/auth/login", dto)
       localStorage.setItem("refreshToken", response.data.refreshToken)
       return response.data.user
     } catch (err) {
@@ -66,11 +66,11 @@ export const registerUser = createAsyncThunk<void, RegisterDto, { rejectValue: s
   },
 )
 
-export const verifyUserEmail = createAsyncThunk<User, VerifyDto, { rejectValue: string }>(
+export const verifyUserEmail = createAsyncThunk<SpecialistUser, VerifyDto, { rejectValue: string }>(
   "auth/verifyUserEmail",
   async (dto, { rejectWithValue }) => {
     try {
-      const response = await http.post<LoginResponse>("/auth/verify-email", dto)
+      const response = await http.post<LoginSpecialistResponse>("/auth/verify-email", dto)
       console.log("verify-email: ",response)
       localStorage.setItem("refreshToken", response.data.refreshToken)
       return response.data.user
@@ -89,11 +89,10 @@ export const verifyUserEmail = createAsyncThunk<User, VerifyDto, { rejectValue: 
   },
 )
 
-export const checkAuthStatus = createAsyncThunk<User | null>("auth/checkAuthStatus", async () => {
+export const checkAuthStatus = createAsyncThunk<SpecialistUser | null>("auth/checkAuthStatus", async () => {
   try {
     const rt = localStorage.getItem("refreshToken")
     if (!rt) return null
-    // await http.post("/auth/refresh", { refreshToken: rt })
     return await fetchProfile()
   } catch {
     return null

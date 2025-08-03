@@ -15,6 +15,82 @@ export interface UserProfile {
   avatar: string
 }
 
+//типы для научного статуса
+export type AcademicDegree = "Кандидат медицинских наук" | "Доктор медицинских наук"
+export type AcademicTitle = "Доцент" | "Профессор"
+export type AcademicRank = "Член-корреспондент РАН" | "Академик РАН"
+
+export interface ScientificStatus {
+  degree: AcademicDegree | null
+  title: AcademicTitle | null
+  rank: AcademicRank | null
+  interests: string[]
+}
+
+//типы для специализаций врача
+export type SpecializationMethod = "Ординатура" | "Профессиональная переподготовка"
+export type QualificationCategory = "Вторая категория" | "Первая категория" | "Высшая категория"
+
+export interface Specialization {
+  id: string
+  name: string
+  method: SpecializationMethod
+  qualificationCategory: QualificationCategory
+}
+
+//тип для места работы
+export interface Work {
+  id: string
+  organizationId?: string
+  organizationName: string
+  position: string
+  startDate: string
+  endDate?: string
+  isCurrently: boolean
+}
+
+export interface Contact {
+  _id: string
+  type: string
+  label?: string
+  value: string
+  isPublic?: boolean
+}
+
+export interface Education {
+  id: string
+  institution: string
+  degree: string
+  specialty: string
+  startDate: string
+  graduationYear: string
+  isCurrently: boolean
+}
+
+// export interface StudentEducation extends BaseEducation {
+//   degree: "Специалитет"
+// }
+
+// export interface GeneralEducation extends BaseEducation {
+//   degree: string
+// }
+
+//тип верификации с новыми ролями
+export interface UserVerification {
+  user: boolean
+  doctor: boolean
+  student: boolean
+  resident: boolean // ординатор
+  postgraduate: boolean // аспирант
+  researcher: boolean // научный сотрудник
+}
+
+export interface UserStats {
+  followingCount: number
+  followersCount: number
+  postsCount?: number
+}
+
 export interface AvatarFile {
   _id: string
   fileName: string
@@ -41,21 +117,18 @@ export interface Document {
   uploadedAt: string
 }
 
-
-export interface User {
+export interface BaseUserFields {
   _id: string
   firstName: string
   lastName: string
   middleName?: string
   email: string
   birthday: string
-  placeWork: string //placeStudy
-  role: "student" | "doctor" | "admin"
-  isVerified: {
-    user: boolean
-    doctor: boolean
-    student: boolean
-  }
+  placeStudy: string // место учебы, новое поле 
+  placeWork: string
+  workHistory: Work[] // история мест работы, новое поле
+  mainSpecialization: string // новое поле для основной специализации
+  isVerified: UserVerification
   createdAt: string
   avatar?: string
   defaultAvatarPath: string
@@ -69,16 +142,54 @@ export interface User {
   publications: Post[]
   bio: string
   achievements: Achievement[]
-  stats: {
-    followingCount: number
-    followersCount: number
-    postsCount?: number
-  }
+  stats: UserStats
   contacts: Contact[]
-  education: Education[]
   documents: Document[]
+  experience: string // общее поле для всех ролей
 }
+
+// Студент
+export interface StudentUser extends BaseUserFields {
+  role: "student"
+  mentorId?: string
+  coursesEnrolled?: Course[]
+  education: Education
+
 }
+
+// Ординатор
+export interface ResidentUser extends Omit<StudentUser, "role" | "education"> {
+  role: "resident"
+  education: Education[]
+}
+
+// Аспирант
+export interface PostgraduateUser extends Omit<ResidentUser, "role"> {
+  role: "postgraduate"
+  scientificStatus: ScientificStatus
+}
+
+// Врач
+export interface DoctorUser extends Omit<PostgraduateUser, "role"> {
+  role: "doctor"
+  specializations: Specialization[]
+}
+
+// Научный сотрудник
+export interface ResearcherUser extends Omit<DoctorUser, "role"> {
+  role: "researcher"
+}
+
+// Админ
+export interface AdminUser extends BaseUserFields {
+  role: "admin"
+  education: Education[]
+}
+
+// Union type для всех типов пользователей-специалистов
+export type SpecialistUser = StudentUser | ResidentUser | PostgraduateUser | DoctorUser | ResearcherUser | AdminUser
+
+export type SpecialistRole = "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin"
 
 export interface Achievement {
   id: string
@@ -87,50 +198,3 @@ export interface Achievement {
   earnedDate: string
   category: "education" | "publication" | "rating" | "experience" | "other"
 }
-
-export interface Contact {
-  _id: string
-  type: string
-  label?: string
-  value: string
-  isPublic?: boolean
-}
-
-// export interface Contact1 {
-//   // type: "email" | "phone" | "website" | "vk" | "telegram" | "whatsapp" | "facebook" | "twitter" | "instagram" | string
-//   type: string
-//   value: string
-//   label?: string
-// }
-
-export interface Education {
-  id: string
-  institution: string
-  degree: string
-  specialty: string
-  startDate: string
-  graduationYear: string
-  isCurrently: boolean
-}
-
-export interface AuthorProfile extends User {
-  experience: string
-  courses?: Course[]
-  specialization: string
-}
-
-export interface StudentProfile extends User {
-  coursesEnrolled: Course[]
-  gpa?: number // 0-5
-  mentorId?: string
-  programType: "Бакалавриат" | "Магистратура" | "Ординатура" | "Аспирантура"
-}
-
-// export interface UpcomingEvent {
-//   id: string
-//   title: string
-//   type: "conference" | "webinar" | "meeting"
-//   date: string
-//   location?: string
-//   isOnline: boolean
-// }

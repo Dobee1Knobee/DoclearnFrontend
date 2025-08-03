@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { SpecialistUser } from "@/entities/user/model/types"
 import styles from "./ProfileTabs.module.css"
 import { OverviewTab } from "./OverviewTab/OverviewTab"
 import { PublicationsTab } from "./PublicationsTab/PublicationsTab"
@@ -12,7 +12,7 @@ import { EducationTab } from "./EducationTab/EducationTab"
 import { DocumentsTab } from "./DocumentsTab/DocumentsTab"
 
 interface ProfileTabsProps {
-  profile: AuthorProfile | StudentProfile
+  profile: SpecialistUser
 }
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
@@ -27,7 +27,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
     if (profile.role === "doctor" || profile.role === "admin") {
       baseTabs.push({ id: "cases", label: "Кейсы" })
     }
-    
+
     baseTabs.push(
       { id: "education", label: "Образование" },
       // { id: "contacts", label: "Контакты" },
@@ -39,6 +39,11 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
 
   const availableTabs = getAvailableTabs()
 
+  const getEducationArray = () => {
+    if (!profile.education) return []
+    return Array.isArray(profile.education) ? profile.education : [profile.education]
+  }
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
@@ -47,11 +52,11 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
         return <PublicationsTab profile={profile} />
       case 'cases':
         if (profile.role === "doctor" || profile.role === "admin") {
-          return <CasesTab profile={profile as AuthorProfile} />
+          return <CasesTab profile={profile as SpecialistUser} />
         }
         return null
       case 'education':
-        return <EducationTab education={profile.education} />
+        return <EducationTab education={getEducationArray()} />
       // case 'contacts':
       //   return <ContactsTab contacts={profile.contacts} />
       case 'documents':

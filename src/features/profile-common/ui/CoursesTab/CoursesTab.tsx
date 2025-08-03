@@ -1,11 +1,11 @@
 'use client'
 
 import type React from 'react'
-import type { AuthorProfile } from '@/entities/user/model/types'
+import type { SpecialistUser } from '@/entities/user/model/types'
 import styles from './CoursesTab.module.css'
 
 interface CoursesTabProps {
-  profile: AuthorProfile
+  profile: SpecialistUser
 }
 
 export const CoursesTab: React.FC<CoursesTabProps> = ({ profile }) => {

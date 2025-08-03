@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { Form } from "react-bootstrap"
-import type { SpecialistRole } from "@/entities/user/model/newTypes"
+import type { SpecialistRole } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 
 interface ProfessionalStatusBlockProps {

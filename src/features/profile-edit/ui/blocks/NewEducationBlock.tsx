@@ -4,11 +4,11 @@ import type React from "react"
 import { useState } from "react"
 import { Form, Button, Alert } from "react-bootstrap"
 import { Plus, Trash2, GraduationCap, Upload } from "lucide-react"
-import type { Education, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
-import type { SpecialistRole } from "@/entities/user/model/newTypes"
+import type { Education, SpecialistUser } from "@/entities/user/model/types"
+import type { SpecialistRole } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 
-type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
+type ProfileKeys = keyof SpecialistUser
 
 interface NewEducationBlockProps {
   education: Education[]

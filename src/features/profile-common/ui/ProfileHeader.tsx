@@ -7,7 +7,7 @@ import { selectUser, selectIsAuthenticated } from "@/features/auth/model/selecto
 import { updateUserFields } from "@/features/auth/model/slice"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { SpecialistUser } from "@/entities/user/model/types"
 import { VerifiedStatusIcons } from "@/shared/ui/VerifiedStatusIcons/VerifiedStatusIcons"
 import {
   useFollowUserMutation,
@@ -16,14 +16,14 @@ import {
 } from "@/features/profile-edit/api/profileEditApi"
 import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
-import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
+import NewRegistrationModal from "@/features/auth/ui/Registration/NewRegistrationModal"
 import { MapPin, GraduationCap, Briefcase } from "lucide-react"
 import styles from "./ProfileHeader.module.css"
 import { Spinner } from "react-bootstrap"
 import { ContactsModal } from "./ContactsModal/ContactsModal"
 
 interface ProfileHeaderProps {
-  profile: AuthorProfile | StudentProfile
+  profile: SpecialistUser
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
@@ -67,27 +67,25 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     stats,
   } = profile
 
-  const fullName = `${lastName} ${firstName} ${middleName}`
-
+  const fullName = `${lastName} ${firstName} ${middleName || ""}`.trim()
+  
   const displayAvatarUrl = getAvatarUrl(avatarUrl || avatar, avatarId, _id, defaultAvatarPath)
 
   const getSpecializationText = () => {
     if (profile.role === "student") {
-      const studentProfile = profile as StudentProfile
-      return studentProfile.programType || "Программа не указана"
+      // const studentProfile = profile as SpecialistUser
+      // return profile.programType || "Программа не указана"
     } else {
-      const authorProfile = profile as AuthorProfile
-      return authorProfile.specialization || "Специализация не указана"
+      return profile.mainSpecialization || "Специализация не указана"
     }
   }
 
   const getExperienceText = () => {
     if (profile.role === "student") {
-      const studentProfile = profile as StudentProfile
-      return studentProfile.gpa !== undefined ? `GPA: ${studentProfile.gpa.toFixed(2)}` : "GPA: Не указано"
+      // const studentProfile = profile as SpecialistUser
+      // return studentProfile.gpa !== undefined ? `GPA: ${studentProfile.gpa.toFixed(2)}` : "GPA: Не указано"
     } else {
-      const authorProfile = profile as AuthorProfile
-      return authorProfile.experience || null
+      return profile.experience || null
     }
   }
 
@@ -300,7 +298,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
         onSuccess={handleLoginSuccess}
       />
 
-      <RegistrationModal
+      <NewRegistrationModal
         show={showRegisterModal}
         handleClose={() => setShowRegisterModal(false)}
         switchToLogin={() => {

@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { Form, Alert } from "react-bootstrap"
 import { Plus, X } from "lucide-react"
-import type { ScientificStatus, AcademicDegree, AcademicTitle, AcademicRank } from "@/entities/user/model/newTypes"
+import type { ScientificStatus, AcademicDegree, AcademicTitle, AcademicRank } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 
 interface ScientificStatusBlockProps {

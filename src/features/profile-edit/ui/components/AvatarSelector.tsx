@@ -1,12 +1,11 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
 import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import type { AvatarFile } from "@/entities/user/model/types"
 import styles from "./AvatarSelector.module.css"
-import { Plus } from "lucide-react"
 import { AvatarUploadModal } from "./AvatarUploadModal"
 
 interface AvatarSelectorProps {
@@ -33,9 +32,46 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
   const [showModal, setShowModal] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [selectedAvatar, setSelectedAvatar] = useState(defaultAvatarPath)
+  const [displayAvatar, setDisplayAvatar] = useState<string>("")
   const { getAvatarUrl } = useAvatarCache()
 
+  const uploadedFileUrl = useRef<string | null>(null)
+
   const avatars = Array.from({ length: 22 }, (_, i) => `/Avatars/Avatar${i + 1}.webp`)
+
+  const getDisplayAvatar = useCallback(() => {
+    if (uploadedAvatarFile) {
+      if (uploadedFileUrl.current) {
+        URL.revokeObjectURL(uploadedFileUrl.current)
+        uploadedFileUrl.current = null
+      }
+      uploadedFileUrl.current = URL.createObjectURL(uploadedAvatarFile)
+      return uploadedFileUrl.current
+    } else {
+      const avatarIdString =
+        typeof avatarId === "object" && avatarId?._id
+          ? avatarId._id
+          : typeof avatarId === "string"
+            ? avatarId
+            : undefined
+
+      return getAvatarUrl(avatarUrl || currentAvatar, avatarIdString, userId, defaultAvatarPath)
+    }
+  }, [uploadedAvatarFile, avatarUrl, currentAvatar, avatarId, userId, defaultAvatarPath, getAvatarUrl])
+
+  useEffect(() => {
+    const newDisplayAvatar = getDisplayAvatar()
+    setDisplayAvatar(newDisplayAvatar)
+  }, [getDisplayAvatar])
+
+  useEffect(() => {
+    return () => {
+      if (uploadedFileUrl.current) {
+        URL.revokeObjectURL(uploadedFileUrl.current)
+        uploadedFileUrl.current = null
+      }
+    }
+  }, [])
 
   const handleSave = () => {
     onAvatarChange(selectedAvatar)
@@ -65,10 +101,6 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
     console.error("Upload error:", error)
   }
 
-  const displayAvatar = uploadedAvatarFile
-    ? URL.createObjectURL(uploadedAvatarFile)
-    : getAvatarUrl(avatarUrl || currentAvatar, avatarId, userId, defaultAvatarPath)
-
   return (
     <>
       <div className={styles.container}>
@@ -81,9 +113,9 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
             height={120}
             className={styles.avatarImage}
           />
-          <div className={styles.overlay}>
+          {/* <div className={styles.overlay}>
             <span>Изменить</span>
-          </div>
+          </div> */}
         </div>
 
         <button className={styles.addButton} onClick={handleRandomAvatar} type="button">
@@ -91,7 +123,6 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
         </button>
 
         <button className={styles.addButton} onClick={() => setShowUploadModal(true)} type="button">
-          {/* <Plus size={16} /> */}
           Загрузить с компьютера
         </button>
       </div>

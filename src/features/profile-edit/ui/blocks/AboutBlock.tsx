@@ -2,10 +2,10 @@
 
 import type React from "react"
 import { Form } from "react-bootstrap"
-import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { SpecialistUser } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 
-type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
+type ProfileKeys = keyof SpecialistUser
 
 interface AboutBlockProps {
   bio: string

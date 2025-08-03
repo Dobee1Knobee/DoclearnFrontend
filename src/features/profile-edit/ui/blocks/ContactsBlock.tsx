@@ -4,7 +4,7 @@ import type React from "react"
 import { Form, Button, Alert } from "react-bootstrap"
 import { Plus, Trash2, Mail, Phone, Globe, MessageCircle } from "lucide-react"
 import { Telegram, Whatsapp, Facebook, Instagram, Twitter } from "iconoir-react"
-import type { Contact, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { Contact, SpecialistUser } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 import { useState } from "react"
 import { validateEmail, validatePhone, validateUrl } from "@/shared/lib/validation"
@@ -16,7 +16,7 @@ interface ContactTouched {
   }
 }
 
-type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
+type ProfileKeys = keyof SpecialistUser
 
 interface ContactsBlockProps {
   contacts: Contact[]

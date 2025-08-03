@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { Form, Button, Alert } from "react-bootstrap"
 import { Plus, Trash2, Stethoscope } from "lucide-react"
-import type { Specialization, SpecializationMethod, QualificationCategory } from "@/entities/user/model/newTypes"
+import type { Specialization, SpecializationMethod, QualificationCategory } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
 
 interface SpecializationsBlockProps {
