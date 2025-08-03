@@ -28,7 +28,7 @@ export const validateEmail = (value: string) => {
 
 export const validatePassword = (value: string) => {
   if (!value) return errorMessages.required
-  if (value.length < 6) return errorMessages.passwordTooShort
+  if (value.length < 8) return errorMessages.passwordTooShort
   if (!uppercaseRegex.test(value)) return errorMessages.passwordNoUppercase
   if (!digitRegex.test(value) && !specialCharRegex.test(value)) return errorMessages.passwordNoDigitOrSpecial
   if (cyrillicRegex.test(value)) return errorMessages.passwordContainsCyrillic

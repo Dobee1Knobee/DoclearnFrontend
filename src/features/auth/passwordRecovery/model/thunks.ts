@@ -12,7 +12,9 @@ export const forgotPassword = createAsyncThunk<{ email: string }, ForgotPassword
       if (error.response?.status === 429) {
         return rejectWithValue("Слишком много попыток. Попробуйте позже")
       }
-      return rejectWithValue(error.response?.data?.message || error.message || "Ошибка при отправке письма")
+      const errorMessage =
+        error.response?.data?.error || error.response?.data?.message || error.message || "Ошибка при отправке письма"
+      return rejectWithValue(errorMessage)
     }
   },
 )
@@ -23,9 +25,9 @@ export const validateResetToken = createAsyncThunk<void, { token: string }>(
     try {
       await http.get("/auth/validate-token", { params: { token } })
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Недействительный или истёкший токен"
-      )
+      const errorMessage =
+        error.response?.data?.error || error.response?.data?.message || "Недействительный или истёкший токен"
+      return rejectWithValue(errorMessage)
     }
   },
 )
@@ -39,7 +41,9 @@ export const resetPassword = createAsyncThunk<void, ResetPasswordDto>(
       if (error.response?.status === 429) {
         return rejectWithValue("Слишком много попыток. Попробуйте позже")
       }
-      return rejectWithValue(error.response?.data?.message || error.message || "Ошибка при сбросе пароля")
+      const errorMessage =
+        error.response?.data?.error || error.response?.data?.message || error.message || "Ошибка при сбросе пароля"
+      return rejectWithValue(errorMessage)
     }
   },
 )
