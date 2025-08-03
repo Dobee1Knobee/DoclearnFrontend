@@ -1,4 +1,4 @@
-import { ProfileEditPage } from "@/features/profile-edit/ui/ProfileEditPage"
+// import { ProfileEditPage } from "@/features/profile-edit/ui/ProfileEditPage"
 import { NewProfileEditPage } from "@/features/profile-edit/ui/NewProfileEditPage"
 
 export default async function EditProfileRoute({

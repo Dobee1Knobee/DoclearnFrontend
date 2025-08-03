@@ -8,7 +8,8 @@ import styles from "./Header.module.css"
 import Logo from "./Logo"
 import Navigation from "./Navigation"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
-import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
+// import RegistrationModal from "@/features/auth/ui/Registration/RegistrationModal"
+import NewRegistrationModal from "@/features/auth/ui/Registration/NewRegistrationModal"
 import { ForgotPasswordModal } from "@/features/auth/passwordRecovery/ui/ForgotPasswordModal/ForgotPasswordModal"
 import { UserProfileCard } from "@/entities/user/ui/UserProfileCard/UserProfileCard"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
@@ -19,6 +20,7 @@ import { SearchInput } from "@/features/search/ui/SearchInput"
 import { SearchDropdown } from "@/features/search/ui/SearchDropdown"
 import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import desktopLogo from "@/../../public/logo.webp"
+import mobileLogo from "@/../../public/mobileLogo1.png"
 import Link from "next/link"
 
 export default function Header() {
@@ -167,9 +169,9 @@ export default function Header() {
               prefetch
             >
               <Image
-                src={desktopLogo || "/placeholder.webp"}
+                src={mobileLogo || "/placeholder.webp"}
                 alt="Logo"
-                width={140}
+                width={200}
                 height={60}
                 priority
                 quality={100}
@@ -265,9 +267,9 @@ export default function Header() {
           onForgotPassword={openForgotPasswordModal}
         />
 
-        <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} />
+        {/* <RegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} /> */}
 
-        {/* <NewRegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} /> */}
+        <NewRegistrationModal show={isRegisterVisible} handleClose={closeModals} switchToLogin={openLoginModal} />
 
         <ForgotPasswordModal show={isForgotPasswordVisible} handleClose={closeModals} onBackToLogin={openLoginModal} />
       </div>

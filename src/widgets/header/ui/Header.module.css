@@ -195,7 +195,6 @@
   .mobileSearchIcon {
     display: block;
     flex: 0 0 auto;
-    margin-top: -20px;
   }
 
   .mobileCenter {
@@ -228,7 +227,7 @@
 
   .avatarContainer {
     margin-left: 0;
-    margin-top: -20px;
+    margin-top: 0px;
   }
 
   .avatar {
