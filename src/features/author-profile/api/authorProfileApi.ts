@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import type { AuthorProfile } from "@/entities/user/model/types"
+import type { SpecialistUser } from "@/entities/user/model/types"
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://api.doclearn.ru",
@@ -19,12 +19,12 @@ export const authorProfileApi = createApi({
   baseQuery,
   tagTypes: ["Profile"],
   endpoints: (builder) => ({
-    getAuthorProfile: builder.query<AuthorProfile, string>({
+    getAuthorProfile: builder.query<SpecialistUser, string>({
       query: (id: string) => `/user/${id}/profile`,
-      transformResponse: (response: any): AuthorProfile => {
+      transformResponse: (response: any): SpecialistUser => {
 
         const userData = response.data || response
-        const transformedProfile: AuthorProfile = {
+        const transformedProfile: SpecialistUser = {
           ...userData,
           publications: [],
         }
@@ -45,11 +45,11 @@ export const authorProfileApi = createApi({
       ],
     }),
 
-    getMyProfile: builder.query<AuthorProfile, void>({
+    getMyProfile: builder.query<SpecialistUser, void>({
       query: () => `/user/me`,
-      transformResponse: (response: any): AuthorProfile => {
+      transformResponse: (response: any): SpecialistUser => {
         const userData = response.data || response
-        const transformedProfile: AuthorProfile = {
+        const transformedProfile: SpecialistUser = {
           ...userData,
           publications: [],
         }

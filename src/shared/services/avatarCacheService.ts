@@ -1,286 +1,223 @@
 interface CachedAvatar {
-  avatarId: string
-  userId: string
   blob: Blob
   cachedAt: number
-  avatarUrl: string
-  expiresAt: number
+  userId?: string
 }
 
 class AvatarCacheService {
-  private dbName = "DocLearnAvatarCache"
-  private version = 2 // Увеличиваем версию для новой схемы
+  private dbName = "AvatarCache"
   private storeName = "avatars"
+  private version = 1
   private db: IDBDatabase | null = null
-  private readonly TTL = 7 * 24 * 60 * 60 * 1000 // 7 дней
-  private initPromise: Promise<void> | null = null
+  private readonly CACHE_DURATION = 7 * 24 * 60 * 60 * 1000 // 7 дней
+  private readonly MAX_RETRIES = 3
+  private readonly RETRY_DELAY = 1000
 
   async init(): Promise<void> {
-    if (this.initPromise) {
-      return this.initPromise
-    }
+    if (this.db) return
 
-    this.initPromise = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName, this.version)
 
       request.onerror = () => {
-        console.warn("IndexedDB не поддерживается или недоступен")
+        console.error("Avatar cache: Failed to open IndexedDB", request.error)
         reject(request.error)
       }
 
       request.onsuccess = () => {
         this.db = request.result
-
-        this.db.onerror = (event) => {
-          console.error("IndexedDB error:", event)
-        }
-
         resolve()
       }
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result
-
-        if (db.objectStoreNames.contains(this.storeName)) {
-          db.deleteObjectStore(this.storeName)
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          const store = db.createObjectStore(this.storeName, { keyPath: "id" })
+          store.createIndex("userId", "userId", { unique: false })
+          store.createIndex("cachedAt", "cachedAt", { unique: false })
         }
-
-        const store = db.createObjectStore(this.storeName, { keyPath: "avatarId" })
-        store.createIndex("userId", "userId", { unique: false })
-        store.createIndex("cachedAt", "cachedAt", { unique: false })
-        store.createIndex("expiresAt", "expiresAt", { unique: false })
       }
     })
-
-    return this.initPromise
   }
 
-  private async getCachedAvatarData(avatarId: string): Promise<CachedAvatar | null> {
-    try {
-      if (!this.db) {
-        await this.init()
-      }
-
-      const transaction = this.db!.transaction([this.storeName], "readonly")
-      const store = transaction.objectStore(this.storeName)
-
-      return new Promise<CachedAvatar | null>((resolve, reject) => {
-        const request = store.get(avatarId)
-
-        request.onsuccess = () => {
-          resolve(request.result || null)
-        }
-
-        request.onerror = () => {
-          console.error("Failed to get cached avatar data:", request.error)
-          reject(request.error)
-        }
-
-        setTimeout(() => {
-          reject(new Error("IndexedDB operation timeout"))
-        }, 5000)
-      })
-    } catch (error) {
-      console.error("Failed to get cached avatar data:", error)
-      return null
+  private async ensureDB(): Promise<IDBDatabase> {
+    if (!this.db) {
+      await this.init()
     }
+    if (!this.db) {
+      throw new Error("Failed to initialize database")
+    }
+    return this.db
   }
 
-  private shouldUpdateCache(existingAvatar: CachedAvatar | null, newAvatarUrl: string): boolean {
-    if (!existingAvatar) {
-      return true // Нет кэша - нужно создать
-    }
-
-    const now = Date.now()
-
-    if (existingAvatar.expiresAt < now) {
-      return true // Кэш устарел
-    }
-
-    if (existingAvatar.avatarUrl !== newAvatarUrl) {
-      return true // URL изменился - новый аватар
-    }
-
-    return false // Обновление не нужно
-  }
-
-  async cacheAvatar(avatarUrl: string, userId: string, avatarId?: string): Promise<void> {
-    try {
-      if (!this.db) {
-        await this.init()
-      }
-
-      const finalAvatarId = avatarId || userId
-      const existingAvatar = await this.getCachedAvatarData(finalAvatarId)
-
-      if (!this.shouldUpdateCache(existingAvatar, avatarUrl)) {
-        console.log("Avatar cache is fresh, skipping update for:", finalAvatarId)
-        return
-      }
-
-      const response = await this.fetchWithRetry(avatarUrl, 3)
-      if (!response.ok) {
-        throw new Error(`Failed to fetch avatar: ${response.status}`)
-      }
-
-      const blob = await response.blob()
-
-      if (blob.size > 5 * 1024 * 1024) {
-        console.warn("Avatar size exceeds 5MB limit")
-        return
-      }
-
-      if (!blob.type.startsWith("image/")) {
-        console.warn("Invalid image type:", blob.type)
-        return
-      }
-
-      const now = Date.now()
-      const cachedAvatar: CachedAvatar = {
-        avatarId: finalAvatarId,
-        userId,
-        blob,
-        cachedAt: now,
-        avatarUrl,
-        expiresAt: now + this.TTL,
-      }
-
-      const transaction = this.db!.transaction([this.storeName], "readwrite")
-      const store = transaction.objectStore(this.storeName)
-
-      await new Promise<void>((resolve, reject) => {
-        const request = store.put(cachedAvatar)
-
-        request.onsuccess = () => resolve()
-        request.onerror = () => reject(request.error)
-
-        setTimeout(() => {
-          reject(new Error("IndexedDB write timeout"))
-        }, 10000)
-      })
-
-      console.log("Avatar cached successfully for user:", userId)
-    } catch (error) {
-      console.error("Failed to cache avatar:", error)
-    }
-  }
-
-  private async fetchWithRetry(url: string, retries: number): Promise<Response> {
+  private async fetchWithRetry(url: string, retries = this.MAX_RETRIES): Promise<Blob> {
     for (let i = 0; i < retries; i++) {
       try {
-        const response = await fetch(url, {
-          signal: AbortSignal.timeout(10000), // 10 секунд таймаут
-        })
-        return response
-      } catch (error) {
-        console.warn(`Fetch attempt ${i + 1} failed:`, error)
-        if (i === retries - 1) {
-          throw error
+        const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
         }
-        await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)))
+        const blob = await response.blob()
+        return blob
+      } catch (error) {
+        console.error(`Avatar cache: Fetch attempt ${i + 1} failed`, { url, error })
+        if (i === retries - 1) throw error
+        await new Promise((resolve) => setTimeout(resolve, this.RETRY_DELAY * (i + 1)))
       }
     }
-    throw new Error("All fetch attempts failed")
+    throw new Error("All retry attempts failed")
   }
 
-  async getCachedAvatar(avatarId: string): Promise<string | null> {
+  async cacheAvatar(avatarUrl: string, avatarId: string, userId?: string): Promise<void> {
     try {
-      if (!this.db) {
-        await this.init()
+      const db = await this.ensureDB()
+
+      // Проверяем, есть ли уже в кэше
+      const existing = await this.getCachedAvatar(avatarId)
+      if (existing) {
+        return
       }
 
-      const cachedAvatar = await this.getCachedAvatarData(avatarId)
+      const blob = await this.fetchWithRetry(avatarUrl)
 
-      if (!cachedAvatar) {
-        return null
+      const transaction = db.transaction([this.storeName], "readwrite")
+      const store = transaction.objectStore(this.storeName)
+
+      const cacheData: CachedAvatar & { id: string } = {
+        id: avatarId,
+        blob,
+        cachedAt: Date.now(),
+        userId,
       }
 
-      if (cachedAvatar.expiresAt < Date.now()) {
-        this.deleteCachedAvatar(avatarId).catch(console.error)
-        return null
-      }
-
-      const url = URL.createObjectURL(cachedAvatar.blob)
-      return url
+      await new Promise<void>((resolve, reject) => {
+        const request = store.put(cacheData)
+        request.onsuccess = () => {
+          resolve()
+        }
+        request.onerror = () => {
+          console.error("Avatar cache: Failed to cache avatar", { avatarId, error: request.error })
+          reject(request.error)
+        }
+      })
     } catch (error) {
-      console.error("Failed to get cached avatar:", error)
+      console.error("Avatar cache: Failed to cache avatar", { avatarUrl, avatarId, error })
+      throw error
+    }
+  }
+
+  async getCachedAvatar(avatarId: string): Promise<CachedAvatar | null> {
+    try {
+      const db = await this.ensureDB()
+      const transaction = db.transaction([this.storeName], "readonly")
+      const store = transaction.objectStore(this.storeName)
+
+      return new Promise((resolve, reject) => {
+        const request = store.get(avatarId)
+        request.onsuccess = () => {
+          const result = request.result
+          if (result) {
+            // Проверяем срок действия
+            const isExpired = Date.now() - result.cachedAt > this.CACHE_DURATION
+            if (isExpired) {
+              this.invalidateAvatar(avatarId).catch(console.error)
+              resolve(null)
+            } else {
+              resolve({
+                blob: result.blob,
+                cachedAt: result.cachedAt,
+                userId: result.userId,
+              })
+            }
+          } else {
+            resolve(null)
+          }
+        }
+        request.onerror = () => {
+          console.error("Avatar cache: Failed to get cached avatar", { avatarId, error: request.error })
+          reject(request.error)
+        }
+      })
+    } catch (error) {
+      console.error("Avatar cache: Failed to get cached avatar", { avatarId, error })
       return null
     }
   }
 
-  private async deleteCachedAvatar(avatarId: string): Promise<void> {
+  async invalidateAvatar(avatarId: string): Promise<void> {
     try {
-      if (!this.db) return
-
-      const transaction = this.db.transaction([this.storeName], "readwrite")
+      const db = await this.ensureDB()
+      const transaction = db.transaction([this.storeName], "readwrite")
       const store = transaction.objectStore(this.storeName)
 
       await new Promise<void>((resolve, reject) => {
         const request = store.delete(avatarId)
-        request.onsuccess = () => resolve()
-        request.onerror = () => reject(request.error)
+        request.onsuccess = () => {
+          resolve()
+        }
+        request.onerror = () => {
+          console.error("Avatar cache: Failed to invalidate avatar", { avatarId, error: request.error })
+          reject(request.error)
+        }
       })
     } catch (error) {
-      console.error("Failed to delete cached avatar:", error)
+      console.error("Avatar cache: Failed to invalidate avatar", { avatarId, error })
+      throw error
     }
   }
 
-  async clearUserAvatars(userId: string): Promise<void> {
+  async clearOldAvatars(): Promise<void> {
     try {
-      if (!this.db) return
-
-      const transaction = this.db.transaction([this.storeName], "readwrite")
+      const db = await this.ensureDB()
+      const transaction = db.transaction([this.storeName], "readwrite")
       const store = transaction.objectStore(this.storeName)
-      const index = store.index("userId")
+      const index = store.index("cachedAt")
 
-      const request = index.openCursor(IDBKeyRange.only(userId))
+      const cutoffTime = Date.now() - this.CACHE_DURATION
+      const range = IDBKeyRange.upperBound(cutoffTime)
 
+      let deletedCount = 0
       await new Promise<void>((resolve, reject) => {
+        const request = index.openCursor(range)
         request.onsuccess = (event) => {
           const cursor = (event.target as IDBRequest).result
           if (cursor) {
             cursor.delete()
+            deletedCount++
             cursor.continue()
           } else {
             resolve()
           }
         }
-
-        request.onerror = () => reject(request.error)
+        request.onerror = () => {
+          console.error("Avatar cache: Failed to clear old avatars", request.error)
+          reject(request.error)
+        }
       })
     } catch (error) {
-      console.error("Failed to clear user avatars:", error)
+      console.error("Avatar cache: Failed to clear old avatars", error)
     }
   }
 
-  async clearOldAvatars(maxAge: number = this.TTL): Promise<void> {
+  async clearAll(): Promise<void> {
     try {
-      if (!this.db) return
-
-      const cutoffTime = Date.now()
-      const transaction = this.db.transaction([this.storeName], "readwrite")
+      const db = await this.ensureDB()
+      const transaction = db.transaction([this.storeName], "readwrite")
       const store = transaction.objectStore(this.storeName)
-      const index = store.index("expiresAt")
-
-      const request = index.openCursor(IDBKeyRange.upperBound(cutoffTime))
 
       await new Promise<void>((resolve, reject) => {
-        request.onsuccess = (event) => {
-          const cursor = (event.target as IDBRequest).result
-          if (cursor) {
-            cursor.delete()
-            cursor.continue()
-          } else {
-            resolve()
-          }
+        const request = store.clear()
+        request.onsuccess = () => {
+          resolve()
         }
-
-        request.onerror = () => reject(request.error)
+        request.onerror = () => {
+          console.error("Avatar cache: Failed to clear all avatars", request.error)
+          reject(request.error)
+        }
       })
-
-      console.log("Old avatars cleared successfully")
     } catch (error) {
-      console.error("Failed to clear old avatars:", error)
+      console.error("Avatar cache: Failed to clear all avatars", error)
+      throw error
     }
   }
 }

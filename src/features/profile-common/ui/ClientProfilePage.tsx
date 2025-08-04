@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { SpecialistUser } from "@/entities/user/model/types"
 import { useParams } from "next/navigation"
 import { useGetAuthorProfileQuery } from "@/features/author-profile/api/authorProfileApi"
 import { useAppSelector } from "@/shared/hooks/hooks"
@@ -28,7 +28,7 @@ export const ClientProfilePage: React.FC = () => {
     skip: !isInitialized || isOwnProfile,
   })
 
-  let profile: AuthorProfile | StudentProfile | undefined
+  let profile: SpecialistUser | undefined
   let isLoading: boolean
   let error: any
 
@@ -39,11 +39,11 @@ export const ClientProfilePage: React.FC = () => {
   } else if (isOwnProfile) {
     isLoading = false
     error = undefined
-    profile = currentUser as AuthorProfile | StudentProfile
+    profile = currentUser as SpecialistUser
   } else {
     isLoading = isOtherProfileLoading
     error = otherProfileError
-    profile = otherProfile
+    profile = otherProfile as SpecialistUser
   }
 
   if (isLoading) {

@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "react-bootstrap"
 import { Upload, FileText } from "lucide-react"
-import type { AuthorProfile, StudentProfile } from "@/entities/user/model/types"
+import type { SpecialistUser } from "@/entities/user/model/types"
 import { useAppSelector } from "@/shared/hooks/hooks"
 import { selectUser } from "@/features/auth/model/selectors"
 import { DocumentUploadModal } from "./DocumentUploadModal"
@@ -12,7 +12,7 @@ import { DocumentCard } from "./DocumentCard"
 import styles from "./DocumentsTab.module.css"
 
 interface DocumentsTabProps {
-  profile: AuthorProfile | StudentProfile
+  profile: SpecialistUser
 }
 
 export const DocumentsTab: React.FC<DocumentsTabProps> = ({ profile }) => {

@@ -31,5 +31,6 @@ export interface UploadAvatarResponse {
   data: {
     message: string
     avatarUrl: string
+    avatarId: string
   }
 }

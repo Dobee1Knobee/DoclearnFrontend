@@ -6,13 +6,13 @@ import { Modal } from "react-bootstrap"
 import { X } from "lucide-react"
 import { FaUserDoctor, FaHospital } from "react-icons/fa6"
 import { useAppDispatch } from "@/shared/hooks/hooks"
-// import { clearAuthError, clearRegistrationEmail } from "@/features/auth/model/slice"
+import { clearAuthError, clearRegistrationEmail } from "@/features/auth/model/slice"
 import SpecialistRegistrationForm from "./SpecialistRegistrationForm"
 import OrganizationRegistrationForm from "./OrganizationRegistrationForm"
 import CodeModal from "./CodeModal"
 import styles from "../styles/AuthModal.module.css"
 import Image from "next/image"
-import type { AccountType } from "@/features/auth/model/newTypes"
+import type { AccountType } from "@/features/auth/model/types"
 
 interface NewRegistrationModalProps {
   show: boolean
@@ -28,8 +28,8 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
 
   useEffect(() => {
     if (show) {
-      // dispatch(clearAuthError())
-      // dispatch(clearRegistrationEmail())
+      dispatch(clearAuthError())
+      dispatch(clearRegistrationEmail())
       setShowCodeModal(false)
       setEmail("")
       setAccountType("specialist")
@@ -47,14 +47,14 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
   }
 
   const handleCodeModalClose = () => {
-    // dispatch(clearRegistrationEmail())
+    dispatch(clearRegistrationEmail())
     setShowCodeModal(false)
     setEmail("")
     switchToLogin()
   }
 
   const handleMainModalClose = () => {
-    // dispatch(clearRegistrationEmail())
+    dispatch(clearRegistrationEmail())
     setShowCodeModal(false)
     setEmail("")
     handleClose()

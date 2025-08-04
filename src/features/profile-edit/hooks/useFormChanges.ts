@@ -1,17 +1,26 @@
 "use client"
 
 import { useState, useRef, useCallback, useMemo } from "react"
-import type { Contact, Education, AuthorProfile, StudentProfile } from "@/entities/user/model/types"
-
-type ProfileUnion = AuthorProfile | StudentProfile
-
-type ProfileKeys = keyof AuthorProfile | keyof StudentProfile
+import type {
+  Contact,
+  Education,
+  Work,
+  ScientificStatus,
+  Specialization,
+  SpecialistUser,
+  PostgraduateUser,
+  DoctorUser,
+  ResearcherUser,
+} from "@/entities/user/model/types"
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
 }
 
-type ProfileChanges = DeepPartial<AuthorProfile> & DeepPartial<StudentProfile>
+type ProfileChanges = DeepPartial<SpecialistUser> & {
+  scientificStatus?: ScientificStatus
+  specializations?: Specialization[]
+}
 
 const areContactsEqual = (contacts1: Contact[], contacts2: Contact[]): boolean => {
   if (contacts1.length !== contacts2.length) return false
@@ -43,6 +52,44 @@ const areEducationEqual = (edu1: Education[], edu2: Education[]): boolean => {
   })
 }
 
+const areWorkHistoryEqual = (work1: Work[], work2: Work[]): boolean => {
+  if (work1.length !== work2.length) return false
+
+  return work1.every((item1, index) => {
+    const item2 = work2[index]
+    return (
+      item1.organizationName === item2.organizationName &&
+      item1.position === item2.position &&
+      item1.startDate === item2.startDate &&
+      (item1.endDate || "") === (item2.endDate || "") &&
+      Boolean(item1.isCurrently) === Boolean(item2.isCurrently) &&
+      (item1.organizationId || "") === (item2.organizationId || "")
+    )
+  })
+}
+
+const areScientificStatusEqual = (status1: ScientificStatus, status2: ScientificStatus): boolean => {
+  return (
+    status1.degree === status2.degree &&
+    status1.title === status2.title &&
+    status1.rank === status2.rank &&
+    JSON.stringify(status1.interests.sort()) === JSON.stringify(status2.interests.sort())
+  )
+}
+
+const areSpecializationsEqual = (spec1: Specialization[], spec2: Specialization[]): boolean => {
+  if (spec1.length !== spec2.length) return false
+
+  return spec1.every((item1, index) => {
+    const item2 = spec2[index]
+    return (
+      item1.name === item2.name &&
+      item1.method === item2.method &&
+      item1.qualificationCategory === item2.qualificationCategory
+    )
+  })
+}
+
 const isValidContact = (contact: Contact): boolean => {
   return Boolean(contact.value && contact.value.trim() !== "")
 }
@@ -57,29 +104,76 @@ const isValidEducation = (edu: Education): boolean => {
   )
 }
 
-export const useFormChanges = (initialData: ProfileUnion) => {
-  const [formData, setFormData] = useState<ProfileUnion & { uploadedAvatarFile?: File | null }>(() => ({
+const isValidWork = (work: Work): boolean => {
+  return Boolean(
+    work.organizationName.trim() && work.position.trim() && work.startDate && (work.isCurrently || work.endDate),
+  )
+}
+
+const isValidSpecialization = (spec: Specialization): boolean => {
+  return Boolean(spec.name.trim() && spec.method && spec.qualificationCategory)
+}
+
+const normalizeEducationToArray = (education: Education | Education[]): Education[] => {
+  if (Array.isArray(education)) {
+    return education
+  }
+  if (education.institution || education.degree || education.specialty) {
+    return [education]
+  }
+  return []
+}
+
+const normalizeEducationForRole = (education: Education[], role: string): Education | Education[] => {
+  if (role === "student") {
+    return education.length > 0
+      ? education[0]
+      : {
+          id: "",
+          institution: "",
+          degree: "Специалитет",
+          specialty: "",
+          startDate: "",
+          graduationYear: "",
+          isCurrently: false,
+        }
+  }
+  return education
+}
+
+const hasScientificStatus = (user: SpecialistUser): user is PostgraduateUser | DoctorUser | ResearcherUser => {
+  return user.role === "postgraduate" || user.role === "doctor" || user.role === "researcher"
+}
+
+const hasSpecializations = (user: SpecialistUser): user is DoctorUser | ResearcherUser => {
+  return user.role === "doctor" || user.role === "researcher"
+}
+
+export const useFormChanges = (initialData: SpecialistUser) => {
+  const [formData, setFormData] = useState<SpecialistUser & { uploadedAvatarFile?: File | null }>(() => ({
     ...initialData,
     contacts: initialData.contacts || [],
-    education: initialData.education || [],
+    workHistory: initialData.workHistory || [],
     bio: initialData.bio || "",
+    experience: initialData.experience || "",
     uploadedAvatarFile: null,
   }))
 
-  const originalData = useRef<ProfileUnion>(initialData)
+  const originalData = useRef<SpecialistUser>(initialData)
 
-  const updateOriginalData = useCallback((newData: ProfileUnion) => {
+  const updateOriginalData = useCallback((newData: SpecialistUser) => {
     originalData.current = newData
     setFormData({
       ...newData,
       contacts: newData.contacts || [],
-      education: newData.education || [],
+      workHistory: newData.workHistory || [],
       bio: newData.bio || "",
+      experience: newData.experience || "",
       uploadedAvatarFile: null,
     })
   }, [])
 
-  const updateField = useCallback((field: ProfileKeys, value: any) => {
+  const updateField = useCallback((field: keyof SpecialistUser, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }, [])
 
@@ -87,13 +181,16 @@ export const useFormChanges = (initialData: ProfileUnion) => {
     const changes: ProfileChanges = {}
     const original = originalData.current
 
-    const commonFields: (keyof ProfileUnion)[] = [
+    const commonFields: (keyof SpecialistUser)[] = [
       "firstName",
       "lastName",
       "middleName",
       "bio",
       "placeWork",
+      "placeStudy",
+      "mainSpecialization",
       "location",
+      "experience",
       "avatar",
       "defaultAvatarPath",
     ]
@@ -103,40 +200,9 @@ export const useFormChanges = (initialData: ProfileUnion) => {
       const currentValue = formData[field] || ""
 
       if (originalValue !== currentValue) {
-        changes[field] = currentValue as any
+        ;(changes as any)[field] = currentValue
       }
     })
-
-    if (original.role === "student" && formData.role === "student") {
-      const originalStudent = original as StudentProfile
-      const currentStudent = formData as StudentProfile
-
-      if (originalStudent.gpa !== currentStudent.gpa) {
-        changes.gpa = currentStudent.gpa
-      }
-
-      if (originalStudent.programType !== currentStudent.programType) {
-        changes.programType = currentStudent.programType
-      }
-    } else if (
-      (original.role === "doctor" || original.role === "admin") &&
-      (formData.role === "doctor" || formData.role === "admin")
-    ) {
-      const originalAuthor = original as AuthorProfile
-      const currentAuthor = formData as AuthorProfile
-
-      const originalExperience = originalAuthor.experience || ""
-      const currentExperience = currentAuthor.experience || ""
-      if (originalExperience !== currentExperience) {
-        changes.experience = currentExperience
-      }
-
-      const originalSpecialization = originalAuthor.specialization || ""
-      const currentSpecialization = currentAuthor.specialization || ""
-      if (originalSpecialization !== currentSpecialization) {
-        changes.specialization = currentSpecialization
-      }
-    }
 
     const originalBirthday = original.birthday?.split("T")[0] || ""
     const currentBirthday = formData.birthday?.split("T")[0] || ""
@@ -150,10 +216,28 @@ export const useFormChanges = (initialData: ProfileUnion) => {
       changes.contacts = currentContacts
     }
 
-    const originalEducation = original.education || []
-    const currentEducation = formData.education || []
-    if (!areEducationEqual(originalEducation, currentEducation)) {
-      changes.education = currentEducation
+    const originalWorkHistory = original.workHistory || []
+    const currentWorkHistory = formData.workHistory || []
+    if (!areWorkHistoryEqual(originalWorkHistory, currentWorkHistory)) {
+      changes.workHistory = currentWorkHistory
+    }
+
+    const originalEducationArray = normalizeEducationToArray(original.education)
+    const currentEducationArray = normalizeEducationToArray(formData.education)
+    if (!areEducationEqual(originalEducationArray, currentEducationArray)) {
+      changes.education = normalizeEducationForRole(currentEducationArray, formData.role) as any
+    }
+
+    if (hasScientificStatus(original) && hasScientificStatus(formData)) {
+      if (!areScientificStatusEqual(original.scientificStatus, formData.scientificStatus)) {
+        changes.scientificStatus = formData.scientificStatus
+      }
+    }
+
+    if (hasSpecializations(original) && hasSpecializations(formData)) {
+      if (!areSpecializationsEqual(original.specializations, formData.specializations)) {
+        changes.specializations = formData.specializations
+      }
     }
 
     return changes
@@ -169,8 +253,9 @@ export const useFormChanges = (initialData: ProfileUnion) => {
     setFormData({
       ...originalData.current,
       contacts: originalData.current.contacts || [],
-      education: originalData.current.education || [],
+      workHistory: originalData.current.workHistory || [],
       bio: originalData.current.bio || "",
+      experience: originalData.current.experience || "",
       uploadedAvatarFile: null,
     })
   }, [])
@@ -195,6 +280,34 @@ export const useFormChanges = (initialData: ProfileUnion) => {
         })
         if (validEducation.length > 0) {
           cleanedData[key] = validEducation
+        }
+      } else if (key === "education" && !Array.isArray(value)) {
+        const education = value as Education
+        if (isValidEducation(education)) {
+          const { id, ...rest } = education
+          if (rest.isCurrently) {
+            const { graduationYear, ...educationWithoutGraduationYear } = rest
+            cleanedData[key] = educationWithoutGraduationYear
+          } else {
+            cleanedData[key] = rest
+          }
+        }
+      } else if (key === "workHistory" && Array.isArray(value)) {
+        const validWork = (value as Work[]).filter(isValidWork).map(({ id, ...rest }) => rest)
+        if (validWork.length > 0) {
+          cleanedData[key] = validWork
+        }
+      } else if (key === "specializations" && Array.isArray(value)) {
+        const validSpecializations = (value as Specialization[])
+          .filter(isValidSpecialization)
+          .map(({ id, ...rest }) => rest)
+        if (validSpecializations.length > 0) {
+          cleanedData[key] = validSpecializations
+        }
+      } else if (key === "scientificStatus" && value) {
+        const status = value as ScientificStatus
+        if (status.degree || status.title || status.rank || status.interests.length > 0) {
+          cleanedData[key] = status
         }
       } else if (Array.isArray(value)) {
         if (value.length > 0) {

@@ -1,7 +1,7 @@
 'use client'
 
 import type React from "react"
-import type { AuthorProfile, StudentProfile } from '@/entities/user/model/types'
+import type { SpecialistUser } from '@/entities/user/model/types'
 import { useSelector } from "react-redux"
 import type { RootState } from "@/app/store"
 import {
@@ -18,7 +18,7 @@ import {
 import styles from './OverviewTab.module.css'
 
 interface OverviewTabProps {
-  profile: AuthorProfile | StudentProfile
+  profile: SpecialistUser
 }
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({ profile }) => {
