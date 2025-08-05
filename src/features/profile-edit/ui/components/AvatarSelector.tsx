@@ -14,10 +14,13 @@ interface AvatarSelectorProps {
   uploadedAvatarFile: File | null
   onAvatarChange: (defaultAvatarPath: string) => void
   onUploadedFileChange: (file: File | null) => void
+  onResetDefaultAvatar?: () => void // Новый проп для сброса defaultAvatarPath
   userId?: string
   avatarId?: AvatarFile
   avatarUrl?: string
 }
+
+type AvatarSource = "default" | "uploaded" | "saved"
 
 export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
   currentAvatar,
@@ -25,6 +28,7 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
   uploadedAvatarFile,
   onAvatarChange,
   onUploadedFileChange,
+  onResetDefaultAvatar,
   userId,
   avatarId,
   avatarUrl,
@@ -33,37 +37,68 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [selectedAvatar, setSelectedAvatar] = useState(defaultAvatarPath)
   const [displayAvatar, setDisplayAvatar] = useState<string>("")
+  const [avatarSource, setAvatarSource] = useState<AvatarSource>("saved")
   const { getAvatarUrl } = useAvatarCache()
 
+  // Для отслеживания созданных URL для cleanup
   const uploadedFileUrl = useRef<string | null>(null)
 
   const avatars = Array.from({ length: 22 }, (_, i) => `/Avatars/Avatar${i + 1}.webp`)
 
-  const getDisplayAvatar = useCallback(() => {
+  // Определяем начальный источник аватара
+  useEffect(() => {
     if (uploadedAvatarFile) {
-      if (uploadedFileUrl.current) {
-        URL.revokeObjectURL(uploadedFileUrl.current)
-        uploadedFileUrl.current = null
-      }
-      uploadedFileUrl.current = URL.createObjectURL(uploadedAvatarFile)
-      return uploadedFileUrl.current
+      setAvatarSource("uploaded")
     } else {
-      const avatarIdString =
-        typeof avatarId === "object" && avatarId?._id
-          ? avatarId._id
-          : typeof avatarId === "string"
-            ? avatarId
-            : undefined
-
-      return getAvatarUrl(avatarUrl || currentAvatar, avatarIdString, userId, defaultAvatarPath)
+      // По умолчанию всегда показываем сохраненный аватар
+      // "default" устанавливается только при явном выборе пользователем
+      setAvatarSource("saved")
     }
-  }, [uploadedAvatarFile, avatarUrl, currentAvatar, avatarId, userId, defaultAvatarPath, getAvatarUrl])
+  }, [uploadedAvatarFile])
 
+  // Мемоизированная функция для получения аватара с учетом источника
+  const getDisplayAvatar = useCallback(() => {
+    switch (avatarSource) {
+      case "default":
+        // Приоритет у случайного/выбранного аватара
+        return defaultAvatarPath
+
+      case "uploaded":
+        // Приоритет у загруженного файла
+        if (uploadedAvatarFile) {
+          // Очищаем предыдущий URL если есть
+          if (uploadedFileUrl.current) {
+            URL.revokeObjectURL(uploadedFileUrl.current)
+            uploadedFileUrl.current = null
+          }
+          // Создаем новый URL для загруженного файла
+          uploadedFileUrl.current = URL.createObjectURL(uploadedAvatarFile)
+          return uploadedFileUrl.current
+        }
+        // Fallback если файл пропал
+        return defaultAvatarPath
+
+      case "saved":
+      default:
+        // Приоритет у сохраненного аватара
+        const avatarIdString =
+          typeof avatarId === "object" && avatarId?._id
+            ? avatarId._id
+            : typeof avatarId === "string"
+              ? avatarId
+              : undefined
+
+        return getAvatarUrl(avatarUrl || currentAvatar, avatarIdString, userId, defaultAvatarPath)
+    }
+  }, [avatarSource, uploadedAvatarFile, defaultAvatarPath, avatarUrl, currentAvatar, avatarId, userId, getAvatarUrl])
+
+  // Обновляем displayAvatar только при изменении зависимостей
   useEffect(() => {
     const newDisplayAvatar = getDisplayAvatar()
     setDisplayAvatar(newDisplayAvatar)
   }, [getDisplayAvatar])
 
+  // Cleanup при размонтировании
   useEffect(() => {
     return () => {
       if (uploadedFileUrl.current) {
@@ -89,12 +124,26 @@ export const AvatarSelector: React.FC<AvatarSelectorProps> = ({
     const randomIndex = Math.floor(Math.random() * avatarsToChooseFrom.length)
     const randomAvatar = avatarsToChooseFrom[randomIndex]
 
-    onAvatarChange(randomAvatar)
+    // Очищаем загруженный файл
     onUploadedFileChange(null)
+
+    // Обновляем defaultAvatarPath
+    onAvatarChange(randomAvatar)
+
+    // Устанавливаем источник как 'default' для приоритета
+    setAvatarSource("default")
   }
 
   const handleUploadSuccess = (file: File) => {
     onUploadedFileChange(file)
+
+    // Сбрасываем defaultAvatarPath к исходному значению при загрузке файла
+    if (onResetDefaultAvatar) {
+      onResetDefaultAvatar()
+    }
+
+    // Устанавливаем источник как 'uploaded' для приоритета
+    setAvatarSource("uploaded")
   }
 
   const handleUploadError = (error: string) => {

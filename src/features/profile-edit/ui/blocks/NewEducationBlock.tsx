@@ -44,7 +44,7 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
     if (isStudent && education.length >= 1) return
 
     const newEducation: Education = {
-      id: `temp_${Date.now()}`,
+      _id: `temp_${Date.now()}`,
       institution: "",
       degree: isStudent ? "Специалитет" : "",
       specialty: "",
@@ -200,18 +200,10 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
           const errors = validateEducationItem(edu, index, touchedFields)
 
           return (
-            <div key={edu.id || index} className={styles.educationItem}>
+            <div key={edu._id || index} className={styles.educationItem}>
               <div className={styles.educationHeader}>
                 <GraduationCap size={20} className={styles.educationIcon} />
                 <span className={styles.educationNumber}>Образование {index + 1}</span>
-                <Button 
-                  variant="primary" 
-                  onClick={() => setShowUploadModal(true)}
-                  className={styles.uploadButton}
-                >
-                  <Upload size={16} className={styles.uploadIcon} />
-                  Подтвердить образование
-                </Button>
                 <Button
                   variant="outline-danger"
                   size="sm"
@@ -336,6 +328,11 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
         })}
       </div>
 
+      {/* {isStudent && education.length > 0 && (
+        <Alert variant="info" className={styles.studentInfo}>
+          <small>Для студентов доступно добавление только одного образования со степенью "Специалитет".</small>
+        </Alert>
+      )} */}
     </div>
   )
 }

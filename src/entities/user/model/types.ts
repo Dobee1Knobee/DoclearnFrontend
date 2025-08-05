@@ -16,14 +16,14 @@ export interface UserProfile {
 }
 
 //типы для научного статуса
-export type AcademicDegree = "Кандидат медицинских наук" | "Доктор медицинских наук"
-export type AcademicTitle = "Доцент" | "Профессор"
-export type AcademicRank = "Член-корреспондент РАН" | "Академик РАН"
+export type AcademicDegree = "Нет" | "Кандидат медицинских наук" | "Доктор медицинских наук"
+export type AcademicTitle = "Нет" | "Доцент" | "Профессор"
+export type AcademicRank = "Нет" | "Член-корреспондент РАН" | "Академик РАН"
 
 export interface ScientificStatus {
-  degree: AcademicDegree | null
-  title: AcademicTitle | null
-  rank: AcademicRank | null
+  degree: AcademicDegree
+  title: AcademicTitle
+  rank: AcademicRank
   interests: string[]
 }
 
@@ -58,7 +58,7 @@ export interface Contact {
 }
 
 export interface Education {
-  id: string
+  _id: string
   institution: string
   degree: string
   specialty: string
@@ -184,12 +184,21 @@ export interface ResearcherUser extends Omit<DoctorUser, "role"> {
 export interface AdminUser extends BaseUserFields {
   role: "admin"
   education: Education[]
+  scientificStatus?: ScientificStatus
+  specializations?: Specialization[]
+}
+
+export interface OwnerUser extends BaseUserFields {
+  role: "owner"
+  education: Education[]
+  scientificStatus?: ScientificStatus
+  specializations?: Specialization[]
 }
 
 // Union type для всех типов пользователей-специалистов
-export type SpecialistUser = StudentUser | ResidentUser | PostgraduateUser | DoctorUser | ResearcherUser | AdminUser
+export type SpecialistUser = StudentUser | ResidentUser | PostgraduateUser | DoctorUser | ResearcherUser | AdminUser | OwnerUser
 
-export type SpecialistRole = "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin"
+export type SpecialistRole = "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin" | "owner"
 
 export interface Achievement {
   id: string
