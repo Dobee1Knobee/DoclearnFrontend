@@ -19,7 +19,7 @@
     padding: 1.5rem;
   }
   
-  .profileHeader {
+  /* .profileHeader {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -60,7 +60,7 @@
     background-color: #e4e4e7;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
-  }
+  } */
   
   .menuContainer {
     display: flex;

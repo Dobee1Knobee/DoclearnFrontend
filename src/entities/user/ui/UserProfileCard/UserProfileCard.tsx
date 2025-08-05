@@ -1,37 +1,19 @@
 "use client"
 
 import { LogOut, Settings, FileText, Bookmark, User, Sun, BellRing } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
-import type { UserProfile, MenuItem, AvatarFile } from "../../model/types"
+import type { UserProfile, MenuItem } from "../../model/types"
 import styles from "./UserProfileCard.module.css"
 
 interface UserProfileCardProps extends Partial<UserProfile> {
   userId?: string
-  avatarUrl?: string
-  avatarId?: AvatarFile
   onLogout?: () => void
   onClose?: () => void
-  defaultAvatarPath: string
 }
 
-export function UserProfileCard({
-  name,
-  role,
-  avatar,
-  avatarUrl,
-  avatarId,
-  defaultAvatarPath,
-  userId,
-  onLogout,
-  onClose,
-}: UserProfileCardProps) {
+export function UserProfileCard({ userId, onLogout, onClose}: UserProfileCardProps) {
   const router = useRouter()
-  const { getAvatarUrl } = useAvatarCache()
-  const [imageError, setImageError] = useState(false)
 
   const handleProfileClick = () => {
     router.push(`/profile/${userId}`)
@@ -74,38 +56,11 @@ export function UserProfileCard({
     onClose?.()
   }
 
-  const handleImageError = () => {
-    console.warn("Avatar image failed to load for user:", userId)
-    setImageError(true)
-  }
-
-  const displayAvatarUrl = imageError
-    ? "/placeholder.webp"
-    : getAvatarUrl(avatarUrl || avatar, avatarId, userId, defaultAvatarPath)
 
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileCard}>
         <div className={styles.profileContent}>
-          <div className={styles.profileHeader}>
-            <div className={styles.avatarContainer}>
-              <Image
-                src={displayAvatarUrl || "/placeholder.webp"}
-                alt={name || "Аватарка"}
-                width={64}
-                height={64}
-                className={styles.avatarImage}
-                onError={handleImageError}
-                priority={false}
-                unoptimized={displayAvatarUrl.startsWith("blob:")}
-              />
-            </div>
-            <div className={styles.profileInfo}>
-              <h2 className={styles.profileName}>{name}</h2>
-              <p className={styles.profileRole}>{role}</p>
-            </div>
-          </div>
-          <div className={styles.divider} />
           <div className={styles.menuContainer}>
             <button onClick={handleProfileClick} className={`${styles.menuItem} ${styles.logoutButton}`} type="button">
               <div className={styles.menuItemLeft}>
