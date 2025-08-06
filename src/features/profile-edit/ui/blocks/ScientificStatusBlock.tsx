@@ -10,7 +10,6 @@ import styles from "./FormBlock.module.css"
 interface ScientificStatusBlockProps {
   scientificStatus: ScientificStatus
   onChange: (field: string, value: ScientificStatus) => void
-  onValidationChange?: (hasErrors: boolean) => void
   attemptedSave?: boolean
 }
 
@@ -35,35 +34,13 @@ const rankOptions: { value: AcademicRank | ""; label: string }[] = [
 export const ScientificStatusBlock: React.FC<ScientificStatusBlockProps> = ({
   scientificStatus,
   onChange,
-  onValidationChange,
   attemptedSave = false,
 }) => {
   const [newInterest, setNewInterest] = useState("")
-  const [degreeError, setDegreeError] = useState("")
-
-  useEffect(() => {
-    if (attemptedSave && !scientificStatus.degree) {
-      setDegreeError("Ученая степень обязательна")
-      onValidationChange?.(true)
-    } else if (scientificStatus.degree) {
-      setDegreeError("")
-      onValidationChange?.(false)
-    }
-  }, [attemptedSave, scientificStatus.degree, onValidationChange])
 
   const updateScientificStatus = (field: keyof ScientificStatus, value: any) => {
     const updated = { ...scientificStatus, [field]: value }
     onChange("scientificStatus", updated)
-
-    if (field === "degree") {
-      if (!value && attemptedSave) {
-        setDegreeError("Ученая степень обязательна")
-        onValidationChange?.(true)
-      } else {
-        setDegreeError("")
-        onValidationChange?.(false)
-      }
-    }
   }
 
   const addInterest = () => {
@@ -103,7 +80,7 @@ export const ScientificStatusBlock: React.FC<ScientificStatusBlockProps> = ({
           <Form.Select
             value={scientificStatus.degree || ""}
             onChange={(e) => updateScientificStatus("degree", e.target.value || null)}
-            className={`${styles.input} ${degreeError ? styles.inputError : ""}`}
+            className={styles.input}
           >
             {degreeOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -111,7 +88,6 @@ export const ScientificStatusBlock: React.FC<ScientificStatusBlockProps> = ({
               </option>
             ))}
           </Form.Select>
-          {degreeError && <div className={styles.errorText}>{degreeError}</div>}
         </Form.Group>
 
         <Form.Group>

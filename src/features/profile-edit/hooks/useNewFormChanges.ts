@@ -503,13 +503,6 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
       })
     }
 
-    if (hasScientificStatus(formData)) {
-      const scientificStatus = getScientificStatusSafely(formData)
-      if (scientificStatus && !scientificStatus.degree) {
-        hasErrors = true
-      }
-    }
-
     if (hasSpecializations(formData)) {
       const specializations = getSpecializationsSafely(formData)
       if (specializations.length > 0) {
