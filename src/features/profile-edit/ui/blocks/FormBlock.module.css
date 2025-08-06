@@ -192,7 +192,7 @@
   height: 40px;
 }
 
-.uploadButton {
+/* .uploadButton {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -215,7 +215,7 @@
 
 .uploadIcon {
   flex-shrink: 0;
-}
+} */
 
 .contactFields {
   display: grid;

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Form, Button, Alert } from "react-bootstrap"
 import { Plus, Trash2, Briefcase } from "lucide-react"
 import type { Work } from "@/entities/user/model/types"
@@ -11,6 +11,7 @@ interface WorkHistoryBlockProps {
   workHistory: Work[]
   onChange: (field: string, value: Work[]) => void
   onValidationChange?: (hasErrors: boolean) => void
+  attemptedSave?: boolean
 }
 
 interface FieldTouched {
@@ -26,9 +27,14 @@ export const WorkHistoryBlock: React.FC<WorkHistoryBlockProps> = ({
   workHistory = [],
   onChange,
   onValidationChange,
+  attemptedSave = false,
 }) => {
   const currentYear = new Date().getFullYear()
   const [touchedFields, setTouchedFields] = useState<FieldTouched>({})
+
+  useEffect(() => {
+    checkValidation(workHistory, touchedFields)
+  }, [attemptedSave])
 
   const addWork = () => {
     const newWork: Work = {
@@ -86,15 +92,15 @@ export const WorkHistoryBlock: React.FC<WorkHistoryBlockProps> = ({
     const errors: Record<string, string> = {}
     const fieldTouched = touched[index] || {}
 
-    if (fieldTouched.organizationName && work.organizationName.trim() === "") {
+    if ((fieldTouched.organizationName || attemptedSave) && work.organizationName.trim() === "") {
       errors.organizationName = "Название организации обязательно"
     }
 
-    if (fieldTouched.position && work.position.trim() === "") {
+    if ((fieldTouched.position || attemptedSave) && work.position.trim() === "") {
       errors.position = "Должность обязательна"
     }
 
-    if (fieldTouched.startDate) {
+    if (fieldTouched.startDate || attemptedSave) {
       if (!work.startDate) {
         errors.startDate = "Дата начала работы обязательна"
       } else {
@@ -106,7 +112,7 @@ export const WorkHistoryBlock: React.FC<WorkHistoryBlockProps> = ({
       }
     }
 
-    if (fieldTouched.endDate && !work.isCurrently) {
+    if ((fieldTouched.endDate || attemptedSave) && !work.isCurrently) {
       if (!work.endDate) {
         errors.endDate = "Дата окончания работы обязательна"
       } else {
@@ -134,16 +140,18 @@ export const WorkHistoryBlock: React.FC<WorkHistoryBlockProps> = ({
       }
     })
 
-    workList.forEach((work) => {
-      if (
-        !work.organizationName.trim() ||
-        !work.position.trim() ||
-        !work.startDate ||
-        (!work.isCurrently && !work.endDate)
-      ) {
-        hasErrors = true
-      }
-    })
+    if (attemptedSave) {
+      workList.forEach((work) => {
+        if (
+          !work.organizationName.trim() ||
+          !work.position.trim() ||
+          !work.startDate ||
+          (!work.isCurrently && !work.endDate)
+        ) {
+          hasErrors = true
+        }
+      })
+    }
 
     onValidationChange?.(hasErrors)
   }

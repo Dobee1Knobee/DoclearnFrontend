@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Form, Button, Alert } from "react-bootstrap"
 import { Plus, Trash2, Stethoscope } from "lucide-react"
 import type { Specialization, SpecializationMethod, QualificationCategory } from "@/entities/user/model/types"
@@ -11,6 +11,7 @@ interface SpecializationsBlockProps {
   specializations: Specialization[]
   onChange: (field: string, value: Specialization[]) => void
   onValidationChange?: (hasErrors: boolean) => void
+  attemptedSave?: boolean
 }
 
 interface FieldTouched {
@@ -36,8 +37,13 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
   specializations = [],
   onChange,
   onValidationChange,
+  attemptedSave = false,
 }) => {
   const [touchedFields, setTouchedFields] = useState<FieldTouched>({})
+
+  useEffect(() => {
+    checkValidation(specializations, touchedFields)
+  }, [attemptedSave])
 
   const addSpecialization = () => {
     const newSpecialization: Specialization = {
@@ -93,7 +99,7 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
     const errors: Record<string, string> = {}
     const fieldTouched = touched[index] || {}
 
-    if (fieldTouched.name && spec.name.trim() === "") {
+    if ((fieldTouched.name || attemptedSave) && spec.name.trim() === "") {
       errors.name = "Название специальности обязательно"
     }
 
@@ -110,11 +116,13 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
       }
     })
 
-    specList.forEach((spec) => {
-      if (!spec.name.trim()) {
-        hasErrors = true
-      }
-    })
+    if (attemptedSave) {
+      specList.forEach((spec) => {
+        if (!spec.name.trim()) {
+          hasErrors = true
+        }
+      })
+    }
 
     onValidationChange?.(hasErrors)
   }
@@ -130,7 +138,10 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
       </div>
 
       <Alert variant="info" className={styles.moderationAlert}>
-        <small>Информация о специализациях должна пройти модерацию. До завершения проверки будут отображаться старые значения.</small>
+        <small>
+          Информация о специализациях должна пройти модерацию. До завершения проверки будут отображаться старые
+          значения.
+        </small>
       </Alert>
 
       {specializations.length === 0 && (

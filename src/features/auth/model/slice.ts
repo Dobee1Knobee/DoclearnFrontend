@@ -36,7 +36,19 @@ export const authSlice = createSlice({
     },
     updateUserFields(state, action: PayloadAction<UpdateSpecialistFieldsPayload>) {
       if (state.user) {
-        const { defaultAvatarPath, location, birthday, bio, contacts, experience, stats, placeStudy, placeWork, role } = action.payload
+        const {
+          defaultAvatarPath,
+          location,
+          birthday,
+          bio,
+          contacts,
+          experience,
+          stats,
+          placeStudy,
+          placeWork,
+          role,
+          education,
+        } = action.payload
 
         if (defaultAvatarPath !== undefined) {
           state.user.defaultAvatarPath = defaultAvatarPath
@@ -70,6 +82,9 @@ export const authSlice = createSlice({
         }
         if (role !== undefined && role !== state.user.role) {
           state.user.role = role
+        }
+        if (education !== undefined) {
+          (state.user as SpecialistUser).education = education as any
         }
       }
     },

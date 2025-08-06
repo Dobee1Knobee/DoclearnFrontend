@@ -1,4 +1,4 @@
-import type { Contact, Education } from "@/entities/user/model/types"
+import type { Contact, Education, SpecialistRole } from "@/entities/user/model/types"
 
 export interface UpdateProfileRequest {
   firstName?: string
@@ -10,11 +10,10 @@ export interface UpdateProfileRequest {
   location?: string
   experience?: string
   specialization?: string
-  gpa?: number
-  programType?: "Бакалавриат" | "Магистратура" | "Ординатура" | "Аспирантура"
   contacts?: Contact[]
   education?: Education[]
-  avatar?: string
+  role?: SpecialistRole
+  placeStudy?: string
   defaultAvatarPath?: string
 }
 

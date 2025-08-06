@@ -240,12 +240,6 @@ export default function Header() {
             {showProfilePopup && (
               <div className={styles.profilePopup}>
                 <UserProfileCard
-                  name={`${user.lastName} ${user.firstName} ${user.middleName}`}
-                  role={user.role === "student" ? "Студент" : user.role === "doctor" ? "Врач" : "Администратор"}
-                  avatar={user.avatar}
-                  avatarUrl={user.avatarUrl}
-                  avatarId={user.avatarId}
-                  defaultAvatarPath={user.defaultAvatarPath}
                   userId={user._id}
                   onLogout={handleLogout}
                   onClose={closeProfilePopup}

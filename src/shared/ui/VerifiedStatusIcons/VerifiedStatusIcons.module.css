@@ -15,11 +15,12 @@
   margin-top: -0.5rem;
 }
 
-.studentIcon {
-  color: #a855f7;
-  margin-left: 0.25rem;
+.specificIcon {
+  color: #5388d8;
+  margin-left: 0.125rem;
   margin-top: -0.5rem;
 }
+
 
 .tooltipWrapper {
   position: relative;

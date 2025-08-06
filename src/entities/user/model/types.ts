@@ -58,7 +58,7 @@ export interface Contact {
 }
 
 export interface Education {
-  id: string
+  _id: string
   institution: string
   degree: string
   specialty: string
@@ -127,7 +127,6 @@ export interface BaseUserFields {
   placeStudy: string // место учебы, новое поле 
   placeWork: string
   workHistory: Work[] // история мест работы, новое поле
-  mainSpecialization: string // новое поле для основной специализации
   isVerified: UserVerification
   createdAt: string
   avatar?: string
@@ -184,12 +183,21 @@ export interface ResearcherUser extends Omit<DoctorUser, "role"> {
 export interface AdminUser extends BaseUserFields {
   role: "admin"
   education: Education[]
+  scientificStatus?: ScientificStatus
+  specializations?: Specialization[]
+}
+
+export interface OwnerUser extends BaseUserFields {
+  role: "owner"
+  education: Education[]
+  scientificStatus?: ScientificStatus
+  specializations?: Specialization[]
 }
 
 // Union type для всех типов пользователей-специалистов
-export type SpecialistUser = StudentUser | ResidentUser | PostgraduateUser | DoctorUser | ResearcherUser | AdminUser
+export type SpecialistUser = StudentUser | ResidentUser | PostgraduateUser | DoctorUser | ResearcherUser | AdminUser | OwnerUser
 
-export type SpecialistRole = "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin"
+export type SpecialistRole = "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin" | "owner"
 
 export interface Achievement {
   id: string

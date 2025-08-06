@@ -15,15 +15,22 @@ const getRoleInRussian = (role: string): string => {
   switch (role) {
     case "student":
       return "Студент"
+    case "resident":
+      return "Ординатор"
+    case "postgraduate":
+      return "Аспирант"
     case "doctor":
       return "Врач"
+    case "researcher":
+      return "Научный сотрудник"
     case "admin":
       return "Администратор"
+    case "owner":
+      return "Владелец"
     default:
       return role
   }
 }
-
 export const SearchResultItem: React.FC<SearchResultItemProps> = ({ user, isSelected, onClick }) => {
   const fullName = `${user.lastName} ${user.firstName} ${user.middleName}`.trim()
   const avatarSrc = user.avatarUrl || user.defaultAvatarPath 

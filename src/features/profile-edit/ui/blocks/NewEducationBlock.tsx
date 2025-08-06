@@ -1,9 +1,9 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Form, Button, Alert } from "react-bootstrap"
-import { Plus, Trash2, GraduationCap, Upload } from "lucide-react"
+import { Plus, Trash2, GraduationCap } from "lucide-react"
 import type { Education, SpecialistUser } from "@/entities/user/model/types"
 import type { SpecialistRole } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
@@ -15,6 +15,7 @@ interface NewEducationBlockProps {
   onChange: (field: ProfileKeys, value: any) => void
   onValidationChange?: (hasErrors: boolean) => void
   role?: SpecialistRole
+  attemptedSave?: boolean
 }
 
 interface FieldTouched {
@@ -32,19 +33,23 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
   onChange,
   onValidationChange,
   role = "student",
+  attemptedSave = false,
 }) => {
   const currentYear = new Date().getFullYear()
   const [touchedFields, setTouchedFields] = useState<FieldTouched>({})
-  const [showUploadModal, setShowUploadModal] = useState(false)
 
   const isStudent = role === "student"
   const canAddMore = !isStudent || education.length === 0
+
+  useEffect(() => {
+    checkValidation(education, touchedFields)
+  }, [attemptedSave])
 
   const addEducation = () => {
     if (isStudent && education.length >= 1) return
 
     const newEducation: Education = {
-      id: `temp_${Date.now()}`,
+      _id: `temp_${Date.now()}`,
       institution: "",
       degree: isStudent ? "Специалитет" : "",
       specialty: "",
@@ -99,19 +104,19 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
     const errors: Record<string, string> = {}
     const fieldTouched = touched[index] || {}
 
-    if (fieldTouched.institution && edu.institution.trim() === "") {
+    if ((fieldTouched.institution || attemptedSave) && edu.institution.trim() === "") {
       errors.institution = "Учебное заведение обязательно"
     }
 
-    if (fieldTouched.degree && edu.degree.trim() === "") {
+    if ((fieldTouched.degree || attemptedSave) && edu.degree.trim() === "") {
       errors.degree = "Степень/Квалификация обязательна"
     }
 
-    if (fieldTouched.specialty && edu.specialty.trim() === "") {
+    if ((fieldTouched.specialty || attemptedSave) && edu.specialty.trim() === "") {
       errors.specialty = "Специальность обязательна"
     }
 
-    if (fieldTouched.startDate) {
+    if (fieldTouched.startDate || attemptedSave) {
       if (!edu.startDate) {
         errors.startDate = "Год начала обязателен"
       } else {
@@ -126,7 +131,7 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
       }
     }
 
-    if (fieldTouched.graduationYear && !edu.isCurrently) {
+    if (fieldTouched.graduationYear || attemptedSave) {
       if (!edu.graduationYear) {
         errors.graduationYear = "Год окончания обязателен"
       } else {
@@ -136,8 +141,6 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
           errors.graduationYear = "Год окончания должен быть числом"
         } else if (graduation < startYear) {
           errors.graduationYear = "Год окончания не может быть раньше года начала"
-        } else if (graduation > currentYear) {
-          errors.graduationYear = "Год окончания не может быть в будущем"
         }
       }
     }
@@ -155,17 +158,19 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
       }
     })
 
-    educationList.forEach((edu) => {
-      if (
-        !edu.institution.trim() ||
-        !edu.degree.trim() ||
-        !edu.specialty.trim() ||
-        !edu.startDate ||
-        (!edu.isCurrently && !edu.graduationYear)
-      ) {
-        hasErrors = true
-      }
-    })
+    if (attemptedSave) {
+      educationList.forEach((edu) => {
+        if (
+          !edu.institution.trim() ||
+          !edu.degree.trim() ||
+          !edu.specialty.trim() ||
+          !edu.startDate ||
+          !edu.graduationYear 
+        ) {
+          hasErrors = true
+        }
+      })
+    }
 
     onValidationChange?.(hasErrors)
   }
@@ -200,18 +205,10 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
           const errors = validateEducationItem(edu, index, touchedFields)
 
           return (
-            <div key={edu.id || index} className={styles.educationItem}>
+            <div key={edu._id || index} className={styles.educationItem}>
               <div className={styles.educationHeader}>
                 <GraduationCap size={20} className={styles.educationIcon} />
                 <span className={styles.educationNumber}>Образование {index + 1}</span>
-                <Button 
-                  variant="primary" 
-                  onClick={() => setShowUploadModal(true)}
-                  className={styles.uploadButton}
-                >
-                  <Upload size={16} className={styles.uploadIcon} />
-                  Подтвердить образование
-                </Button>
                 <Button
                   variant="outline-danger"
                   size="sm"
@@ -277,7 +274,7 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
                       onChange={(e) => updateEducation(index, "startDate", e.target.value)}
                       onBlur={() => handleFieldBlur(index, "startDate")}
                       className={`${styles.input} ${errors.startDate ? styles.inputError : ""}`}
-                      placeholder="2020"
+                      placeholder="Например: 2020"
                     />
                     {errors.startDate && <div className={styles.errorText}>{errors.startDate}</div>}
                   </Form.Group>
@@ -287,13 +284,11 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
                     <Form.Control
                       type="number"
                       min="1950"
-                      max={currentYear}
                       value={edu.graduationYear || ""}
                       onChange={(e) => updateEducation(index, "graduationYear", e.target.value)}
                       onBlur={() => handleFieldBlur(index, "graduationYear")}
                       className={`${styles.input} ${errors.graduationYear ? styles.inputError : ""}`}
-                      placeholder="2024"
-                      disabled={edu.isCurrently}
+                      placeholder="Например: 2024"
                     />
                     {errors.graduationYear && <div className={styles.errorText}>{errors.graduationYear}</div>}
                   </Form.Group>
@@ -306,26 +301,7 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
                     label="Обучаюсь в настоящее время"
                     checked={edu.isCurrently || false}
                     onChange={(e) => {
-                      const isChecked = e.target.checked
-                      const newEducation = [...education]
-                      const updatedEduItem = { ...newEducation[index] }
-
-                      updatedEduItem.isCurrently = isChecked
-                      if (isChecked) {
-                        updatedEduItem.graduationYear = ""
-                        const newTouchedFields = {
-                          ...touchedFields,
-                          [index]: {
-                            ...touchedFields[index],
-                            graduationYear: false,
-                          },
-                        }
-                        setTouchedFields(newTouchedFields)
-                      }
-
-                      newEducation[index] = updatedEduItem
-                      onChange("education", newEducation)
-                      checkValidation(newEducation, touchedFields)
+                      updateEducation(index, "isCurrently", e.target.checked)
                     }}
                     className={styles.checkbox}
                   />
@@ -336,6 +312,11 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
         })}
       </div>
 
+      {/* {isStudent && education.length > 0 && (
+        <Alert variant="info" className={styles.studentInfo}>
+          <small>Для студентов доступно добавление только одного образования со степенью "Специалитет".</small>
+        </Alert>
+      )} */}
     </div>
   )
 }

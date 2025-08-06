@@ -21,13 +21,11 @@ export const EducationTab: React.FC<EducationTabProps> = ({ education }) => {
   //   }
   // }
 
-  console.log(education)
-
   return (
     <div className={styles.container}>
       
       {education.map((edu) => (
-        <div key={edu.id} className={styles.item}>
+        <div key={edu._id} className={styles.item}>
           <div className={styles.institution}>{edu.institution}</div>
           <div className={styles.degree}>
             {edu.degree}, {edu.specialty}
