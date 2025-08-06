@@ -29,7 +29,6 @@ type ProfileChanges = DeepPartial<SpecialistUser> & {
   specializations?: Specialization[]
 }
 
-// Создание объекта научного статуса по умолчанию
 const createDefaultScientificStatus = (): ScientificStatus => ({
   degree: "Нет",
   title: "Нет",
@@ -37,7 +36,6 @@ const createDefaultScientificStatus = (): ScientificStatus => ({
   interests: [],
 })
 
-// Функции сравнения (копируем из старого хука)
 const areContactsEqual = (contacts1: Contact[], contacts2: Contact[]): boolean => {
   if (contacts1.length !== contacts2.length) return false
 
@@ -85,10 +83,8 @@ const areWorkHistoryEqual = (work1: Work[], work2: Work[]): boolean => {
 }
 
 const areScientificStatusEqual = (status1?: ScientificStatus, status2?: ScientificStatus): boolean => {
-  // Если оба undefined/null, считаем равными
   if (!status1 && !status2) return true
 
-  // Если один есть, а другого нет, не равны
   if (!status1 || !status2) return false
 
   return (
@@ -100,11 +96,8 @@ const areScientificStatusEqual = (status1?: ScientificStatus, status2?: Scientif
 }
 
 const areSpecializationsEqual = (spec1?: Specialization[], spec2?: Specialization[]): boolean => {
-  // Проверяем что оба параметра являются массивами
   if (!Array.isArray(spec1) || !Array.isArray(spec2)) {
-    // Если оба undefined/null, считаем равными
     if (!spec1 && !spec2) return true
-    // Если один есть, а другого нет, не равны
     return false
   }
 
@@ -120,18 +113,13 @@ const areSpecializationsEqual = (spec1?: Specialization[], spec2?: Specializatio
   })
 }
 
-// Функции валидации
 const isValidContact = (contact: Contact): boolean => {
   return Boolean(contact.value && contact.value.trim() !== "")
 }
 
 const isValidEducation = (edu: Education): boolean => {
   return Boolean(
-    edu.institution.trim() &&
-      edu.degree.trim() &&
-      edu.specialty.trim() &&
-      edu.startDate &&
-      (edu.isCurrently || edu.graduationYear),
+    edu.institution.trim() && edu.degree.trim() && edu.specialty.trim() && edu.startDate && edu.graduationYear, // Убрали проверку isCurrently, теперь graduationYear всегда обязателен
   )
 }
 
@@ -145,7 +133,6 @@ const isValidSpecialization = (spec: Specialization): boolean => {
   return Boolean(spec.name.trim() && spec.method && spec.qualificationCategory)
 }
 
-// Функции нормализации образования
 const normalizeEducationToArray = (education: Education | Education[]): Education[] => {
   if (Array.isArray(education)) {
     return education
@@ -173,7 +160,6 @@ const normalizeEducationForRole = (education: Education[], role: string): Educat
   return education
 }
 
-// Type guards
 const hasScientificStatus = (user: SpecialistUser): user is PostgraduateUser | DoctorUser | ResearcherUser => {
   return user.role === "postgraduate" || user.role === "doctor" || user.role === "researcher"
 }
@@ -182,7 +168,6 @@ const hasSpecializations = (user: SpecialistUser): user is DoctorUser | Research
   return user.role === "doctor" || user.role === "researcher"
 }
 
-// Функция для безопасного получения научного статуса
 const getScientificStatusSafely = (user: SpecialistUser): ScientificStatus | undefined => {
   if (hasScientificStatus(user)) {
     return user.scientificStatus || createDefaultScientificStatus()
@@ -190,7 +175,6 @@ const getScientificStatusSafely = (user: SpecialistUser): ScientificStatus | und
   return undefined
 }
 
-// Функция для безопасного получения специализаций
 const getSpecializationsSafely = (user: SpecialistUser): Specialization[] => {
   if (hasSpecializations(user)) {
     return user.specializations || []
@@ -198,7 +182,6 @@ const getSpecializationsSafely = (user: SpecialistUser): Specialization[] => {
   return []
 }
 
-// Функция нормализации данных пользователя
 const normalizeUserData = (userData: SpecialistUser): SpecialistUser => {
   const baseData = {
     ...userData,
@@ -208,14 +191,12 @@ const normalizeUserData = (userData: SpecialistUser): SpecialistUser => {
     experience: userData.experience || "",
   }
 
-  // Если роль требует научный статус, но его нет - создаем по умолчанию
   if (hasScientificStatus(baseData)) {
     const normalizedData = {
       ...baseData,
       scientificStatus: baseData.scientificStatus || createDefaultScientificStatus(),
     } as SpecialistUser
 
-    // Если роль требует специализации, но их нет - создаем пустой массив
     if (hasSpecializations(normalizedData)) {
       return {
         ...normalizedData,
@@ -234,40 +215,33 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
   const dispatch = useAppDispatch()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateMyProfileMutation()
 
-  // Нормализуем начальные данные
   const normalizedInitialData = normalizeUserData(initialData)
 
-  // Основные состояния формы
   const [formData, setFormData] = useState<SpecialistUser>(normalizedInitialData)
 
-  // Состояния сохранения
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle")
   const [errorMessage, setErrorMessage] = useState("")
   const [moderationMessage, setModerationMessage] = useState("")
 
-  // Состояния валидации
   const [educationErrors, setEducationErrors] = useState(false)
   const [contactsErrors, setContactsErrors] = useState(false)
   const [workHistoryErrors, setWorkHistoryErrors] = useState(false)
   const [scientificStatusErrors, setScientificStatusErrors] = useState(false)
   const [specializationsErrors, setSpecializationsErrors] = useState(false)
+  const [attemptedSave, setAttemptedSave] = useState(false)
 
-  // Исправляем инициализацию originalData
   const originalData = useRef<SpecialistUser>(normalizedInitialData)
 
-  // Обновление оригинальных данных
   const updateOriginalData = useCallback((newData: SpecialistUser) => {
     const normalizedData = normalizeUserData(newData)
     originalData.current = normalizedData
     setFormData(normalizedData)
   }, [])
 
-  // Обновление поля
   const updateField = useCallback((field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }) as SpecialistUser)
   }, [])
 
-  // Смена роли
   const handleRoleChange = useCallback((newRole: SpecialistRole) => {
     setFormData((prev) => {
       const baseData = {
@@ -379,12 +353,10 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
     })
   }, [])
 
-  // Получение измененных полей
   const getChangedFields = useCallback((): ProfileChanges => {
     const changes: ProfileChanges = {}
     const original = originalData.current
 
-    // Общие поля для всех ролей
     const commonFields: (keyof SpecialistUser)[] = [
       "firstName",
       "lastName",
@@ -396,7 +368,7 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
       "experience",
       "avatar",
       "defaultAvatarPath",
-      "role", // Добавляем роль
+      "role",
     ]
 
     commonFields.forEach((field) => {
@@ -408,35 +380,30 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
       }
     })
 
-    // Проверка даты рождения
     const originalBirthday = original.birthday?.split("T")[0] || ""
     const currentBirthday = formData.birthday?.split("T")[0] || ""
     if (originalBirthday !== currentBirthday) {
       changes.birthday = currentBirthday
     }
 
-    // Проверка контактов
     const originalContacts = original.contacts || []
     const currentContacts = formData.contacts || []
     if (!areContactsEqual(originalContacts, currentContacts)) {
       changes.contacts = currentContacts
     }
 
-    // Проверка истории работы
     const originalWorkHistory = original.workHistory || []
     const currentWorkHistory = formData.workHistory || []
     if (!areWorkHistoryEqual(originalWorkHistory, currentWorkHistory)) {
       changes.workHistory = currentWorkHistory
     }
 
-    // Проверка образования
     const originalEducationArray = normalizeEducationToArray(original.education)
     const currentEducationArray = normalizeEducationToArray(formData.education)
     if (!areEducationEqual(originalEducationArray, currentEducationArray)) {
       changes.education = normalizeEducationForRole(currentEducationArray, formData.role) as any
     }
 
-    // Проверка полей для ролей с научным статусом
     const originalScientificStatus = getScientificStatusSafely(original)
     const currentScientificStatus = getScientificStatusSafely(formData)
 
@@ -444,7 +411,6 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
       changes.scientificStatus = currentScientificStatus
     }
 
-    // Проверка специализаций для врачей и исследователей
     const originalSpecializations = getSpecializationsSafely(original)
     const currentSpecializations = getSpecializationsSafely(formData)
 
@@ -455,7 +421,6 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
     return changes
   }, [formData])
 
-  // Подготовка данных для отправки
   const getDataToSend = useCallback(() => {
     const changedFields = getChangedFields()
     const cleanedData: Record<string, any> = {}
@@ -468,26 +433,16 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
         }
       } else if (key === "education" && Array.isArray(value)) {
         const validEducation = (value as Education[]).filter(isValidEducation).map(({ _id, ...rest }) => {
-          if (rest.isCurrently) {
-            const { graduationYear, ...educationWithoutGraduationYear } = rest
-            return educationWithoutGraduationYear
-          }
           return rest
         })
         if (validEducation.length > 0) {
           cleanedData[key] = validEducation
         }
       } else if (key === "education" && !Array.isArray(value)) {
-        // Для студентов - одиночный объект образования
         const education = value as Education
         if (isValidEducation(education)) {
           const { _id, ...rest } = education
-          if (rest.isCurrently) {
-            const { graduationYear, ...educationWithoutGraduationYear } = rest
-            cleanedData[key] = educationWithoutGraduationYear
-          } else {
-            cleanedData[key] = rest
-          }
+          cleanedData[key] = rest
         }
       } else if (key === "workHistory" && Array.isArray(value)) {
         const validWork = (value as Work[]).filter(isValidWork).map(({ id, ...rest }) => rest)
@@ -503,10 +458,8 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
         }
       } else if (key === "scientificStatus" && value) {
         const status = value as ScientificStatus
-        // Отправляем научный статус всегда если он есть в изменениях
         cleanedData[key] = status
       } else if (key === "role") {
-        // Роль всегда отправляем если она изменилась
         cleanedData[key] = value
       } else if (Array.isArray(value)) {
         if (value.length > 0) {
@@ -520,18 +473,87 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
     return cleanedData
   }, [getChangedFields])
 
-  // Проверка наличия изменений
   const hasChanges = useMemo(() => {
     return Object.keys(getChangedFields()).length > 0
   }, [getChangedFields])
 
-  // Проверка наличия ошибок валидации
-  const hasValidationErrors = useMemo(() => {
-    return educationErrors || contactsErrors || workHistoryErrors || scientificStatusErrors || specializationsErrors
-  }, [educationErrors, contactsErrors, workHistoryErrors, scientificStatusErrors, specializationsErrors])
+  const checkAllValidation = useCallback(() => {
+    if (!attemptedSave) return false
 
-  // Сохранение профиля - возвращаем результат для обработки в компоненте
-  const handleSave = useCallback(async (): Promise<{ success: boolean; shouldRedirect: boolean }> => {
+    let hasErrors = false
+
+    const educationArray = normalizeEducationToArray(formData.education)
+    if (educationArray.length > 0) {
+      educationArray.forEach((edu) => {
+        if (!isValidEducation(edu)) {
+          hasErrors = true
+        }
+      })
+    }
+
+    const contacts = formData.contacts || []
+    if (contacts.length > 0) {
+      contacts.forEach((contact) => {
+        if (!isValidContact(contact)) {
+          hasErrors = true
+        }
+      })
+    }
+
+    const workHistory = formData.workHistory || []
+    if (workHistory.length > 0) {
+      workHistory.forEach((work) => {
+        if (!isValidWork(work)) {
+          hasErrors = true
+        }
+      })
+    }
+
+    if (hasScientificStatus(formData)) {
+      const scientificStatus = getScientificStatusSafely(formData)
+      if (scientificStatus && !scientificStatus.degree) {
+        hasErrors = true
+      }
+    }
+
+    if (hasSpecializations(formData)) {
+      const specializations = getSpecializationsSafely(formData)
+      if (specializations.length > 0) {
+        specializations.forEach((spec) => {
+          if (!isValidSpecialization(spec)) {
+            hasErrors = true
+          }
+        })
+      }
+    }
+
+    return hasErrors
+  }, [formData, attemptedSave])
+
+  const hasValidationErrors = useMemo(() => {
+    const blockErrors =
+      educationErrors || contactsErrors || workHistoryErrors || scientificStatusErrors || specializationsErrors
+
+    if (attemptedSave) {
+      return blockErrors || checkAllValidation()
+    }
+
+    return blockErrors
+  }, [
+    attemptedSave,
+    checkAllValidation,
+    educationErrors,
+    contactsErrors,
+    workHistoryErrors,
+    scientificStatusErrors,
+    specializationsErrors,
+  ])
+
+  const handleSave = useCallback(async (): Promise<{
+    success: boolean
+    shouldRedirect: boolean
+    hasValidationErrors?: boolean
+  }> => {
     try {
       setSaveStatus("idle")
       setErrorMessage("")
@@ -549,7 +571,6 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
           setModerationMessage("Некоторые поля изменятся после проверки администратора")
         }
 
-        // Обновляем оригинальные данные
         updateOriginalData({ ...formData, ...dataToSend } as SpecialistUser)
 
         return { success: true, shouldRedirect: true }
@@ -563,20 +584,20 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
 
       if (error?.status === 401 || error?.data?.code === "MISSING_TOKEN") {
         try {
-          const authResult = await dispatch(checkAuthStatus()).unwrap();
+          const authResult = await dispatch(checkAuthStatus()).unwrap()
           if (authResult) {
-            console.log("Token refreshed, retrying save...");
-            return await handleSave();
+            console.log("Token refreshed, retrying save...")
+            return await handleSave()
           } else {
-            setSaveStatus("error");
-            setErrorMessage("Сессия истекла. Необходимо войти заново.");
-            return { success: false, shouldRedirect: false };
+            setSaveStatus("error")
+            setErrorMessage("Сессия истекла. Необходимо войти заново.")
+            return { success: false, shouldRedirect: false }
           }
         } catch (authError) {
-          console.error("Auth refresh error:", authError);
-          setSaveStatus("error");
-          setErrorMessage("Сессия истекла. Необходимо войти заново.");
-          return { success: false, shouldRedirect: false };
+          console.error("Auth refresh error:", authError)
+          setSaveStatus("error")
+          setErrorMessage("Сессия истекла. Необходимо войти заново.")
+          return { success: false, shouldRedirect: false }
         }
       } else {
         setErrorMessage(error?.data?.error || error?.data?.message || "Произошла ошибка при сохранении профиля")
@@ -586,13 +607,11 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
     }
   }, [getDataToSend, updateProfile, formData, updateOriginalData])
 
-  // Функция для перехода на страницу профиля
   const redirectToProfile = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000))
     router.push(`/profile/${initialData._id}`)
   }, [router, initialData._id])
 
-  // Сброс к оригинальным данным
   const handleReset = useCallback(() => {
     setFormData({
       ...originalData.current,
@@ -609,9 +628,9 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
     setWorkHistoryErrors(false)
     setScientificStatusErrors(false)
     setSpecializationsErrors(false)
+    setAttemptedSave(false)
   }, [])
 
-  // Отмена редактирования
   const handleCancel = useCallback(() => {
     if (hasChanges) {
       if (window.confirm("У вас есть несохраненные изменения. Вы уверены, что хотите выйти?")) {
@@ -623,38 +642,34 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
   }, [hasChanges, router, initialData._id])
 
   return {
-    // Данные формы
     formData,
     hasChanges,
     hasValidationErrors,
 
-    // Состояния сохранения
     saveStatus,
     errorMessage,
     moderationMessage,
     isUpdating,
 
-    // Состояния валидации
     educationErrors,
     contactsErrors,
     workHistoryErrors,
     scientificStatusErrors,
     specializationsErrors,
+    attemptedSave,
+    setAttemptedSave,
 
-    // Методы обновления
     updateField,
     handleRoleChange,
     getChangedFields,
     getDataToSend,
     updateOriginalData,
 
-    // Методы действий
     handleSave,
     handleReset,
     handleCancel,
     redirectToProfile,
 
-    // Колбеки валидации для передачи в блоки
     setEducationErrors,
     setContactsErrors,
     setWorkHistoryErrors,

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Form, Alert } from "react-bootstrap"
 import { Plus, X } from "lucide-react"
 import type { ScientificStatus, AcademicDegree, AcademicTitle, AcademicRank } from "@/entities/user/model/types"
@@ -11,6 +11,7 @@ interface ScientificStatusBlockProps {
   scientificStatus: ScientificStatus
   onChange: (field: string, value: ScientificStatus) => void
   onValidationChange?: (hasErrors: boolean) => void
+  attemptedSave?: boolean
 }
 
 const degreeOptions: { value: AcademicDegree | ""; label: string }[] = [
@@ -35,16 +36,27 @@ export const ScientificStatusBlock: React.FC<ScientificStatusBlockProps> = ({
   scientificStatus,
   onChange,
   onValidationChange,
+  attemptedSave = false,
 }) => {
   const [newInterest, setNewInterest] = useState("")
   const [degreeError, setDegreeError] = useState("")
+
+  useEffect(() => {
+    if (attemptedSave && !scientificStatus.degree) {
+      setDegreeError("Ученая степень обязательна")
+      onValidationChange?.(true)
+    } else if (scientificStatus.degree) {
+      setDegreeError("")
+      onValidationChange?.(false)
+    }
+  }, [attemptedSave, scientificStatus.degree, onValidationChange])
 
   const updateScientificStatus = (field: keyof ScientificStatus, value: any) => {
     const updated = { ...scientificStatus, [field]: value }
     onChange("scientificStatus", updated)
 
     if (field === "degree") {
-      if (!value) {
+      if (!value && attemptedSave) {
         setDegreeError("Ученая степень обязательна")
         onValidationChange?.(true)
       } else {
@@ -79,10 +91,13 @@ export const ScientificStatusBlock: React.FC<ScientificStatusBlockProps> = ({
       <h3 className={styles.blockTitle}>Научный статус</h3>
 
       <Alert variant="info" className={styles.moderationAlert}>
-        <small>Информация о научном статусе должна пройти модерацию. До завершения проверки будут отображаться старые значения.</small>
+        <small>
+          Информация о научном статусе должна пройти модерацию. До завершения проверки будут отображаться старые
+          значения.
+        </small>
       </Alert>
 
-      <div className={styles.formGrid} style={{"paddingBottom": "1rem"}}>
+      <div className={styles.formGrid} style={{ paddingBottom: "1rem" }}>
         <Form.Group>
           <Form.Label className={styles.label}>Ученая степень</Form.Label>
           <Form.Select

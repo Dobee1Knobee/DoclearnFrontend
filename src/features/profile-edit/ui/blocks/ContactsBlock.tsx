@@ -6,7 +6,7 @@ import { Plus, Trash2, Mail, Phone, Globe, MessageCircle } from "lucide-react"
 import { Telegram, Whatsapp, Facebook, Instagram, Twitter } from "iconoir-react"
 import type { Contact, SpecialistUser } from "@/entities/user/model/types"
 import styles from "./FormBlock.module.css"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { validateEmail, validatePhone, validateUrl } from "@/shared/lib/validation"
 
 interface ContactTouched {
@@ -22,6 +22,7 @@ interface ContactsBlockProps {
   contacts: Contact[]
   onChange: (field: ProfileKeys, value: any) => void
   onValidationChange?: (hasErrors: boolean) => void
+  attemptedSave?: boolean
 }
 
 const contactTypes = [
@@ -36,8 +37,17 @@ const contactTypes = [
   { value: "instagram", label: "Instagram", icon: Instagram },
 ]
 
-export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onChange, onValidationChange }) => {
+export const ContactsBlock: React.FC<ContactsBlockProps> = ({
+  contacts = [],
+  onChange,
+  onValidationChange,
+  attemptedSave = false,
+}) => {
   const [touchedFields, setTouchedFields] = useState<ContactTouched>({})
+
+  useEffect(() => {
+    checkValidation(contacts, touchedFields)
+  }, [attemptedSave])
 
   const handleFieldBlur = (index: number, fieldName: "value" | "type") => {
     const newTouchedFields = {
@@ -55,7 +65,7 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
     const errors: Record<string, string> = {}
     const fieldTouched = touched[index] || {}
 
-    if (fieldTouched.value) {
+    if (fieldTouched.value || attemptedSave) {
       if (!contact.value.trim()) {
         errors.value = "Значение обязательно"
         return errors
@@ -96,11 +106,13 @@ export const ContactsBlock: React.FC<ContactsBlockProps> = ({ contacts = [], onC
       }
     })
 
-    contactsList.forEach((contact) => {
-      if (!contact.value.trim()) {
-        hasErrors = true
-      }
-    })
+    if (attemptedSave) {
+      contactsList.forEach((contact) => {
+        if (!contact.value.trim()) {
+          hasErrors = true
+        }
+      })
+    }
 
     onValidationChange?.(hasErrors)
   }

@@ -192,6 +192,31 @@
   height: 40px;
 }
 
+/* .uploadButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #5388d8 !important;
+  border-color: #5388d8 !important;
+  padding: 0.5rem 1rem;
+  width: auto;
+  height: 40px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.uploadButton:hover {
+  background-color: #4070b8 !important;
+  border-color: #4070b8 !important;
+  transform: translateY(-1px);
+}
+
+.uploadIcon {
+  flex-shrink: 0;
+} */
+
 .contactFields {
   display: grid;
   grid-template-columns: 2fr 1fr;
