@@ -260,9 +260,9 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
               "scientificStatus" in formData
                 ? formData.scientificStatus
                 : {
-                    degree: "Нет",
-                    title: "Нет",
-                    rank: "Нет",
+                    degree: null,
+                    title: null,
+                    rank: null,
                     interests: [],
                   }
             }
@@ -283,9 +283,9 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
               "scientificStatus" in formData
                 ? formData.scientificStatus
                 : {
-                    degree: "Нет",
-                    title: "Нет",
-                    rank: "Нет",
+                    degree: null,
+                    title: null,
+                    rank: null,
                     interests: [],
                   }
             }

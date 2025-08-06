@@ -16,14 +16,14 @@ export interface UserProfile {
 }
 
 //типы для научного статуса
-export type AcademicDegree = "Нет" | "Кандидат медицинских наук" | "Доктор медицинских наук"
-export type AcademicTitle = "Нет" | "Доцент" | "Профессор"
-export type AcademicRank = "Нет" | "Член-корреспондент РАН" | "Академик РАН"
+export type AcademicDegree = "Кандидат медицинских наук" | "Доктор медицинских наук"
+export type AcademicTitle = "Доцент" | "Профессор"
+export type AcademicRank = "Член-корреспондент РАН" | "Академик РАН"
 
 export interface ScientificStatus {
-  degree: AcademicDegree
-  title: AcademicTitle
-  rank: AcademicRank
+  degree: AcademicDegree | null
+  title: AcademicTitle | null
+  rank: AcademicRank | null
   interests: string[]
 }
 

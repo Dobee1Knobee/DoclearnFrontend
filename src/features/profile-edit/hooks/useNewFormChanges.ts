@@ -30,9 +30,9 @@ type ProfileChanges = DeepPartial<SpecialistUser> & {
 }
 
 const createDefaultScientificStatus = (): ScientificStatus => ({
-  degree: "Нет",
-  title: "Нет",
-  rank: "Нет",
+  degree: null,
+  title: null,
+  rank: null,
   interests: [],
 })
 
@@ -91,7 +91,7 @@ const areScientificStatusEqual = (status1?: ScientificStatus, status2?: Scientif
     status1.degree === status2.degree &&
     status1.title === status2.title &&
     status1.rank === status2.rank &&
-    JSON.stringify(status1.interests.sort()) === JSON.stringify(status2.interests.sort())
+    JSON.stringify([...status1.interests].sort()) === JSON.stringify([...status2.interests].sort())
   )
 }
 
