@@ -149,11 +149,9 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
 
       <FormInput
         name="placeWork"
-        label="Место работы"
+        label="Место работы (необязательно)"
         control={control}
-        rules={{
-          required: errorMessages.required,
-        }}
+        rules={{}}
         error={errors.placeWork}
         placeholder="Введите место работы"
       />
