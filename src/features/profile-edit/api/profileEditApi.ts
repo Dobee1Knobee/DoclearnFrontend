@@ -68,8 +68,17 @@ export const profileEditApi = createApi({
             if (requestData.experience !== undefined) {
               fieldsToUpdate.experience = requestData.experience
             }
-            if (requestData.programType !== undefined) {
-              fieldsToUpdate.programType = requestData.programType
+            if (requestData.role !== undefined) {
+              fieldsToUpdate.role = requestData.role
+            }
+            if (requestData.placeStudy !== undefined) {
+              fieldsToUpdate.placeStudy = requestData.placeStudy
+            }
+            if (requestData.placeWork !== undefined) {
+              fieldsToUpdate.placeWork = requestData.placeWork
+            }
+            if (requestData.education !== undefined) {
+              fieldsToUpdate.education = requestData.education
             }
 
             if (Object.keys(fieldsToUpdate).length > 0) {

@@ -439,7 +439,7 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
           cleanedData[key] = validEducation
         }
       } else if (key === "workHistory" && Array.isArray(value)) {
-        const validWork = (value as Work[]).filter(isValidWork).map(({ id, ...rest }) => rest)
+        const validWork = (value as Work[]).filter(isValidWork)
         if (validWork.length > 0) {
           cleanedData[key] = validWork
         }
