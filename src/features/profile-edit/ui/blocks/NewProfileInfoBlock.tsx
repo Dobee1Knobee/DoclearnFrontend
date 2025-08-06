@@ -9,7 +9,6 @@ interface ProfileInfoData {
   experience: string
   placeWork: string
   placeStudy: string
-  mainSpecialization: string
 }
 
 interface NewProfileInfoBlockProps {
@@ -19,7 +18,7 @@ interface NewProfileInfoBlockProps {
 
 export const NewProfileInfoBlock: React.FC<NewProfileInfoBlockProps> = ({ data, onChange }) => {
 
-    const moderationFields = ["placeWork", "placeStudy", "mainSpecialization"]
+    const moderationFields = ["placeWork", "placeStudy"]
 
     return (
     <div className={styles.block}>
@@ -77,19 +76,6 @@ export const NewProfileInfoBlock: React.FC<NewProfileInfoBlockProps> = ({ data, 
             </Form.Group>
         </div>
 
-        <Form.Group>
-            <Form.Label className={styles.label}>
-                Основная специализация
-                {moderationFields.includes("mainSpecialization") && <span className={styles.moderationBadge}>Модерация</span>}
-            </Form.Label>
-            <Form.Control
-                type="text"
-                value={data.mainSpecialization}
-                onChange={(e) => onChange("mainSpecialization", e.target.value)}
-                className={styles.input}
-                placeholder="Ваша основная специализация"
-            />
-        </Form.Group>
     </div>
   )
 }

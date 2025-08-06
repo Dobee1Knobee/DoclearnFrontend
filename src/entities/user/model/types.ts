@@ -127,7 +127,6 @@ export interface BaseUserFields {
   placeStudy: string // место учебы, новое поле 
   placeWork: string
   workHistory: Work[] // история мест работы, новое поле
-  mainSpecialization: string // новое поле для основной специализации
   isVerified: UserVerification
   createdAt: string
   avatar?: string

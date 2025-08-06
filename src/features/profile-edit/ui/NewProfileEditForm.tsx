@@ -286,7 +286,6 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
             experience: formData.experience || "",
             placeWork: formData.placeWork || "",
             placeStudy: formData.placeStudy || "",
-            mainSpecialization: formData.mainSpecialization || "",
           }}
           onChange={updateField}
         />
