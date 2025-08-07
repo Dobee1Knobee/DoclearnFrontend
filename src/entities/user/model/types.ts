@@ -29,13 +29,14 @@ export interface ScientificStatus {
 
 //типы для специализаций врача
 export type SpecializationMethod = "Ординатура" | "Профессиональная переподготовка"
-export type QualificationCategory = "Вторая категория" | "Первая категория" | "Высшая категория"
+export type QualificationCategory = "Вторая категория" | "Первая категория" | "Высшая категория" | null
 
 export interface Specialization {
-  id: string
+  specializationId: string
   name: string
   method: SpecializationMethod
   qualificationCategory: QualificationCategory
+  main: boolean
 }
 
 //тип для места работы
@@ -180,18 +181,12 @@ export interface ResearcherUser extends Omit<DoctorUser, "role"> {
 }
 
 // Админ
-export interface AdminUser extends BaseUserFields {
+export interface AdminUser extends Omit<ResearcherUser, "role"> {
   role: "admin"
-  education: Education[]
-  scientificStatus?: ScientificStatus
-  specializations?: Specialization[]
 }
 
-export interface OwnerUser extends BaseUserFields {
+export interface OwnerUser extends Omit<AdminUser, "role"> {
   role: "owner"
-  education: Education[]
-  scientificStatus?: ScientificStatus
-  specializations?: Specialization[]
 }
 
 // Union type для всех типов пользователей-специалистов

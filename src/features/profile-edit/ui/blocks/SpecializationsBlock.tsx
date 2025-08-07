@@ -1,10 +1,13 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Form, Button, Alert } from "react-bootstrap"
-import { Plus, Trash2, Stethoscope } from "lucide-react"
+import { Plus, Trash2, Stethoscope } from 'lucide-react'
 import type { Specialization, SpecializationMethod, QualificationCategory } from "@/entities/user/model/types"
+import { Combobox } from "@/shared/ui/Combobox/Combobox"
+import type { ComboboxOptionsType } from "@/shared/ui/Combobox/types"
+import { specializations as specializationsData } from "@/shared/data/specializations"
 import styles from "./FormBlock.module.css"
 
 interface SpecializationsBlockProps {
@@ -15,7 +18,7 @@ interface SpecializationsBlockProps {
 }
 
 interface FieldTouched {
-  [key: string]: {
+  [key: number]: {
     name?: boolean
     method?: boolean
     qualificationCategory?: boolean
@@ -28,35 +31,45 @@ const methodOptions: { value: SpecializationMethod; label: string }[] = [
 ]
 
 const categoryOptions: { value: QualificationCategory; label: string }[] = [
+  { value: null, label: "Нет" },
   { value: "Вторая категория", label: "Вторая категория" },
   { value: "Первая категория", label: "Первая категория" },
   { value: "Высшая категория", label: "Высшая категория" },
 ]
 
 export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
-  specializations = [],
+  specializations: userSpecializations = [],
   onChange,
   onValidationChange,
   attemptedSave = false,
 }) => {
   const [touchedFields, setTouchedFields] = useState<FieldTouched>({})
 
+  const specializationOptions: ComboboxOptionsType[] = useMemo(() => {
+    return specializationsData.map((spec) => ({
+      id: spec.id,
+      label: spec.label,
+      value: spec,
+    }))
+  }, [])
+
   useEffect(() => {
-    checkValidation(specializations, touchedFields)
-  }, [attemptedSave])
+    checkValidation(userSpecializations, touchedFields)
+  }, [attemptedSave, userSpecializations, touchedFields])
 
   const addSpecialization = () => {
     const newSpecialization: Specialization = {
-      id: `temp_${Date.now()}`,
+      specializationId: "",
       name: "",
       method: "Ординатура",
-      qualificationCategory: "Вторая категория",
+      qualificationCategory: null,
+      main: false,
     }
-    onChange("specializations", [...specializations, newSpecialization])
+    onChange("specializations", [...userSpecializations, newSpecialization])
   }
 
   const removeSpecialization = (index: number) => {
-    const newSpecializations = specializations.filter((_, i) => i !== index)
+    const newSpecializations = userSpecializations.filter((_, i) => i !== index)
     onChange("specializations", newSpecializations)
 
     const newTouchedFields = { ...touchedFields }
@@ -76,11 +89,42 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
     checkValidation(newSpecializations, reindexedTouchedFields)
   }
 
-  const updateSpecialization = (index: number, field: keyof Specialization, value: string) => {
-    const newSpecializations = [...specializations]
+  const updateSpecialization = (index: number, field: keyof Specialization, value: any) => {
+    const newSpecializations = [...userSpecializations]
     newSpecializations[index] = { ...newSpecializations[index], [field]: value }
     onChange("specializations", newSpecializations)
     checkValidation(newSpecializations, touchedFields)
+  }
+
+  const handleSpecializationSelect = (index: number, option: ComboboxOptionsType | null) => {
+    const newSpecs = userSpecializations.map((spec, i) =>
+      i === index
+        ? option
+          ? {
+              ...spec,
+              name: option.value.label,
+              specializationId: option.value.id
+            }
+          : {
+              ...spec,
+              name: "",
+              specializationId: ""
+            }
+        : spec
+    )
+
+    onChange("specializations", newSpecs)
+
+    const newTouchedFields = {
+      ...touchedFields,
+      [index]: {
+        ...touchedFields[index],
+        name: true
+      }
+    }
+    setTouchedFields(newTouchedFields)
+
+    checkValidation(newSpecs, newTouchedFields)
   }
 
   const handleFieldBlur = (index: number, fieldName: keyof Specialization) => {
@@ -92,15 +136,23 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
       },
     }
     setTouchedFields(newTouchedFields)
-    checkValidation(specializations, newTouchedFields)
+    checkValidation(userSpecializations, newTouchedFields)
   }
 
   const validateSpecializationItem = (spec: Specialization, index: number, touched: FieldTouched) => {
     const errors: Record<string, string> = {}
     const fieldTouched = touched[index] || {}
 
-    if ((fieldTouched.name || attemptedSave) && spec.name.trim() === "") {
-      errors.name = "Название специальности обязательно"
+    if (fieldTouched.name || attemptedSave) {
+      if (!spec.name.trim() || !spec.specializationId.trim()) {
+        errors.name = "Специализация обязательна"
+        return errors
+      }
+
+      const isValidSpecialization = specializationsData.some(s => s.id === spec.specializationId && s.label === spec.name)
+      if (!isValidSpecialization) {
+        errors.name = "Выберите специализацию из списка"
+      }
     }
 
     return errors
@@ -118,13 +170,24 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
 
     if (attemptedSave) {
       specList.forEach((spec) => {
-        if (!spec.name.trim()) {
+        if (!spec.name.trim() || !spec.specializationId) {
           hasErrors = true
+        }
+        if (spec.name.trim() && spec.specializationId) {
+          const isValidSpecialization = specializationsData.some(s => s.id === spec.specializationId && s.label === spec.name)
+          if (!isValidSpecialization) {
+            hasErrors = true
+          }
         }
       })
     }
 
     onValidationChange?.(hasErrors)
+  }
+
+  const getSelectedOption = (spec: Specialization): ComboboxOptionsType | null => {
+    if (!spec.specializationId) return null
+    return specializationOptions.find(o => o.id === spec.specializationId) ?? null
   }
 
   return (
@@ -144,19 +207,19 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
         </small>
       </Alert>
 
-      {specializations.length === 0 && (
+      {userSpecializations.length === 0 && (
         <Alert variant="light" className={styles.emptyState}>
           Специализации не добавлены. Нажмите &quot;Добавить специализацию&quot;.
         </Alert>
       )}
 
       <div className={styles.educationList}>
-        {specializations.map((spec, index) => {
+        {userSpecializations.map((spec, index) => {
           const fieldTouched = touchedFields[index] || {}
           const errors = validateSpecializationItem(spec, index, touchedFields)
 
           return (
-            <div key={spec.id || index} className={styles.educationItem}>
+            <div key={spec.specializationId || `temp_${index}`} className={styles.educationItem}>
               <div className={styles.educationHeader}>
                 <Stethoscope size={16} className={styles.educationIcon} />
                 <span className={styles.educationNumber}>Специализация {index + 1}</span>
@@ -173,13 +236,14 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
               <div className={styles.educationFields}>
                 <Form.Group>
                   <Form.Label className={styles.label}>Специальность</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={spec.name}
-                    onChange={(e) => updateSpecialization(index, "name", e.target.value)}
+                  <Combobox
+                    options={specializationOptions}
+                    value={getSelectedOption(spec)}
+                    onChange={(option) => handleSpecializationSelect(index, option)}
+                    placeholder="Выберите специализацию"
+                    error={!!errors.name}
+                    searchable={true}
                     onBlur={() => handleFieldBlur(index, "name")}
-                    className={`${styles.input} ${errors.name ? styles.inputError : ""}`}
-                    placeholder="Название специальности"
                   />
                   {errors.name && <div className={styles.errorText}>{errors.name}</div>}
                 </Form.Group>
@@ -203,18 +267,32 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
                   <Form.Group>
                     <Form.Label className={styles.label}>Квалификационная категория</Form.Label>
                     <Form.Select
-                      value={spec.qualificationCategory}
-                      onChange={(e) => updateSpecialization(index, "qualificationCategory", e.target.value)}
+                      value={spec.qualificationCategory ?? ""}
+                      onChange={(e) => {
+                        const value = e.target.value === "" ? null : (e.target.value as QualificationCategory);
+                        updateSpecialization(index, "qualificationCategory", value);
+                      }}
                       className={styles.input}
                     >
                       {categoryOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
+                        <option key={option.value || "null"} value={option.value ?? ""}>
                           {option.label}
                         </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
                 </div>
+
+                <Form.Group>
+                  <Form.Check
+                    type="checkbox"
+                    id={`main-${index}`}
+                    label="Практикую"
+                    checked={spec.main}
+                    onChange={(e) => updateSpecialization(index, "main", e.target.checked)}
+                    className={styles.checkbox}
+                  />
+                </Form.Group>
               </div>
             </div>
           )

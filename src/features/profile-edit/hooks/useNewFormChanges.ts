@@ -108,7 +108,9 @@ const areSpecializationsEqual = (spec1?: Specialization[], spec2?: Specializatio
     return (
       item1.name === item2.name &&
       item1.method === item2.method &&
-      item1.qualificationCategory === item2.qualificationCategory
+      item1.qualificationCategory === item2.qualificationCategory &&
+      item1.specializationId === item2.specializationId &&
+      item1.main === item2.main
     )
   })
 }
@@ -130,7 +132,7 @@ const isValidWork = (work: Work): boolean => {
 }
 
 const isValidSpecialization = (spec: Specialization): boolean => {
-  return Boolean(spec.name.trim() && spec.method && spec.qualificationCategory)
+  return Boolean(spec.name.trim() && spec.method && spec.specializationId.trim())
 }
 
 const normalizeEducationToArray = (education: Education | Education[]): Education[] => {
@@ -446,7 +448,17 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
       } else if (key === "specializations" && Array.isArray(value)) {
         const validSpecializations = (value as Specialization[])
           .filter(isValidSpecialization)
-          .map(({ id, ...rest }) => rest)
+          .map((spec) => ({
+            specializationId: spec.specializationId,
+            name: spec.name,
+            method: {
+              type: spec.method
+            },
+            qualificationCategory: spec.qualificationCategory ? {
+              type: spec.qualificationCategory
+            } : null,
+            main: spec.main
+          }))
         if (validSpecializations.length > 0) {
           cleanedData[key] = validSpecializations
         }
