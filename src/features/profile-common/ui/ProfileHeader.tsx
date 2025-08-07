@@ -7,7 +7,7 @@ import { selectUser, selectIsAuthenticated } from "@/features/auth/model/selecto
 import { updateUserFields } from "@/features/auth/model/slice"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import type { SpecialistUser } from "@/entities/user/model/types"
+import type { SpecialistUser, ResearcherUser } from "@/entities/user/model/types"
 import { VerifiedStatusIcons } from "@/shared/ui/VerifiedStatusIcons/VerifiedStatusIcons"
 import {
   useFollowUserMutation,
@@ -17,7 +17,7 @@ import {
 import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import LoginModal from "@/features/auth/ui/Login/LoginModal"
 import NewRegistrationModal from "@/features/auth/ui/Registration/NewRegistrationModal"
-import { MapPin, GraduationCap, Briefcase } from "lucide-react"
+import { MapPin, GraduationCap, Clock, BriefcaseBusiness } from "lucide-react"
 import styles from "./ProfileHeader.module.css"
 import { Spinner } from "react-bootstrap"
 import { ContactsModal } from "./ContactsModal/ContactsModal"
@@ -62,6 +62,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     middleName,
     location,
     placeWork,
+    placeStudy,
     rating,
     isVerified,
     stats,
@@ -71,25 +72,42 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   
   const displayAvatarUrl = getAvatarUrl(avatarUrl || avatar, avatarId, _id, defaultAvatarPath)
 
-  const getSpecializationText = () => {
-    if (profile.role === "student") {
-      // const studentProfile = profile as SpecialistUser
-      // return profile.programType || "Программа не указана"
-    } else {
-      return profile.mainSpecialization || "Специализация не указана"
-    }
+  const getSpecializationText = (profile: SpecialistUser): string => {
+    switch (profile.role) {
+      case "student":
+        return "Студент"
+      case "resident":
+        return "Ординатор"
+      case "postgraduate":
+        return "Аспирант"
+      case "doctor":
+      case "researcher":
+      case "admin":
+      case "owner":
+        // Для этих ролей у профиля есть поле specializations
+        const specialistProfile = profile as ResearcherUser; // Приводим к типу DoctorUser, так как он содержит specializations
+        const mainSpecializations = specialistProfile.specializations?.filter(
+          (spec) => spec.main,
+        );
+        if (mainSpecializations && mainSpecializations.length > 0) {
+          return mainSpecializations.map((spec) => spec.name).join(", ");
+        }
+        return "Специализация не указана";
+      default:
+        return "Специализация не указана";
+  }
   }
 
   const getExperienceText = () => {
-    if (profile.role === "student") {
-      // const studentProfile = profile as SpecialistUser
-      // return studentProfile.gpa !== undefined ? `GPA: ${studentProfile.gpa.toFixed(2)}` : "GPA: Не указано"
-    } else {
+    // if (profile.role === "student") {
+    //   // const studentProfile = profile as SpecialistUser
+    //   // return studentProfile.gpa !== undefined ? `GPA: ${studentProfile.gpa.toFixed(2)}` : "GPA: Не указано"
+    // } else {
       return profile.experience || null
-    }
+    // }
   }
 
-  const specText = getSpecializationText()
+  const specText = getSpecializationText(profile)
   const experienceText = getExperienceText()
 
   const updateCurrentUserFollowingCount = (increment: boolean) => {
@@ -251,18 +269,27 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
               </div>
               {experienceText && (
                 <div className={styles.metaItem}>
-                  <Briefcase size={16} className={styles.metaIcon} />
+                  <Clock size={16} className={styles.metaIcon} />
                   <span className={`${styles.metaText} ${styles.metaTextExperience}`} title={experienceText}>
                     {experienceText}
                   </span>
                 </div>
               )}
-              <div className={styles.metaItem}>
-                <GraduationCap size={16} className={styles.metaIcon} />
-                <span className={`${styles.metaText} ${styles.metaTextWork}`} title={placeWork || "Не указано"}>
-                  {placeWork || "Не указано"}
-                </span>
-              </div>
+              {profile.placeWork ? ( 
+                <div className={styles.metaItem}>
+                  <BriefcaseBusiness size={16} className={styles.metaIcon} />
+                  <span className={`${styles.metaText} ${styles.metaTextWork}`} title={profile.placeWork}>
+                    {profile.placeWork}
+                  </span>
+                </div>
+              ) : profile.placeStudy ? (
+                <div className={styles.metaItem}>
+                  <GraduationCap size={16} className={styles.metaIcon} />
+                  <span className={`${styles.metaText} ${styles.metaTextWork}`} title={profile.placeStudy}>
+                    {profile.placeStudy}
+                  </span>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
