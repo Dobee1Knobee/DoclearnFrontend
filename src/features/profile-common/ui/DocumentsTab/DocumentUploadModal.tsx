@@ -17,10 +17,19 @@ interface DocumentUploadModalProps {
 }
 
 const categoryOptions: { value: DocumentCategory; label: string }[] = [
-  { value: "diploma", label: "Диплом" },
-  { value: "certificate", label: "Сертификат" },
-  { value: "license", label: "Лицензия" },
-  { value: "id", label: "Удостоверение" },
+  { value: "higher_education_diploma", label: "Диплом о высшем образовании" },
+  { value: "residency_diploma", label: "Диплом об окончании ординатуры" },
+  { value: "professional_retraining_diploma", label: "Диплом о проф. переподготовке" },
+  { value: "academic_degree_diploma", label: "Диплом кандидата/доктора наук" },
+  { value: "accreditation_certificate", label: "Свидетельство об аккредитации" },
+  { value: "specialist_certificate", label: "Сертификат специалиста" },
+  { value: "qualification_certificate", label: "Удостоверение о повышении квалификации" },
+  { value: "medical_license", label: "Лицензия на мед. деятельность" },
+  { value: "scientific_publication", label: "Научная публикация / Статья" },
+  { value: "patent", label: "Патент на изобретение" },
+  { value: "award", label: "Награда / Грамота" },
+  { value: "recommendation_letter", label: "Рекомендательное письмо" },
+  { value: "student_id", label: "Студенческий билет" },
   { value: "other", label: "Другое" },
 ]
 
@@ -31,7 +40,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   onUploadError,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [category, setCategory] = useState<DocumentCategory>("diploma")
+  const [category, setCategory] = useState<DocumentCategory>("higher_education_diploma")
   const [label, setLabel] = useState("")
   const [isPublic, setIsPublic] = useState(true)
   const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle")
@@ -85,7 +94,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
 
   const handleClose = () => {
     setSelectedFile(null)
-    setCategory("diploma")
+    setCategory("higher_education_diploma")
     setLabel("")
     setIsPublic(true)
     setUploadStatus("idle")

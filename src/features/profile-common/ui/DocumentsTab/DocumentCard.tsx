@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Download, Trash2, FileText, Calendar, Eye, EyeOff } from "lucide-react"
+import { Download, Trash2, FileText, Calendar, Eye, EyeOff, CheckCircle } from "lucide-react"
 import type { Document, DocumentCategory } from "@/entities/user/model/types"
 import styles from "./DocumentCard.module.css"
 
@@ -14,10 +14,19 @@ interface DocumentCardProps {
 }
 
 const categoryLabels: Record<DocumentCategory, string> = {
-  diploma: "Диплом",
-  certificate: "Сертификат",
-  license: "Лицензия",
-  id: "Удостоверение",
+  higher_education_diploma: "Диплом о высшем образовании",
+  residency_diploma: "Диплом об окончании ординатуры",
+  professional_retraining_diploma: "Диплом о проф. переподготовке",
+  academic_degree_diploma: "Диплом кандидата/доктора наук",
+  accreditation_certificate: "Свидетельство об аккредитации",
+  specialist_certificate: "Сертификат специалиста",
+  qualification_certificate: "Удостоверение о повышении квалификации",
+  medical_license: "Лицензия на мед. деятельность",
+  scientific_publication: "Научная публикация / Статья",
+  patent: "Патент на изобретение",
+  award: "Награда / Грамота",
+  recommendation_letter: "Рекомендательное письмо",
+  student_id: "Студенческий билет",
   other: "Другое",
 }
 
@@ -47,7 +56,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
 
   return (
     <div className={styles.documentCard}>
-      <div className={`${styles.categoryBadge} ${styles[document.category]}`}>{categoryLabels[document.category]}</div>
+      {/* <div className={`${styles.categoryBadge} ${styles[document.category]}`}>{categoryLabels[document.category]}</div> */}
 
       <div className={styles.cardHeader}>
         <div style={{ display: "flex", alignItems: "flex-start" }}>
@@ -55,6 +64,10 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
             <FileText size={24} />
           </div>
           <div className={styles.documentInfo}>
+            {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <h4 className={styles.documentTitle}>{document.label || categoryLabels[document.category]}</h4>
+              {document.isVerified && <CheckCircle size={16} className={styles.verifiedIcon} />}
+            </div> */}
             <h4 className={styles.documentTitle}>{document.label || categoryLabels[document.category]}</h4>
             <p className={styles.documentCategory}>{categoryLabels[document.category]}</p>
           </div>
