@@ -31,7 +31,7 @@ const methodOptions: { value: SpecializationMethod; label: string }[] = [
 ]
 
 const categoryOptions: { value: QualificationCategory; label: string }[] = [
-  { value: null, label: "Нет" },
+  { value: "Нет", label: "Нет" },
   { value: "Вторая категория", label: "Вторая категория" },
   { value: "Первая категория", label: "Первая категория" },
   { value: "Высшая категория", label: "Высшая категория" },
@@ -62,7 +62,7 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
       specializationId: "",
       name: "",
       method: "Ординатура",
-      qualificationCategory: null,
+      qualificationCategory: "Нет",
       main: false,
     }
     onChange("specializations", [...userSpecializations, newSpecialization])
@@ -267,15 +267,15 @@ export const SpecializationsBlock: React.FC<SpecializationsBlockProps> = ({
                   <Form.Group>
                     <Form.Label className={styles.label}>Квалификационная категория</Form.Label>
                     <Form.Select
-                      value={spec.qualificationCategory ?? ""}
+                      value={spec.qualificationCategory}
                       onChange={(e) => {
-                        const value = e.target.value === "" ? null : (e.target.value as QualificationCategory);
-                        updateSpecialization(index, "qualificationCategory", value);
+                        const value = e.target.value as QualificationCategory;
+                        updateSpecialization(index, "qualificationCategory", value)
                       }}
                       className={styles.input}
                     >
                       {categoryOptions.map((option) => (
-                        <option key={option.value || "null"} value={option.value ?? ""}>
+                        <option key={option.value} value={option.value}>
                           {option.label}
                         </option>
                       ))}

@@ -45,7 +45,7 @@ export function AdminDashboard() {
   const user = useAppSelector(selectUser)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
 
-  if (!isAuthenticated || !user || user.role !== "admin") {
+  if (!isAuthenticated || !user || user.role !== "admin" ) {
     return (
       <div className={styles.container}>
         <div className={styles.content}>

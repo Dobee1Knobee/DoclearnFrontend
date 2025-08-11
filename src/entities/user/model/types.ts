@@ -29,7 +29,7 @@ export interface ScientificStatus {
 
 //типы для специализаций врача
 export type SpecializationMethod = "Ординатура" | "Профессиональная переподготовка"
-export type QualificationCategory = "Вторая категория" | "Первая категория" | "Высшая категория" | null
+export type QualificationCategory = "Вторая категория" | "Первая категория" | "Высшая категория" | "Нет"
 
 export interface Specialization {
   specializationId: string
@@ -190,8 +190,15 @@ export interface OwnerUser extends Omit<AdminUser, "role"> {
 }
 
 // Union type для всех типов пользователей-специалистов
-export type SpecialistUser = StudentUser | ResidentUser | PostgraduateUser | DoctorUser | ResearcherUser | AdminUser | OwnerUser
-
+export type SpecialistUser =
+  | StudentUser
+  | ResidentUser
+  | PostgraduateUser
+  | DoctorUser
+  | ResearcherUser
+  | AdminUser
+  | OwnerUser
+  
 export type SpecialistRole = "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin" | "owner"
 
 export interface Achievement {
