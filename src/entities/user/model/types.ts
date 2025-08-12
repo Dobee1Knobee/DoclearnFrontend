@@ -107,7 +107,21 @@ export interface AvatarFile {
   __v: number
 }
 
-export type DocumentCategory = "diploma" | "certificate" | "license" | "id" | "other"
+export type DocumentCategory =
+  | "higher_education_diploma"
+  | "residency_diploma"
+  | "professional_retraining_diploma"
+  | "academic_degree_diploma"
+  | "accreditation_certificate"
+  | "specialist_certificate"
+  | "qualification_certificate"
+  | "medical_license"
+  | "scientific_publication"
+  | "patent"
+  | "award"
+  | "recommendation_letter"
+  | "student_id"
+  | "other"
 
 export interface Document {
   _id: string
@@ -115,6 +129,7 @@ export interface Document {
   category: DocumentCategory
   label?: string
   isPublic: boolean
+  isVerified: boolean
   uploadedAt: string
 }
 
