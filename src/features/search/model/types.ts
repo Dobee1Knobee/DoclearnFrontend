@@ -1,28 +1,34 @@
+import type { Specialization, UserVerification } from "@/entities/user/model/types"
+
 export interface SearchUser {
   _id: string
   firstName: string
-  middleName: string
+  middleName?: string
   lastName: string
   email: string
-  role: "student" | "doctor" | "admin"
-  specialization: string
+  role: "student" | "doctor" | "admin" | "resident" | "postgraduate" | "researcher" | "owner"
+  specializations: Specialization[]
   defaultAvatarPath: string
   avatarUrl: string | null
-  location: string
-  experience: string
+  avatarId?: string
+  location?: string
+  experience?: string
   rating: number
   placeWork: string
-  isVerified: {
-    user: boolean
-    doctor: boolean
-    student: boolean
-  }
+  isVerified?: UserVerification
+}
+
+export interface SearchResponseData {
+  usersWithAvatars: SearchUser[]
+  total: number
+  query: string
+  message: string
 }
 
 export interface SearchResponse {
   success: boolean
-  data: SearchUser[]
-  count: number
+  data: SearchResponseData
+  total: number
 }
 
 export interface SearchError {
