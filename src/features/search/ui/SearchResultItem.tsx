@@ -32,8 +32,10 @@ const getRoleInRussian = (role: string): string => {
   }
 }
 export const SearchResultItem: React.FC<SearchResultItemProps> = ({ user, isSelected, onClick }) => {
-  const fullName = `${user.lastName} ${user.firstName} ${user.middleName}`.trim()
+  const fullName = `${user.lastName} ${user.firstName} ${user.middleName || ""}`.trim()
   const avatarSrc = user.avatarUrl || user.defaultAvatarPath 
+  const mainSpecializations = user.specializations?.filter((spec) => spec.main) || []
+  const specializationText = mainSpecializations.map((spec) => spec.name).join(", ")
 
   return (
     <div className={`${styles.resultItem} ${isSelected ? styles.selected : ""}`} onClick={onClick}>
@@ -51,10 +53,10 @@ export const SearchResultItem: React.FC<SearchResultItemProps> = ({ user, isSele
         <div className={styles.name}>{fullName}</div>
         <div className={styles.details}>
           <span className={styles.role}>{getRoleInRussian(user.role)}</span>
-          {user.specialization && (
+          {specializationText && (
             <>
               <span className={styles.separator}>•</span>
-              <span className={styles.specialization}>{user.specialization}</span>
+              <span className={styles.specialization}>{specializationText}</span>
             </>
           )}
         </div>

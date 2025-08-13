@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { createApi } from "@reduxjs/toolkit/query/react"
+import { axiosBaseQuery } from "@/shared/api/axiosBaseQuery"
 import type { UpdateProfileRequest, UpdateProfileResponse, UploadAvatarResponse } from "../model/types"
 import type { DocumentCategory } from "@/entities/user/model/types"
 import { updateUserFields } from "@/features/auth/model/slice"
@@ -14,34 +15,16 @@ interface UploadDocumentResponse {
   message: string
 }
 
-const baseQuery = fetchBaseQuery({
-  baseUrl: "https://api.doclearn.ru",
-
-  prepareHeaders: (headers, { endpoint }) => {
-    const refreshToken = localStorage.getItem("refreshToken")
-    if (refreshToken) {
-      headers.set("Authorization", `Bearer ${refreshToken}`)
-    }
-
-    if (endpoint !== "uploadAvatar" && endpoint !== "uploadDocument") {
-      headers.set("Content-Type", "application/json")
-    }
-
-    return headers
-  },
-  credentials: "include",
-})
-
 export const profileEditApi = createApi({
   reducerPath: "profileEditApi",
   tagTypes: ["Profile", "UserProfile"],
-  baseQuery,
+  baseQuery: axiosBaseQuery(),
   endpoints: (builder) => ({
     updateMyProfile: builder.mutation<UpdateProfileResponse, UpdateProfileRequest>({
       query: (data) => ({
         url: "/user/update-my-profile",
         method: "POST",
-        body: data,
+        data,
       }),
       onQueryStarted: async (requestData, { dispatch, queryFulfilled }) => {
         try {
@@ -114,7 +97,7 @@ export const profileEditApi = createApi({
         return {
           url: "/user/avatar",
           method: "POST",
-          body: formData,
+          data: formData,
         }
       },
       invalidatesTags: (result, error, arg) => {
@@ -147,7 +130,7 @@ export const profileEditApi = createApi({
         return {
           url: "/user/upload-document-profile",
           method: "POST",
-          body: formData,
+          data: formData,
         }
       },
       invalidatesTags: (result, error, arg) => {
