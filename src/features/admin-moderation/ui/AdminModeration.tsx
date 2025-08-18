@@ -1,9 +1,19 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { FileText, User, Clock, Check, X, Eye } from "lucide-react"
+import { FileText, User, Clock, Check, X, Eye, ChevronLeft, ChevronRight } from "lucide-react"
+import {
+  useGetPendingUsersQuery,
+  useApproveAllChangesMutation,
+  useRejectChangesMutation,
+} from "../api/adminModerationApi"
+import { AdminModerationSpinner } from "./AdminModerationSpinner"
+import { AdminModerationError } from "./AdminModerationError"
+import { AdminModerationEmpty } from "./AdminModerationEmpty"
 import styles from "./AdminModeration.module.css"
+import type { PendingUser } from "../model/types"
 
 type ModerationTab = "documents" | "profiles"
 
@@ -38,46 +48,23 @@ const mockDocuments = [
   },
 ]
 
-const mockProfiles = [
-  {
-    id: "1",
-    type: "profile",
-    title: "Изменения профиля - Елена Сидорова",
-    user: {
-      id: "3",
-      name: "Елена Сидорова",
-      avatar: "/Avatars/Avatar3.webp",
-      defaultAvatarPath: "/Avatars/Avatar3.webp",
-    },
-    submittedAt: "2024-01-21T09:15:00Z",
-    changes: {
-      specialization: "Кардиология, Терапия",
-      placeWork: "Городская больница №5",
-      experience: "8 лет в кардиологии",
-    },
-    changedFields: ["specialization", "placeWork", "experience"],
-  },
-  {
-    id: "2",
-    type: "profile",
-    title: "Изменения профиля - Дмитрий Козлов",
-    user: {
-      id: "4",
-      name: "Дмитрий Козлов",
-      avatar: "/Avatars/Avatar4.webp",
-      defaultAvatarPath: "/Avatars/Avatar4.webp",
-    },
-    submittedAt: "2024-01-20T14:20:00Z",
-    changes: {
-      firstName: "Дмитрий",
-      lastName: "Петров",
-    },
-    changedFields: ["firstName", "lastName"],
-  },
-]
-
 export function AdminModeration() {
-  const [activeTab, setActiveTab] = useState<ModerationTab>("documents")
+  const [activeTab, setActiveTab] = useState<ModerationTab>("profiles")
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const router = useRouter()
+
+  const {
+    data: response,
+    error,
+    isLoading,
+    refetch,
+  } = useGetPendingUsersQuery({
+    page: currentPage,
+  })
+
+  const [approveChanges, { isLoading: isApproving }] = useApproveAllChangesMutation()
+  const [rejectChanges, { isLoading: isRejecting }] = useRejectChangesMutation()
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -92,17 +79,49 @@ export function AdminModeration() {
 
   const getFieldLabel = (field: string) => {
     const labels: Record<string, string> = {
+      firstName: "Имя",
+      lastName: "Фамилия",
+      middleName: "Отчество",
       specialization: "Специализация",
       placeWork: "Место работы",
       experience: "Опыт работы",
-      firstName: "Имя",
-      lastName: "Фамилия",
     }
     return labels[field] || field
   }
-  const handleApprove = (id: string, type: string) => {}
-  const handleReject = (id: string, type: string) => {}
-  const handleView = (id: string, type: string) => {}
+
+  const handleApprove = async (userId: string, type: string) => {
+    if (type === "profile") {
+      try {
+        await approveChanges(userId).unwrap()
+      } catch (error) {
+        console.error("Ошибка при одобрении изменений:", error)
+      }
+    }
+  }
+
+  const handleReject = async (userId: string, type: string) => {
+    if (type === "profile") {
+      try {
+        await rejectChanges(userId).unwrap()
+      } catch (error) {
+        console.error("Ошибка при отклонении изменений:", error)
+      }
+    }
+  }
+
+  const handleView = (userId: string, type: string) => {
+    if (type === "profile") {
+      router.push(`/profile/${userId}`)
+    }
+  }
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
+
+  const handleRetry = () => {
+    refetch()
+  }
 
   const renderDocuments = () => {
     if (mockDocuments.length === 0) {
@@ -176,86 +195,152 @@ export function AdminModeration() {
   }
 
   const renderProfiles = () => {
-    if (mockProfiles.length === 0) {
-      return (
-        <div className={styles.placeholder}>
-          <User size={48} className={styles.placeholderIcon} />
-          <h3 className={styles.placeholderTitle}>Нет изменений профилей на модерации</h3>
-          <p className={styles.placeholderText}>Все изменения профилей проверены</p>
-        </div>
-      )
+    if (isLoading) {
+      return <AdminModerationSpinner />
+    }
+
+    if (error) {
+      const errorMessage =
+        "data" in error && error.data
+          ? (error.data as any)?.message || "Произошла ошибка при загрузке данных модерации"
+          : "Произошла ошибка при загрузке данных модерации"
+
+      return <AdminModerationError error={errorMessage} onRetry={handleRetry} />
+    }
+
+    if (!response?.data.users.length) {
+      return <AdminModerationEmpty />
     }
 
     return (
-      <div className={styles.queueList}>
-        {mockProfiles.map((item) => (
-          <div key={item.id} className={styles.queueItem}>
-            <div className={styles.itemHeader}>
-              <div className={styles.itemInfo}>
-                <h3 className={styles.itemTitle}>{item.title}</h3>
-                <div className={styles.itemMeta}>
-                  <div className={styles.itemUser}>
-                    <Image
-                      src={item.user.avatar || item.user.defaultAvatarPath}
-                      alt={item.user.name}
-                      width={24}
-                      height={24}
-                      className={styles.userAvatar}
-                    />
-                    <span>{item.user.name}</span>
+      <>
+        <div className={styles.queueList}>
+          {response.data.users.map((user: PendingUser) => {
+            const changedFields = Object.keys(user.pendingChanges.data)
+            const changes = Object.entries(user.pendingChanges.data).reduce(
+              (acc, [key, value]) => {
+                acc[key] = value.value
+                return acc
+              },
+              {} as Record<string, string>,
+            )
+
+            return (
+              <div key={user._id} className={styles.queueItem}>
+                <div className={styles.itemHeader}>
+                  <div className={styles.itemInfo}>
+                    <h3 className={styles.itemTitle}>
+                      Изменения профиля - {user.firstName} {user.lastName}
+                    </h3>
+                    <div className={styles.itemMeta}>
+                      <div className={styles.itemUser}>
+                        <Image
+                          src={user.avatar || user.defaultAvatarPath || "/placeholder.webp"}
+                          alt={`${user.firstName} ${user.lastName}`}
+                          width={24}
+                          height={24}
+                          className={styles.userAvatar}
+                        />
+                        <span>
+                          {user.email}
+                          {/* {user.firstName} {user.lastName} */}
+                        </span>
+                      </div>
+                      <div className={styles.itemDate}>
+                        <Clock size={14} />
+                        <span>{formatDate(user.pendingChanges.submittedAt)}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className={styles.itemDate}>
-                    <Clock size={14} />
-                    <span>{formatDate(item.submittedAt)}</span>
+                  <div className={styles.itemActions}>
+                    <button
+                      onClick={() => handleView(user._id, "profile")}
+                      className={`${styles.actionButton} ${styles.viewButton}`}
+                    >
+                      <Eye size={16} />
+                      Просмотреть
+                    </button>
+                    <button
+                      onClick={() => handleApprove(user._id, "profile")}
+                      disabled={isApproving || isRejecting}
+                      className={`${styles.actionButton} ${styles.approveButton}`}
+                    >
+                      <Check size={16} />
+                      {isApproving ? "Одобряем..." : "Одобрить"}
+                    </button>
+                    <button
+                      onClick={() => handleReject(user._id, "profile")}
+                      disabled={isApproving || isRejecting}
+                      className={`${styles.actionButton} ${styles.rejectButton}`}
+                    >
+                      <X size={16} />
+                      {isRejecting ? "Отклоняем..." : "Отклонить"}
+                    </button>
+                  </div>
+                </div>
+                <div className={styles.itemContent}>
+                  <div className={styles.contentTitle}>Измененные поля:</div>
+                  <div className={styles.fieldsList}>
+                    {changedFields.map((field) => (
+                      <span key={field} className={styles.fieldBadge}>
+                        {getFieldLabel(field)}
+                      </span>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: "0.75rem" }}>
+                    <div className={styles.contentText}>
+                      {Object.entries(changes).map(([key, value]) => (
+                        <div key={key} style={{ marginBottom: "0.25rem" }}>
+                          <strong>{getFieldLabel(key)}:</strong> {value}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className={styles.itemActions}>
-                <button
-                  onClick={() => handleView(item.id, "profile")}
-                  className={`${styles.actionButton} ${styles.viewButton}`}
-                >
-                  <Eye size={16} />
-                  Просмотреть
-                </button>
-                <button
-                  onClick={() => handleApprove(item.id, "profile")}
-                  className={`${styles.actionButton} ${styles.approveButton}`}
-                >
-                  <Check size={16} />
-                  Одобрить
-                </button>
-                <button
-                  onClick={() => handleReject(item.id, "profile")}
-                  className={`${styles.actionButton} ${styles.rejectButton}`}
-                >
-                  <X size={16} />
-                  Отклонить
-                </button>
-              </div>
+            )
+          })}
+        </div>
+
+        {response && response.data.totalPages > 1 && (
+          <div className={styles.pagination}>
+            <div className={styles.paginationInfo}>
+              Показано {response.data.users.length} из {response.data.total} пользователей
             </div>
-            <div className={styles.itemContent}>
-              <div className={styles.contentTitle}>Измененные поля:</div>
-              <div className={styles.fieldsList}>
-                {item.changedFields.map((field) => (
-                  <span key={field} className={styles.fieldBadge}>
-                    {getFieldLabel(field)}
-                  </span>
+            <div className={styles.paginationControls}>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={styles.paginationButton}
+              >
+                <ChevronLeft size={16} />
+                Назад
+              </button>
+
+              <div className={styles.paginationNumbers}>
+                {Array.from({ length: response.data.totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`${styles.paginationNumber} ${page === currentPage ? styles.paginationNumberActive : ""}`}
+                  >
+                    {page}
+                  </button>
                 ))}
               </div>
-              <div style={{ marginTop: "0.75rem" }}>
-                <div className={styles.contentText}>
-                  {Object.entries(item.changes).map(([key, value]) => (
-                    <div key={key} style={{ marginBottom: "0.25rem" }}>
-                      <strong>{getFieldLabel(key)}:</strong> {value}
-                    </div>
-                  ))}
-                </div>
-              </div>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === response.data.totalPages}
+                className={styles.paginationButton}
+              >
+                Вперед
+                <ChevronRight size={16} />
+              </button>
             </div>
           </div>
-        ))}
-      </div>
+        )}
+      </>
     )
   }
 
@@ -279,7 +364,7 @@ export function AdminModeration() {
           className={`${styles.tab} ${activeTab === "profiles" ? styles.active : ""}`}
         >
           <User size={16} />
-          Профили ({mockProfiles.length})
+          Профили ({response?.data.total || 0})
         </button>
       </div>
 
