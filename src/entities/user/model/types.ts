@@ -29,13 +29,14 @@ export interface ScientificStatus {
 
 //типы для специализаций врача
 export type SpecializationMethod = "Ординатура" | "Профессиональная переподготовка"
-export type QualificationCategory = "Вторая категория" | "Первая категория" | "Высшая категория"
+export type QualificationCategory = "Вторая категория" | "Первая категория" | "Высшая категория" | "Нет"
 
 export interface Specialization {
-  id: string
+  specializationId: string
   name: string
   method: SpecializationMethod
   qualificationCategory: QualificationCategory
+  main: boolean
 }
 
 //тип для места работы
@@ -106,7 +107,21 @@ export interface AvatarFile {
   __v: number
 }
 
-export type DocumentCategory = "diploma" | "certificate" | "license" | "id" | "other"
+export type DocumentCategory =
+  | "higher_education_diploma"
+  | "residency_diploma"
+  | "professional_retraining_diploma"
+  | "academic_degree_diploma"
+  | "accreditation_certificate"
+  | "specialist_certificate"
+  | "qualification_certificate"
+  | "medical_license"
+  | "scientific_publication"
+  | "patent"
+  | "award"
+  | "recommendation_letter"
+  | "student_id"
+  | "other"
 
 export interface Document {
   _id: string
@@ -114,6 +129,7 @@ export interface Document {
   category: DocumentCategory
   label?: string
   isPublic: boolean
+  isVerified: boolean
   uploadedAt: string
 }
 
@@ -180,23 +196,24 @@ export interface ResearcherUser extends Omit<DoctorUser, "role"> {
 }
 
 // Админ
-export interface AdminUser extends BaseUserFields {
+export interface AdminUser extends Omit<ResearcherUser, "role"> {
   role: "admin"
-  education: Education[]
-  scientificStatus?: ScientificStatus
-  specializations?: Specialization[]
 }
 
-export interface OwnerUser extends BaseUserFields {
+export interface OwnerUser extends Omit<AdminUser, "role"> {
   role: "owner"
-  education: Education[]
-  scientificStatus?: ScientificStatus
-  specializations?: Specialization[]
 }
 
 // Union type для всех типов пользователей-специалистов
-export type SpecialistUser = StudentUser | ResidentUser | PostgraduateUser | DoctorUser | ResearcherUser | AdminUser | OwnerUser
-
+export type SpecialistUser =
+  | StudentUser
+  | ResidentUser
+  | PostgraduateUser
+  | DoctorUser
+  | ResearcherUser
+  | AdminUser
+  | OwnerUser
+  
 export type SpecialistRole = "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin" | "owner"
 
 export interface Achievement {

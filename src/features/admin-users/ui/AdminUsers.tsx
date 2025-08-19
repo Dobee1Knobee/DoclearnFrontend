@@ -1,105 +1,66 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Search, Eye, Edit, Ban, Users, CheckCircle } from "lucide-react"
+import { Search, Eye, Edit, Ban, ChevronLeft, ChevronRight } from "lucide-react"
+import { useGetAdminUsersQuery } from "../api/adminUsersApi"
+import { AdminUsersSpinner } from "./AdminUsersSpinner"
+import { AdminUsersError } from "./AdminUsersError"
+import { AdminUsersEmpty } from "./AdminUsersEmpty"
 import styles from "./AdminUsers.module.css"
+import type { SpecialistUser } from "@/entities/user/model/types"
+import { VerificationIcons } from "./VerificationIcons"
+import Link from "next/link"
 
-const mockUsers = [
-  {
-    id: "1",
-    firstName: "Анна",
-    lastName: "Петрова",
-    email: "anna.petrova@example.com",
-    avatar: "/Avatars/Avatar1.webp",
-    defaultAvatarPath: "/Avatars/Avatar1.webp",
-    role: "doctor" as const,
-    status: "active" as const,
-    isVerified: { doctor: true, user: true, student: false },
-    createdAt: "2024-01-15",
-    lastActive: "2024-01-20",
-  },
-  {
-    id: "2",
-    firstName: "Михаил",
-    lastName: "Иванов",
-    email: "mikhail.ivanov@example.com",
-    avatar: "/Avatars/Avatar2.webp",
-    defaultAvatarPath: "/Avatars/Avatar2.webp",
-    role: "student" as const,
-    status: "active" as const,
-    isVerified: { doctor: false, user: true, student: true },
-    createdAt: "2024-01-10",
-    lastActive: "2024-01-19",
-  },
-  {
-    id: "3",
-    firstName: "Елена",
-    lastName: "Сидорова",
-    email: "elena.sidorova@example.com",
-    avatar: "/Avatars/Avatar3.webp",
-    defaultAvatarPath: "/Avatars/Avatar3.webp",
-    role: "doctor" as const,
-    status: "blocked" as const,
-    isVerified: { doctor: true, user: true, student: false },
-    createdAt: "2024-01-05",
-    lastActive: "2024-01-18",
-  },
-  {
-    id: "4",
-    firstName: "Дмитрий",
-    lastName: "Козлов",
-    email: "dmitry.kozlov@example.com",
-    avatar: "/Avatars/Avatar4.webp",
-    defaultAvatarPath: "/Avatars/Avatar4.webp",
-    role: "student" as const,
-    status: "active" as const,
-    isVerified: { doctor: false, user: false, student: false },
-    createdAt: "2024-01-12",
-    lastActive: "2024-01-21",
-  },
-  {
-    id: "5",
-    firstName: "Ольга",
-    lastName: "Морозова",
-    email: "olga.morozova@example.com",
-    avatar: "/Avatars/Avatar5.webp",
-    defaultAvatarPath: "/Avatars/Avatar5.webp",
-    role: "admin" as const,
-    status: "active" as const,
-    isVerified: { doctor: false, user: true, student: false },
-    createdAt: "2023-12-20",
-    lastActive: "2024-01-21",
-  },
-]
-
-type UserRole = "all" | "student" | "doctor" | "admin"
+type UserRole = "all" | "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin" | "owner"
 type UserStatus = "all" | "active" | "blocked"
 
 export function AdminUsers() {
+  const [currentPage, setCurrentPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState<UserRole>("all")
   const [statusFilter, setStatusFilter] = useState<UserStatus>("all")
 
-  // const filteredUsers = mockUsers.filter((user) => {
-  //   const matchesSearch =
-  //     user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const router = useRouter()
 
-  //   const matchesRole = roleFilter === "all" || user.role === roleFilter
-  //   const matchesStatus = statusFilter === "all" || user.status === statusFilter
+  const {
+    data: response,
+    error,
+    isLoading,
+    refetch,
+  } = useGetAdminUsersQuery({
+    page: currentPage,
+  })
 
-  //   return matchesSearch && matchesRole && matchesStatus
-  // })
+  const filteredUsers =
+    response?.data.users.filter((user) => {
+      const matchesSearch =
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+
+      const matchesRole = roleFilter === "all" || user.role === roleFilter
+      const matchesStatus = statusFilter === "all" || statusFilter === "active"
+
+      return matchesSearch && matchesRole && matchesStatus
+    }) || []
 
   const getRoleBadgeClass = (role: string) => {
     switch (role) {
       case "student":
         return styles.roleStudent
+      case "resident":
+        return styles.roleStudent
+      case "postgraduate":
+        return styles.roleDoctor
       case "doctor":
         return styles.roleDoctor
+      case "researcher":
+        return styles.roleDoctor
       case "admin":
+        return styles.roleAdmin
+      case "owner":
         return styles.roleAdmin
       default:
         return styles.roleStudent
@@ -121,10 +82,18 @@ export function AdminUsers() {
     switch (role) {
       case "student":
         return "Студент"
+      case "resident":
+        return "Ординатор"
+      case "postgraduate":
+        return "Аспирант"
       case "doctor":
         return "Врач"
+      case "researcher":
+        return "Научный сотрудник"
       case "admin":
         return "Админ"
+      case "owner":
+        return "Владелец"
       default:
         return role
     }
@@ -137,7 +106,7 @@ export function AdminUsers() {
       case "blocked":
         return "Заблокирован"
       default:
-        return status
+        return "Активен"
     }
   }
 
@@ -145,9 +114,38 @@ export function AdminUsers() {
     return new Date(dateString).toLocaleDateString("ru-RU")
   }
 
-  const handleViewUser = (_userId: string) => {}
+  const handleViewUser = (userId: string) => {
+    router.push(`/profile/${userId}`)
+  }
+
   const handleEditUser = (_userId: string) => {}
+
   const handleBlockUser = (_userId: string) => {}
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
+
+  const handleRetry = () => {
+    refetch()
+  }
+
+  if (isLoading) {
+    return <AdminUsersSpinner />
+  }
+
+  if (error) {
+    const errorMessage =
+      "data" in error && error.data
+        ? (error.data as any)?.message || "Произошла ошибка при загрузке пользователей"
+        : "Произошла ошибка при загрузке пользователей"
+
+    return <AdminUsersError error={errorMessage} onRetry={handleRetry} />
+  }
+
+  if (!response?.data.users.length) {
+    return <AdminUsersEmpty />
+  }
 
   return (
     <div className={styles.container}>
@@ -187,8 +185,12 @@ export function AdminUsers() {
         >
           <option value="all">Все роли</option>
           <option value="student">Студенты</option>
+          <option value="resident">Ординаторы</option>
+          <option value="postgraduate">Аспиранты</option>
           <option value="doctor">Врачи</option>
+          <option value="researcher">Научные сотрудники</option>
           <option value="admin">Администраторы</option>
+          <option value="owner">Владельцы</option>
         </select>
 
         <select
@@ -202,9 +204,9 @@ export function AdminUsers() {
         </select>
       </div>
 
-      {mockUsers.length === 0 ? (
+      {filteredUsers.length === 0 ? (
         <div className={styles.placeholder}>
-          <Users size={48} className={styles.placeholderIcon} />
+          <Search size={48} className={styles.placeholderIcon} />
           <h3 className={styles.placeholderTitle}>Пользователи не найдены</h3>
           <p className={styles.placeholderText}>Попробуйте изменить параметры поиска или фильтры</p>
         </div>
@@ -222,12 +224,12 @@ export function AdminUsers() {
               </tr>
             </thead>
             <tbody>
-              {mockUsers.map((user) => (
-                <tr key={user.id} className={styles.tableRow}>
+              {filteredUsers.map((user: SpecialistUser) => (
+                <tr key={user._id} className={styles.tableRow}>
                   <td className={styles.tableCell}>
                     <div className={styles.userInfo}>
                       <Image
-                        src={user.avatar || user.defaultAvatarPath}
+                        src={user.avatar || user.defaultAvatarPath || "/placeholder.webp"}
                         alt={`${user.firstName} ${user.lastName}`}
                         width={40}
                         height={40}
@@ -247,36 +249,37 @@ export function AdminUsers() {
                     </span>
                   </td>
                   <td className={styles.tableCell}>
-                    <span className={`${styles.statusBadge} ${getStatusBadgeClass(user.status)}`}>
-                      {getStatusLabel(user.status)}
+                    <span className={`${styles.statusBadge} ${getStatusBadgeClass("active")}`}>
+                      {getStatusLabel("active")}
                     </span>
                   </td>
                   <td className={styles.tableCell}>
-                    {(user.isVerified.doctor || user.isVerified.user || user.isVerified.student) && (
-                      <CheckCircle size={16} className={styles.verifiedIcon} />
-                    )}
+                    <VerificationIcons isVerified={user.isVerified} className={styles.verificationIcons} />
                   </td>
                   <td className={styles.tableCell}>{formatDate(user.createdAt)}</td>
                   <td className={styles.tableCell}>
                     <div className={styles.actions}>
-                      <button
-                        onClick={() => handleViewUser(user.id)}
+                      {/* <button
+                        onClick={() => handleViewUser(user._id)}
                         className={`${styles.actionButton} ${styles.viewButton}`}
                         title="Просмотреть профиль"
                       >
                         <Eye size={16} />
-                      </button>
+                      </button> */}
+                      <Link href={`/profile/${encodeURIComponent(user._id)}`} className={`${styles.actionButton} ${styles.viewButton}`} title="Просмотреть профиль" prefetch>
+                        <Eye size={16} />
+                      </Link>
                       <button
-                        onClick={() => handleEditUser(user.id)}
+                        onClick={() => handleEditUser(user._id)}
                         className={`${styles.actionButton} ${styles.editButton}`}
                         title="Редактировать"
                       >
                         <Edit size={16} />
                       </button>
                       <button
-                        onClick={() => handleBlockUser(user.id)}
+                        onClick={() => handleBlockUser(user._id)}
                         className={`${styles.actionButton} ${styles.blockButton}`}
-                        title={user.status === "blocked" ? "Разблокировать" : "Заблокировать"}
+                        title="Заблокировать"
                       >
                         <Ban size={16} />
                       </button>
@@ -289,11 +292,44 @@ export function AdminUsers() {
         </div>
       )}
 
-      {/* <div className={styles.pagination}>
-        <span className={styles.paginationInfo}>
-          Показано {filteredUsers.length} из {mockUsers.length} пользователей
-        </span>
-      </div> */}
+      {response && response.data.totalPages > 1 && (
+        <div className={styles.pagination}>
+          <div className={styles.paginationInfo}>
+            Показано {filteredUsers.length} из {response.data.total} пользователей
+          </div>
+          <div className={styles.paginationControls}>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={styles.paginationButton}
+            >
+              <ChevronLeft size={16} />
+              Назад
+            </button>
+
+            <div className={styles.paginationNumbers}>
+              {Array.from({ length: response.data.totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`${styles.paginationNumber} ${page === currentPage ? styles.paginationNumberActive : ""}`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === response.data.totalPages}
+              className={styles.paginationButton}
+            >
+              Вперед
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

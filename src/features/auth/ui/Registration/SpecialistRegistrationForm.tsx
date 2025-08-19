@@ -2,8 +2,8 @@
 
 import type React from "react"
 import { useEffect } from "react"
-import { Button, Spinner } from "react-bootstrap"
-import { useForm } from "react-hook-form"
+import { Button, Spinner, Form } from "react-bootstrap"
+import { useForm, Controller } from "react-hook-form"
 import styles from "../styles/AuthForm.module.css"
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/hooks"
 import { registerUser } from "@/features/auth/model/thunks"
@@ -17,6 +17,7 @@ import type { RegisterSpecialistDto } from "@/features/auth/model/types"
 
 interface SpecialistRegistrationFormData extends Omit<RegisterSpecialistDto, "defaultAvatarPath" | "accountType"> {
   confirmPassword: string
+  agreeToTerms: boolean
 }
 
 interface SpecialistRegistrationFormProps {
@@ -30,7 +31,6 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
   const registrationEmail = useAppSelector(selectRegistrationEmail)
 
   const {
-    register,
     control,
     handleSubmit,
     watch,
@@ -47,6 +47,7 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
       email: "",
       password: "",
       confirmPassword: "",
+      agreeToTerms: false,
     },
   })
 
@@ -63,7 +64,7 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
   }, [registrationEmail, loading, authError, onSuccess])
 
   const onSubmit = (data: SpecialistRegistrationFormData) => {
-    const { confirmPassword, ...registerData } = data
+    const { confirmPassword, agreeToTerms, ...registerData } = data
     const formattedData: RegisterSpecialistDto = {
       ...registerData,
       role: "student",
@@ -196,6 +197,47 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
         }}
         error={errors.confirmPassword}
         placeholder="Повторите пароль"
+      />
+
+      <Controller
+        name="agreeToTerms"
+        control={control}
+        rules={{ required: "Для отправки формы необходимо Ваше согласие" }}
+        render={({ field: { onChange, onBlur, value, name, ref } }) => (
+          <>
+            <Form.Check
+              id="agreeToTerms"
+              type="checkbox"
+              name={name}
+              ref={ref}
+              checked={value}
+              onChange={(e) => onChange(e.target.checked)}
+              onBlur={onBlur}
+              isInvalid={!!errors.agreeToTerms}
+              label={
+                <>
+                  Я&nbsp;согласен&nbsp;с&nbsp;условиями{" "}
+                  <a href="/user-agreement" target="_blank" rel="noopener noreferrer">
+                    Пользовательского&nbsp;соглашения
+                  </a>{" "}
+                  и&nbsp;
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+                    Политики&nbsp;конфиденциальности
+                  </a>
+                </>
+              }
+              feedback={errors.agreeToTerms?.message}
+              className="mt-4 mb-2"
+            >
+
+            </Form.Check>
+            {errors.agreeToTerms && (
+              <Form.Control.Feedback type="invalid" className="d-block mb-3">
+                {errors.agreeToTerms.message}
+              </Form.Control.Feedback>
+            )}
+          </>
+        )}
       />
 
       {authError && <p className={styles.errorMessage}>{authError}</p>}

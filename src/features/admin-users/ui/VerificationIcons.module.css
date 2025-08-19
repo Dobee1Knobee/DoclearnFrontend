@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.userIcon {
+  color: #10b981; 
+}
+
+.specificIcon {
+  color: #5388d8; 
+}

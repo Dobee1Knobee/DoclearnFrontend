@@ -143,7 +143,7 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
     }
 
     const isValidSpecialization = (spec: any): boolean => {
-      return Boolean(spec.name.trim() && spec.method && spec.qualificationCategory)
+      return Boolean(spec.name.trim() && spec.method && spec.specializationId.trim())
     }
 
     const normalizeEducationToArray = (education: any): any[] => {
@@ -306,42 +306,6 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
           <h1 className={styles.title}>Редактирование профиля</h1>
         </div>
 
-        {saveStatus === "success" && (
-          <Alert variant="success" className={styles.alert}>
-            Профиль успешно обновлен!
-          </Alert>
-        )}
-
-        {moderationMessage && (
-          <Alert variant="info" className={styles.alert}>
-            {moderationMessage}
-          </Alert>
-        )}
-
-        {saveStatus === "error" && (
-          <Alert variant="danger" className={styles.alert}>
-            {errorMessage}
-          </Alert>
-        )}
-
-        {avatarSaveStatus === "success" && (
-          <Alert variant="success" className={styles.alert}>
-            Аватар успешно загружен!
-          </Alert>
-        )}
-
-        {avatarSaveStatus === "error" && (
-          <Alert variant="danger" className={styles.alert}>
-            {avatarErrorMessage}
-          </Alert>
-        )}
-
-        {attemptedSave && hasValidationErrors && (
-          <Alert variant="warning" className={styles.alert}>
-            Исправьте ошибки в форме перед сохранением
-          </Alert>
-        )}
-
         <div className={styles.topSection}>
           <div className={styles.avatarWrapper}>
             <AvatarSelector
@@ -387,6 +351,42 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
         <ProfessionalStatusBlock currentRole={formData.role} onChange={handleRoleChange} />
 
         {renderRoleSpecificBlocks()}
+
+        {saveStatus === "success" && (
+          <Alert variant="success" className={styles.alert}>
+            Профиль успешно обновлен!
+          </Alert>
+        )}
+
+        {moderationMessage && (
+          <Alert variant="info" className={styles.alert}>
+            {moderationMessage}
+          </Alert>
+        )}
+
+        {saveStatus === "error" && (
+          <Alert variant="danger" className={styles.alert}>
+            {errorMessage}
+          </Alert>
+        )}
+
+        {avatarSaveStatus === "success" && (
+          <Alert variant="success" className={styles.alert}>
+            Аватар успешно загружен!
+          </Alert>
+        )}
+
+        {avatarSaveStatus === "error" && (
+          <Alert variant="danger" className={styles.alert}>
+            {avatarErrorMessage}
+          </Alert>
+        )}
+
+        {attemptedSave && hasValidationErrors && (
+          <Alert variant="warning" className={styles.alert}>
+            Исправьте ошибки в форме перед сохранением
+          </Alert>
+        )}
 
         <div className={styles.bottomActions}>
           <button className={styles.cancelButton} onClick={handleCancel} disabled={isUpdating}>

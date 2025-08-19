@@ -17,7 +17,6 @@ import type {
   ResearcherUser,
 } from "@/entities/user/model/types"
 import { useUpdateMyProfileMutation } from "../api/profileEditApi"
-import { checkAuthStatus } from "@/features/auth/model/thunks"
 import { useAppDispatch } from "@/shared/hooks/hooks"
 
 type DeepPartial<T> = {
@@ -108,7 +107,9 @@ const areSpecializationsEqual = (spec1?: Specialization[], spec2?: Specializatio
     return (
       item1.name === item2.name &&
       item1.method === item2.method &&
-      item1.qualificationCategory === item2.qualificationCategory
+      item1.qualificationCategory === item2.qualificationCategory &&
+      item1.specializationId === item2.specializationId &&
+      item1.main === item2.main
     )
   })
 }
@@ -130,7 +131,7 @@ const isValidWork = (work: Work): boolean => {
 }
 
 const isValidSpecialization = (spec: Specialization): boolean => {
-  return Boolean(spec.name.trim() && spec.method && spec.qualificationCategory)
+  return Boolean(spec.name.trim() && spec.method && spec.specializationId.trim())
 }
 
 const normalizeEducationToArray = (education: Education | Education[]): Education[] => {
@@ -147,15 +148,17 @@ const normalizeEducationForRole = (education: Education[], role: string): Educat
   if (role === "student") {
     return education.length > 0
       ? [education[0]]
-      : [{
-          _id: "",
-          institution: "",
-          degree: "Специалитет",
-          specialty: "",
-          startDate: "",
-          graduationYear: "",
-          isCurrently: false,
-        }]
+      : [
+          {
+            _id: "",
+            institution: "",
+            degree: "Специалитет",
+            specialty: "",
+            startDate: "",
+            graduationYear: "",
+            isCurrently: false,
+          },
+        ]
   }
   return education
 }
@@ -444,9 +447,19 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
           cleanedData[key] = validWork
         }
       } else if (key === "specializations" && Array.isArray(value)) {
-        const validSpecializations = (value as Specialization[])
-          .filter(isValidSpecialization)
-          .map(({ id, ...rest }) => rest)
+        const validSpecializations = (value as Specialization[]).filter(isValidSpecialization).map((spec) => ({
+          specializationId: spec.specializationId,
+          name: spec.name,
+          method: {
+            type: spec.method,
+          },
+          qualificationCategory: spec.qualificationCategory
+            ? {
+                type: spec.qualificationCategory,
+              }
+            : null,
+          main: spec.main,
+        }))
         if (validSpecializations.length > 0) {
           cleanedData[key] = validSpecializations
         }
@@ -568,28 +581,7 @@ export const useNewFormChanges = (initialData: SpecialistUser) => {
     } catch (error: any) {
       console.error("Update profile error:", error)
       setSaveStatus("error")
-
-      if (error?.status === 401 || error?.data?.code === "MISSING_TOKEN") {
-        try {
-          const authResult = await dispatch(checkAuthStatus()).unwrap()
-          if (authResult) {
-            console.log("Token refreshed, retrying save...")
-            return await handleSave()
-          } else {
-            setSaveStatus("error")
-            setErrorMessage("Сессия истекла. Необходимо войти заново.")
-            return { success: false, shouldRedirect: false }
-          }
-        } catch (authError) {
-          console.error("Auth refresh error:", authError)
-          setSaveStatus("error")
-          setErrorMessage("Сессия истекла. Необходимо войти заново.")
-          return { success: false, shouldRedirect: false }
-        }
-      } else {
-        setErrorMessage(error?.data?.error || error?.data?.message || "Произошла ошибка при сохранении профиля")
-      }
-
+      setErrorMessage(error?.data?.error || error?.data?.message || "Произошла ошибка при сохранении профиля")
       return { success: false, shouldRedirect: false }
     }
   }, [getDataToSend, updateProfile, formData, updateOriginalData])

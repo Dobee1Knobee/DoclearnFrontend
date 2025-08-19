@@ -1,28 +1,18 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { createApi } from "@reduxjs/toolkit/query/react"
+import { axiosBaseQuery } from "@/shared/api/axiosBaseQuery"
 import type { SpecialistUser } from "@/entities/user/model/types"
-
-const baseQuery = fetchBaseQuery({
-  baseUrl: "https://api.doclearn.ru",
-  prepareHeaders: (headers) => {
-    const refreshToken = localStorage.getItem("refreshToken")
-    if (refreshToken) {
-      headers.set("Authorization", `Bearer ${refreshToken}`)
-    }
-    headers.set("Content-Type", "application/json")
-    return headers
-  },
-  credentials: "include",
-})
 
 export const authorProfileApi = createApi({
   reducerPath: "authorProfileApi",
-  baseQuery,
+  baseQuery: axiosBaseQuery(),
   tagTypes: ["Profile"],
   endpoints: (builder) => ({
     getAuthorProfile: builder.query<SpecialistUser, string>({
-      query: (id: string) => `/user/${id}/profile`,
+      query: (id: string) => ({
+        url: `/user/${id}/profile`,
+        method: "GET",
+      }),
       transformResponse: (response: any): SpecialistUser => {
-
         const userData = response.data || response
         const transformedProfile: SpecialistUser = {
           ...userData,
@@ -46,7 +36,10 @@ export const authorProfileApi = createApi({
     }),
 
     getMyProfile: builder.query<SpecialistUser, void>({
-      query: () => `/user/me`,
+      query: () => ({
+        url: `/user/me`,
+        method: "GET",
+      }),
       transformResponse: (response: any): SpecialistUser => {
         const userData = response.data || response
         const transformedProfile: SpecialistUser = {

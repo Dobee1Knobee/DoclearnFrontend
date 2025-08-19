@@ -68,18 +68,18 @@ export const useSearch = () => {
 
       try {
         const response = await searchUsers(query.trim())
-        console.log("Ответ от поиска: ",response)
+        console.log("Ответ от поиска: ", response)
 
         searchCache.current.set(query, {
-          results: response.data,
-          count: response.count,
+          results: response.data.usersWithAvatars,
+          count: response.data.total,
           timestamp: Date.now(),
         })
 
         setState((prev) => ({
           ...prev,
-          results: response.data,
-          totalCount: response.count,
+          results: response.data.usersWithAvatars,
+          totalCount: response.data.total,
           isLoading: false,
           error: null,
           isOpen: true,

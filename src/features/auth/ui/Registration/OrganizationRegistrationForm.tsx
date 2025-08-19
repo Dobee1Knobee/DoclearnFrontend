@@ -2,8 +2,8 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Button, Spinner } from "react-bootstrap"
-import { useForm } from "react-hook-form"
+import { Button, Spinner, Form } from "react-bootstrap"
+import { useForm, Controller } from "react-hook-form"
 import styles from "../styles/AuthForm.module.css"
 import { FormInput } from "../inputs/FormInput"
 import { PasswordInput } from "../inputs/PasswordInput"
@@ -13,6 +13,7 @@ import type { RegisterOrganizationDto } from "@/features/auth/model/types"
 
 interface OrganizationRegistrationFormData extends Omit<RegisterOrganizationDto, "accountType"> {
   confirmPassword: string
+  agreeToTerms: boolean
 }
 
 interface OrganizationRegistrationFormProps {
@@ -45,10 +46,10 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         fullName: "",
         position: "",
         email: "",
-        phone: "",
       },
       password: "",
       confirmPassword: "",
+      agreeToTerms: false,
     },
   })
 
@@ -77,7 +78,7 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         placeholder="Введите полное наименование"
       />
 
-      <FormInput
+      {/* <FormInput
         name="description"
         label="Описание деятельности"
         control={control}
@@ -95,22 +96,7 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         }}
         error={errors.legalForm}
         placeholder="ООО, АО, НКО и т.д."
-      />
-
-      <FormInput
-        name="ogrn"
-        label="ОГРН"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-          pattern: {
-            value: /^\d{13}$/,
-            message: "ОГРН должен содержать 13 цифр",
-          },
-        }}
-        error={errors.ogrn}
-        placeholder="Введите ОГРН"
-      />
+      /> */}
 
       <FormInput
         name="inn"
@@ -127,22 +113,7 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         placeholder="Введите ИНН"
       />
 
-      <FormInput
-        name="kpp"
-        label="КПП"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-          pattern: {
-            value: /^\d{9}$/,
-            message: "КПП должен содержать 9 цифр",
-          },
-        }}
-        error={errors.kpp}
-        placeholder="Введите КПП"
-      />
-
-      <FormInput
+      {/* <FormInput
         name="legalAddress"
         label="Юридический адрес"
         control={control}
@@ -162,7 +133,7 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         }}
         error={errors.address}
         placeholder="Введите фактический адрес"
-      />
+      /> 
 
       <FormInput
         name="notificationEmail"
@@ -197,11 +168,11 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         error={errors.website}
         placeholder="https://example.com"
         type="url"
-      />
+      />*/}
 
-      <h6 className="mt-4 mb-3">Ответственное лицо</h6>
+      {/* <h6 className="mt-5 fs-5">Ответственное лицо</h6> */}
 
-      <FormInput
+      {/* <FormInput
         name="responsiblePerson.fullName"
         label="ФИО ответственного лица"
         control={control}
@@ -221,7 +192,7 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         }}
         error={errors.responsiblePerson?.position}
         placeholder="Введите должность"
-      />
+      /> */}
 
       <FormInput
         name="responsiblePerson.email"
@@ -234,18 +205,6 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         error={errors.responsiblePerson?.email}
         placeholder="Введите email ответственного лица"
         type="email"
-      />
-
-      <FormInput
-        name="responsiblePerson.phone"
-        label="Телефон ответственного лица"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-        }}
-        error={errors.responsiblePerson?.phone}
-        placeholder="Введите телефон ответственного лица"
-        type="tel"
       />
 
       <PasswordInput
@@ -275,6 +234,47 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
         }}
         error={errors.confirmPassword}
         placeholder="Повторите пароль"
+      />
+
+      <Controller
+        name="agreeToTerms"
+        control={control}
+        rules={{ required: "Для отправки формы необходимо Ваше согласие" }}
+        render={({ field: { onChange, onBlur, value, name, ref } }) => (
+          <>
+            <Form.Check
+              id="agreeToTerms"
+              type="checkbox"
+              name={name}
+              ref={ref}
+              checked={value}
+              onChange={(e) => onChange(e.target.checked)}
+              onBlur={onBlur}
+              isInvalid={!!errors.agreeToTerms}
+              label={
+                <>
+                  Я&nbsp;согласен&nbsp;с&nbsp;условиями{" "}
+                  <a href="/user-agreement" target="_blank" rel="noopener noreferrer">
+                    Пользовательского&nbsp;соглашения
+                  </a>{" "}
+                  и&nbsp;
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+                    Политики&nbsp;конфиденциальности
+                  </a>
+                </>
+              }
+              feedback={errors.agreeToTerms?.message}
+              className="mt-4 mb-2"
+            >
+
+            </Form.Check>
+            {errors.agreeToTerms && (
+              <Form.Control.Feedback type="invalid" className="d-block mb-3">
+                {errors.agreeToTerms.message}
+              </Form.Control.Feedback>
+            )}
+          </>
+        )}
       />
 
       <Button variant="primary" type="submit" className={styles.btnCustom} disabled={isLoading}>

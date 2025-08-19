@@ -1,80 +1,106 @@
-// Типы для организаций
+import type { Post } from "@/entities/post/model/types"
+import type { Course } from "@/entities/course/model/types"
 
+// Типы организаций
+export type OrganizationType =
+  | "clinic"
+  | "hospital"
+  | "medical_center"
+  | "polyclinic"
+  | "research_institute"
+  | "university"
+  | "medical_school"
+  | "laboratory"
+  | "diagnostic_center"
+  | "rehabilitation_center"
+
+export interface OrganizationVerification {
+  organization: boolean
+  partner: boolean
+}
+
+// Специалисты
+export interface OrganizationSpecialist {
+  userId: string
+  role: string // "Главный врач", "Заведующий отделением", "Врач", "Медсестра" и т.д.
+  department?: string // Отделение
+  joinedAt: string
+  isActive: boolean
+}
+
+// Контактная информация
+export interface Contact {
+  _id: string
+  type: string
+  label?: string
+  value: string
+  isPublic?: boolean
+}
+
+// Ответственное лицо организации
 export interface OrganizationResponsiblePerson {
-  /** ФИО руководителя или уполномоченного менеджера */
   fullName: string
-  /** Должность */
   position: string
-  /** Контактный e‑mail */
   email: string
-  /** Контактный телефон */
-  phone: string
 }
 
-export interface Organization {
+export interface OrganizationAchievement {
   id: string
-  role: "organization"
-
-  // --- Основная информация ---
-  /** Полное наименование (по Уставу) */
-  fullName: string
-  /** Краткое описание деятельности */
+  title: string
   description?: string
-
-  // --- Юридические данные ---
-  /** Организационно-правовая форма (ООО, АО, НКО и т.д.) */
-  legalForm: string
-  /** Основной государственный регистрационный номер */
-  ogrn: string
-  /** ИНН (идентификационный номер налогоплательщика) */
-  inn: string
-  /** КПП (код причины постановки на учет) */
-  kpp: string
-
-  // --- Контактная информация ---
-  /** Юридический адрес */
-  legalAddress: string
-  /** Фактический адрес */
-  address: string
-  /** Электронная почта для официальных уведомлений */
-  notificationEmail: string
-  /** Рабочий телефон */
-  workPhone: string
-  /** Веб-сайт */
-  website?: string
-
-  // --- Данные ответственного лица ---
-  responsiblePerson: OrganizationResponsiblePerson
-
-  // --- Связи ---
-  /** ID пользователей, которые являются сотрудниками */
-  members: string[]
-  /** Подписчики и подписки организации */
-  followers: string[]
-  following: string[]
-
-  createdAt: string
-
-  // --- Верификация ---
-  isVerified: boolean
-
-  stats: OrganizationStats
-
-  // --- Контент ---
-  /** Публикации организации */
-  publications: string[] // Post IDs
-  /** Курсы организации */
-  courses: string[] // Course IDs
+  year: string
+  category: "award" | "certification" | "other"
 }
-
-// Union type для всех типов аккаунтов
-export type AccountType = "specialist" | "organization"
 
 // Статистика организации
 export interface OrganizationStats {
   followersCount: number
-  followingCount: number
-  membersCount: number
+  specialistsCount: number
+  rating: number // ELO рейтинг организации
   postsCount: number
   coursesCount: number
 }
+
+export interface OrganizationLegalInfo {
+  inn: string
+  ogrn: string
+  license: string
+}
+
+export interface Organization {
+  organizationId: string
+  role: "organization"
+  fullName: string
+  type: OrganizationType
+  description?: string
+  avatarId?: string
+  avatarUrl?: string
+  defaultAvatarPath: string
+  contacts: Contact[]
+  followers: string[]
+  following: string[]
+  createdAt: string
+  isVerified: OrganizationVerification
+  stats: OrganizationStats
+
+  // Фактический адрес
+  address?: string
+
+  // Данные ответственного лица
+  responsiblePerson: OrganizationResponsiblePerson
+
+  // Юридическая информация
+  legalInfo: OrganizationLegalInfo
+
+  // Медицинская деятельность
+  medicalDirections: string[] // Основные направления(Кардиология, Хирургия,Диагностика)
+
+  // Специалисты
+  specialists: OrganizationSpecialist[]
+
+  publications: Post[]
+  courses: Course[]
+  achievements: OrganizationAchievement[]
+}
+
+export type AccountType = "specialist" | "organization"
