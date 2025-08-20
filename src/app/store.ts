@@ -6,6 +6,7 @@ import passwordRecoveryReducer from "@/features/auth/passwordRecovery/model/slic
 import { authorProfileApi } from "@/features/author-profile/api/authorProfileApi"
 import { profileEditApi } from "@/features/profile-edit/api/profileEditApi"
 import { adminUsersApi } from "@/features/admin-users/api/adminUsersApi"
+import { adminModerationApi } from "@/features/admin-moderation/api/adminModerationApi"
 
 export const store = configureStore({
   reducer: {
@@ -14,9 +15,15 @@ export const store = configureStore({
     [authorProfileApi.reducerPath]: authorProfileApi.reducer,
     [profileEditApi.reducerPath]: profileEditApi.reducer,
     [adminUsersApi.reducerPath]: adminUsersApi.reducer,
+    [adminModerationApi.reducerPath]: adminModerationApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authorProfileApi.middleware, profileEditApi.middleware, adminUsersApi.middleware),
+    getDefaultMiddleware().concat(
+      authorProfileApi.middleware,
+      profileEditApi.middleware,
+      adminUsersApi.middleware,
+      adminModerationApi.middleware,
+    ),
 })
 
 configureHttp({

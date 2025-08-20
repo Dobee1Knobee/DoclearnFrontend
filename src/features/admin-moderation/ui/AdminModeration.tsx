@@ -93,6 +93,7 @@ export function AdminModeration() {
     if (type === "profile") {
       try {
         await approveChanges(userId).unwrap()
+        // Карточка автоматически исчезнет из списка благодаря invalidatesTags
       } catch (error) {
         console.error("Ошибка при одобрении изменений:", error)
       }
@@ -103,8 +104,10 @@ export function AdminModeration() {
     if (type === "profile") {
       try {
         await rejectChanges(userId).unwrap()
+        // Карточка автоматически исчезнет из списка благодаря invalidatesTags
       } catch (error) {
         console.error("Ошибка при отклонении изменений:", error)
+        // В будущем здесь можно показать уведомление об ошибке
       }
     }
   }
@@ -234,13 +237,13 @@ export function AdminModeration() {
                     </h3>
                     <div className={styles.itemMeta}>
                       <div className={styles.itemUser}>
-                        <Image
+                        {/* <Image
                           src={user.avatar || user.defaultAvatarPath || "/placeholder.webp"}
                           alt={`${user.firstName} ${user.lastName}`}
                           width={24}
                           height={24}
                           className={styles.userAvatar}
-                        />
+                        /> */}
                         <span>
                           {user.email}
                           {/* {user.firstName} {user.lastName} */}
