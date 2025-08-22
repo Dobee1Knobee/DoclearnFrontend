@@ -18,7 +18,28 @@ export const adminUsersApi = createApi({
       }),
       providesTags: ["AdminUsers"],
     }),
+    banUser: builder.mutation<void, { userId: string; reason: string }>({
+      query: ({ userId, reason }) => ({
+        url: `/admin/users/${userId}/ban`,
+        method: "POST",
+        data: { reason },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("refreshToken")}`,
+        },
+      }),
+      invalidatesTags: ["AdminUsers"],
+    }),
+    unbanUser: builder.mutation<void, { userId: string }>({
+      query: ({ userId }) => ({
+        url: `/admin/users/${userId}/unban`,
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("refreshToken")}`,
+        },
+      }),
+      invalidatesTags: ["AdminUsers"],
+    }),
   }),
 })
 
-export const { useGetAdminUsersQuery } = adminUsersApi
+export const { useGetAdminUsersQuery, useBanUserMutation, useUnbanUserMutation } = adminUsersApi

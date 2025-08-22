@@ -4,6 +4,7 @@ import { Montserrat } from "next/font/google"
 import "./globals.css"
 import Header from "@/widgets/header/ui/Header"
 import BottomNavigationWrapper from "@/widgets/bottom-navigation/BottomNavigationWrapper"
+import ProtectedLayout from "./ProtectedLayout"
 import { Providers } from "./providers"
 
 const montserrat = Montserrat({
@@ -33,10 +34,11 @@ export default function RootLayout({
     <html lang="ru">
       <body className={`${montserrat.variable}  antialiased`}>
         <Providers>
-          <Header />
-          {children}
-          {/* <div style={{ paddingBottom: "60px" }}>{children}</div> */}
-          <BottomNavigationWrapper />
+          <ProtectedLayout>
+            <Header />
+            {children}
+            <BottomNavigationWrapper />
+          </ProtectedLayout>
         </Providers>
       </body>
     </html>

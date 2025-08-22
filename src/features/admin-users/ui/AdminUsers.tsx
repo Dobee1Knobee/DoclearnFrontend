@@ -3,11 +3,12 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Search, Eye, Edit, Ban, ChevronLeft, ChevronRight } from "lucide-react"
-import { useGetAdminUsersQuery } from "../api/adminUsersApi"
+import { Search, Eye, Edit, Ban, Unlock, ChevronLeft, ChevronRight } from "lucide-react"
+import { useGetAdminUsersQuery, useBanUserMutation, useUnbanUserMutation } from "../api/adminUsersApi"
 import { AdminUsersSpinner } from "./AdminUsersSpinner"
 import { AdminUsersError } from "./AdminUsersError"
 import { AdminUsersEmpty } from "./AdminUsersEmpty"
+import { BanUserModal } from "./BanUserModal"
 import styles from "./AdminUsers.module.css"
 import type { SpecialistUser } from "@/entities/user/model/types"
 import { VerificationIcons } from "./VerificationIcons"
@@ -16,11 +17,34 @@ import Link from "next/link"
 type UserRole = "all" | "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin" | "owner"
 type UserStatus = "all" | "active" | "blocked"
 
+const getRoleLabel = (role: string) => {
+  switch (role) {
+    case "student":
+      return "Студент"
+    case "resident":
+      return "Ординатор"
+    case "postgraduate":
+      return "Аспирант"
+    case "doctor":
+      return "Врач"
+    case "researcher":
+      return "Научный сотрудник"
+    case "admin":
+      return "Администратор"
+    case "owner":
+      return "Владелец"
+    default:
+      return "Неизвестная роль"
+  }
+}
+
 export function AdminUsers() {
   const [currentPage, setCurrentPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState<UserRole>("all")
   const [statusFilter, setStatusFilter] = useState<UserStatus>("all")
+  const [banModalOpen, setBanModalOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<SpecialistUser | null>(null)
 
   const router = useRouter()
 
@@ -33,6 +57,9 @@ export function AdminUsers() {
     page: currentPage,
   })
 
+  const [banUser, { isLoading: isBanning }] = useBanUserMutation()
+  const [unbanUser, { isLoading: isUnbanning }] = useUnbanUserMutation()
+
   const filteredUsers =
     response?.data.users.filter((user) => {
       const matchesSearch =
@@ -41,7 +68,10 @@ export function AdminUsers() {
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
 
       const matchesRole = roleFilter === "all" || user.role === roleFilter
-      const matchesStatus = statusFilter === "all" || statusFilter === "active"
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" && !user.isBanned) ||
+        (statusFilter === "blocked" && user.isBanned)
 
       return matchesSearch && matchesRole && matchesStatus
     }) || []
@@ -67,47 +97,12 @@ export function AdminUsers() {
     }
   }
 
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case "active":
-        return styles.statusActive
-      case "blocked":
-        return styles.statusBlocked
-      default:
-        return styles.statusActive
-    }
+  const getStatusLabel = (user: SpecialistUser) => {
+    return user.isBanned ? "Заблокирован" : "Активен"
   }
 
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case "student":
-        return "Студент"
-      case "resident":
-        return "Ординатор"
-      case "postgraduate":
-        return "Аспирант"
-      case "doctor":
-        return "Врач"
-      case "researcher":
-        return "Научный сотрудник"
-      case "admin":
-        return "Админ"
-      case "owner":
-        return "Владелец"
-      default:
-        return role
-    }
-  }
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case "active":
-        return "Активен"
-      case "blocked":
-        return "Заблокирован"
-      default:
-        return "Активен"
-    }
+  const getStatusBadgeClass = (user: SpecialistUser) => {
+    return user.isBanned ? styles.statusBlocked : styles.statusActive
   }
 
   const formatDate = (dateString: string) => {
@@ -120,7 +115,39 @@ export function AdminUsers() {
 
   const handleEditUser = (_userId: string) => {}
 
-  const handleBlockUser = (_userId: string) => {}
+  const handleBlockUser = (user: SpecialistUser) => {
+    if (user.isBanned) {
+      handleUnbanUser(user._id)
+    } else {
+      setSelectedUser(user)
+      setBanModalOpen(true)
+    }
+  }
+
+  const handleConfirmBan = async (reason: string) => {
+    if (!selectedUser) return
+
+    try {
+      await banUser({ userId: selectedUser._id, reason }).unwrap()
+      setBanModalOpen(false)
+      setSelectedUser(null)
+    } catch (error) {
+      console.error("Ошибка при блокировке пользователя:", error)
+    }
+  }
+
+  const handleUnbanUser = async (userId: string) => {
+    try {
+      await unbanUser({ userId }).unwrap()
+    } catch (error) {
+      console.error("Ошибка при разблокировке пользователя:", error)
+    }
+  }
+
+  const handleCloseBanModal = () => {
+    setBanModalOpen(false)
+    setSelectedUser(null)
+  }
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -128,6 +155,16 @@ export function AdminUsers() {
 
   const handleRetry = () => {
     refetch()
+  }
+
+  const getAvatarUrl = (user: SpecialistUser) => {
+    if (user.avatarUrl) {
+      return user.avatarUrl
+    }
+    if (user.defaultAvatarPath) {
+      return user.defaultAvatarPath
+    }
+    return "/placeholder.webp"
   }
 
   if (isLoading) {
@@ -229,7 +266,7 @@ export function AdminUsers() {
                   <td className={styles.tableCell}>
                     <div className={styles.userInfo}>
                       <Image
-                        src={user.avatar || user.defaultAvatarPath || "/placeholder.webp"}
+                        src={getAvatarUrl(user) || "/placeholder.webp"}
                         alt={`${user.firstName} ${user.lastName}`}
                         width={40}
                         height={40}
@@ -249,9 +286,7 @@ export function AdminUsers() {
                     </span>
                   </td>
                   <td className={styles.tableCell}>
-                    <span className={`${styles.statusBadge} ${getStatusBadgeClass("active")}`}>
-                      {getStatusLabel("active")}
-                    </span>
+                    <span className={`${styles.statusBadge} ${getStatusBadgeClass(user)}`}>{getStatusLabel(user)}</span>
                   </td>
                   <td className={styles.tableCell}>
                     <VerificationIcons isVerified={user.isVerified} className={styles.verificationIcons} />
@@ -259,14 +294,12 @@ export function AdminUsers() {
                   <td className={styles.tableCell}>{formatDate(user.createdAt)}</td>
                   <td className={styles.tableCell}>
                     <div className={styles.actions}>
-                      {/* <button
-                        onClick={() => handleViewUser(user._id)}
+                      <Link
+                        href={`/profile/${encodeURIComponent(user._id)}`}
                         className={`${styles.actionButton} ${styles.viewButton}`}
                         title="Просмотреть профиль"
+                        prefetch
                       >
-                        <Eye size={16} />
-                      </button> */}
-                      <Link href={`/profile/${encodeURIComponent(user._id)}`} className={`${styles.actionButton} ${styles.viewButton}`} title="Просмотреть профиль" prefetch>
                         <Eye size={16} />
                       </Link>
                       <button
@@ -277,11 +310,12 @@ export function AdminUsers() {
                         <Edit size={16} />
                       </button>
                       <button
-                        onClick={() => handleBlockUser(user._id)}
-                        className={`${styles.actionButton} ${styles.blockButton}`}
-                        title="Заблокировать"
+                        onClick={() => handleBlockUser(user)}
+                        className={`${styles.actionButton} ${user.isBanned ? styles.unblockButton : styles.blockButton}`}
+                        title={user.isBanned ? "Разблокировать" : "Заблокировать"}
+                        disabled={isBanning || isUnbanning}
                       >
-                        <Ban size={16} />
+                        {user.isBanned ? <Unlock size={16} /> : <Ban size={16} />}
                       </button>
                     </div>
                   </td>
@@ -330,6 +364,14 @@ export function AdminUsers() {
           </div>
         </div>
       )}
+
+      <BanUserModal
+        isOpen={banModalOpen}
+        onClose={handleCloseBanModal}
+        onConfirm={handleConfirmBan}
+        userName={selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}` : ""}
+        isLoading={isBanning}
+      />
     </div>
   )
 }

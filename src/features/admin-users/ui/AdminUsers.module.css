@@ -212,6 +212,20 @@
   background: rgba(239, 68, 68, 0.2);
 }
 
+.unblockButton {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.unblockButton:hover {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.actionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -448,11 +462,6 @@
   border-color: #3b82f6;
 }
 
-@media (max-width: 768px) {
-
-}
-
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
