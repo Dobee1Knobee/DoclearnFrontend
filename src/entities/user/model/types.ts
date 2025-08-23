@@ -140,10 +140,12 @@ export interface BaseUserFields {
   middleName?: string
   email: string
   birthday: string
-  placeStudy: string // место учебы, новое поле 
+  placeStudy: string
   placeWork: string
-  workHistory: Work[] // история мест работы, новое поле
+  workHistory: Work[]
   isVerified: UserVerification
+  isBanned: boolean
+  banReason?: string
   createdAt: string
   avatar?: string
   defaultAvatarPath: string
@@ -169,7 +171,6 @@ export interface StudentUser extends BaseUserFields {
   mentorId?: string
   coursesEnrolled?: Course[]
   education: Education
-
 }
 
 // Ординатор
@@ -200,6 +201,7 @@ export interface AdminUser extends Omit<ResearcherUser, "role"> {
   role: "admin"
 }
 
+// Владелец
 export interface OwnerUser extends Omit<AdminUser, "role"> {
   role: "owner"
 }
@@ -213,7 +215,7 @@ export type SpecialistUser =
   | ResearcherUser
   | AdminUser
   | OwnerUser
-  
+
 export type SpecialistRole = "student" | "resident" | "postgraduate" | "doctor" | "researcher" | "admin" | "owner"
 
 export interface Achievement {

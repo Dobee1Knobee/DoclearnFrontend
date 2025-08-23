@@ -2,55 +2,52 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
 import { FileText, User, Clock, Check, X, Eye, ChevronLeft, ChevronRight } from "lucide-react"
 import {
   useGetPendingUsersQuery,
   useApproveAllChangesMutation,
   useRejectChangesMutation,
+  useGetPendingDocumentsQuery,
+  useApproveDocumentMutation,
+  useRejectDocumentMutation,
 } from "../api/adminModerationApi"
 import { AdminModerationSpinner } from "./AdminModerationSpinner"
 import { AdminModerationError } from "./AdminModerationError"
 import { AdminModerationEmpty } from "./AdminModerationEmpty"
 import styles from "./AdminModeration.module.css"
-import type { PendingUser } from "../model/types"
+import type { PendingUser, DocumentCategory } from "../model/types"
 
 type ModerationTab = "documents" | "profiles"
 
-const mockDocuments = [
-  {
-    id: "1",
-    type: "document",
-    title: "Диплом врача - Анна Петрова",
-    user: {
-      id: "1",
-      name: "Анна Петрова",
-      avatar: "/Avatars/Avatar1.webp",
-      defaultAvatarPath: "/Avatars/Avatar1.webp",
-    },
-    submittedAt: "2024-01-20T10:30:00Z",
-    fileName: "diploma_petrova.pdf",
-    fileSize: "2.4 MB",
-  },
-  {
-    id: "2",
-    type: "document",
-    title: "Сертификат специалиста - Михаил Иванов",
-    user: {
-      id: "2",
-      name: "Михаил Иванов",
-      avatar: "/Avatars/Avatar2.webp",
-      defaultAvatarPath: "/Avatars/Avatar2.webp",
-    },
-    submittedAt: "2024-01-19T15:45:00Z",
-    fileName: "certificate_ivanov.pdf",
-    fileSize: "1.8 MB",
-  },
-]
+const categoryLabels: Record<DocumentCategory, string> = {
+  higher_education_diploma: "Диплом о высшем образовании",
+  residency_diploma: "Диплом об окончании ординатуры",
+  professional_retraining_diploma: "Диплом о проф. переподготовке",
+  academic_degree_diploma: "Диплом кандидата/доктора наук",
+  accreditation_certificate: "Свидетельство об аккредитации",
+  specialist_certificate: "Сертификат специалиста",
+  qualification_certificate: "Удостоверение о повышении квалификации",
+  medical_license: "Лицензия на мед. деятельность",
+  scientific_publication: "Научная публикация / Статья",
+  patent: "Патент на изобретение",
+  award: "Награда / Грамота",
+  recommendation_letter: "Рекомендательное письмо",
+  student_id: "Студенческий билет",
+  other: "Другое",
+}
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return "0 Bytes"
+  const k = 1024
+  const sizes = ["Bytes", "KB", "MB", "GB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i]
+}
 
 export function AdminModeration() {
   const [activeTab, setActiveTab] = useState<ModerationTab>("profiles")
   const [currentPage, setCurrentPage] = useState(1)
+  const [viewingDocument, setViewingDocument] = useState<string | null>(null)
 
   const router = useRouter()
 
@@ -63,8 +60,17 @@ export function AdminModeration() {
     page: currentPage,
   })
 
+  const {
+    data: documentsResponse,
+    error: documentsError,
+    isLoading: documentsLoading,
+    refetch: refetchDocuments,
+  } = useGetPendingDocumentsQuery()
+
   const [approveChanges, { isLoading: isApproving }] = useApproveAllChangesMutation()
   const [rejectChanges, { isLoading: isRejecting }] = useRejectChangesMutation()
+  const [approveDocument, { isLoading: isApprovingDoc }] = useApproveDocumentMutation()
+  const [rejectDocument, { isLoading: isRejectingDoc }] = useRejectDocumentMutation()
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -89,29 +95,43 @@ export function AdminModeration() {
     return labels[field] || field
   }
 
-  const handleApprove = async (userId: string, type: string) => {
+  const handleApprove = async (userId: string, type: string, documentId?: string) => {
     if (type === "profile") {
       try {
         await approveChanges(userId).unwrap()
       } catch (error) {
         console.error("Ошибка при одобрении изменений:", error)
       }
+    } else if (type === "document" && documentId) {
+      try {
+        await approveDocument({ userId, documentId }).unwrap()
+      } catch (error) {
+        console.error("Ошибка при одобрении документа:", error)
+      }
     }
   }
 
-  const handleReject = async (userId: string, type: string) => {
+  const handleReject = async (userId: string, type: string, documentId?: string) => {
     if (type === "profile") {
       try {
         await rejectChanges(userId).unwrap()
       } catch (error) {
         console.error("Ошибка при отклонении изменений:", error)
       }
+    } else if (type === "document" && documentId) {
+      try {
+        await rejectDocument({ userId, documentId }).unwrap()
+      } catch (error) {
+        console.error("Ошибка при отклонении документа:", error)
+      }
     }
   }
 
-  const handleView = (userId: string, type: string) => {
+  const handleView = (userId: string, type: string, documentUrl?: string) => {
     if (type === "profile") {
       router.push(`/profile/${userId}`)
+    } else if (type === "document" && documentUrl) {
+      setViewingDocument(documentUrl)
     }
   }
 
@@ -124,7 +144,20 @@ export function AdminModeration() {
   }
 
   const renderDocuments = () => {
-    if (mockDocuments.length === 0) {
+    if (documentsLoading) {
+      return <AdminModerationSpinner />
+    }
+
+    if (documentsError) {
+      const errorMessage =
+        "data" in documentsError && documentsError.data
+          ? (documentsError.data as any)?.message || "Произошла ошибка при загрузке документов"
+          : "Произошла ошибка при загрузке документов"
+
+      return <AdminModerationError error={errorMessage} onRetry={refetchDocuments} />
+    }
+
+    if (!documentsResponse?.data.length) {
       return (
         <div className={styles.placeholder}>
           <FileText size={48} className={styles.placeholderIcon} />
@@ -136,56 +169,59 @@ export function AdminModeration() {
 
     return (
       <div className={styles.queueList}>
-        {mockDocuments.map((item) => (
-          <div key={item.id} className={styles.queueItem}>
+        {documentsResponse.data.map((item) => (
+          <div key={item.document._id} className={styles.queueItem}>
             <div className={styles.itemHeader}>
               <div className={styles.itemInfo}>
-                <h3 className={styles.itemTitle}>{item.title}</h3>
+                <h3 className={styles.itemTitle}>
+                  {categoryLabels[item.document.category as DocumentCategory]} - {item.userName}
+                </h3>
                 <div className={styles.itemMeta}>
                   <div className={styles.itemUser}>
-                    <Image
-                      src={item.user.avatar || item.user.defaultAvatarPath}
-                      alt={item.user.name}
-                      width={24}
-                      height={24}
-                      className={styles.userAvatar}
-                    />
-                    <span>{item.user.name}</span>
-                  </div>
-                  <div className={styles.itemDate}>
-                    <Clock size={14} />
-                    <span>{formatDate(item.submittedAt)}</span>
+                    <span>{item.userName}</span>
                   </div>
                 </div>
               </div>
               <div className={styles.itemActions}>
                 <button
-                  onClick={() => handleView(item.id, "document")}
+                  onClick={() => handleView(item.userId, "document", item.documentUrl)}
                   className={`${styles.actionButton} ${styles.viewButton}`}
                 >
                   <Eye size={16} />
                   Просмотреть
                 </button>
                 <button
-                  onClick={() => handleApprove(item.id, "document")}
+                  onClick={() => handleApprove(item.userId, "document", item.document._id)}
+                  disabled={isApprovingDoc || isRejectingDoc}
                   className={`${styles.actionButton} ${styles.approveButton}`}
                 >
                   <Check size={16} />
-                  Одобрить
+                  {isApprovingDoc ? "Одобряем..." : "Одобрить"}
                 </button>
                 <button
-                  onClick={() => handleReject(item.id, "document")}
+                  onClick={() => handleReject(item.userId, "document", item.document._id)}
+                  disabled={isApprovingDoc || isRejectingDoc}
                   className={`${styles.actionButton} ${styles.rejectButton}`}
                 >
                   <X size={16} />
-                  Отклонить
+                  {isRejectingDoc ? "Отклоняем..." : "Отклонить"}
                 </button>
               </div>
             </div>
             <div className={styles.itemContent}>
-              <div className={styles.contentTitle}>Информация о файле:</div>
+              <div className={styles.contentTitle}>Информация о документе:</div>
               <div className={styles.contentText}>
-                Файл: {item.fileName} ({item.fileSize})
+                <div style={{ marginBottom: "0.25rem" }}>
+                  <strong>Файл:</strong> {item.document.file.originalName} ({formatFileSize(item.document.file.size)})
+                </div>
+                <div style={{ marginBottom: "0.25rem" }}>
+                  <strong>Категория:</strong> {categoryLabels[item.document.category as DocumentCategory]}
+                </div>
+                {item.document.label && (
+                  <div style={{ marginBottom: "0.25rem" }}>
+                    <strong>Название:</strong> {item.document.label}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -234,17 +270,7 @@ export function AdminModeration() {
                     </h3>
                     <div className={styles.itemMeta}>
                       <div className={styles.itemUser}>
-                        <Image
-                          src={user.avatar || user.defaultAvatarPath || "/placeholder.webp"}
-                          alt={`${user.firstName} ${user.lastName}`}
-                          width={24}
-                          height={24}
-                          className={styles.userAvatar}
-                        />
-                        <span>
-                          {user.email}
-                          {/* {user.firstName} {user.lastName} */}
-                        </span>
+                        <span>{user.email}</span>
                       </div>
                       <div className={styles.itemDate}>
                         <Clock size={14} />
@@ -357,7 +383,7 @@ export function AdminModeration() {
           className={`${styles.tab} ${activeTab === "documents" ? styles.active : ""}`}
         >
           <FileText size={16} />
-          Документы ({mockDocuments.length})
+          Документы ({documentsResponse?.data.length || 0})
         </button>
         <button
           onClick={() => setActiveTab("profiles")}
@@ -369,6 +395,28 @@ export function AdminModeration() {
       </div>
 
       <div className={styles.content}>{activeTab === "documents" ? renderDocuments() : renderProfiles()}</div>
+
+      {viewingDocument && (
+        <div className={styles.modal} onClick={() => setViewingDocument(null)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Просмотр документа</h3>
+              <button onClick={() => setViewingDocument(null)} className={styles.modalCloseButton}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <iframe
+                src={viewingDocument}
+                width="100%"
+                height="500"
+                style={{ border: "none", borderRadius: "8px" }}
+                title="Просмотр документа"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
