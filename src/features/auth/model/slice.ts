@@ -1,7 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { loginUser, registerUser, verifyUserEmail, checkAuthStatus, logoutUser } from "./thunks"
-import type { SpecialistUser, Document } from "@/entities/user/model/types"
+import type { SpecialistUser, Document, DoctorUser } from "@/entities/user/model/types"
 import type { UpdateSpecialistFieldsPayload } from "./types"
+import { specializations } from "@/shared/data/specializations"
 
 interface AuthState {
   user: SpecialistUser | null
@@ -48,6 +49,7 @@ export const authSlice = createSlice({
           placeWork,
           role,
           education,
+          specializations,
         } = action.payload
 
         if (defaultAvatarPath !== undefined) {
@@ -85,6 +87,9 @@ export const authSlice = createSlice({
         }
         if (education !== undefined) {
           (state.user as SpecialistUser).education = education as any
+        }
+        if (specializations !== undefined) {
+          (state.user as DoctorUser).specializations = specializations as any
         }
       }
     },

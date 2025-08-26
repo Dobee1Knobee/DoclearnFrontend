@@ -1,5 +1,5 @@
 import type { OrganizationResponsiblePerson } from "@/entities/organization/model/types"
-import type { SpecialistRole, UserStats, Contact, Education } from "@/entities/user/model/types"
+import type { SpecialistRole, UserStats, Contact, Education, Specialization } from "@/entities/user/model/types"
 
 export type AccountType = "specialist" | "organization"
 
@@ -82,6 +82,7 @@ export interface UpdateSpecialistFieldsPayload {
   placeWork?: string
   role?: SpecialistRole
   education?: Education | Education[]
+  specializations?: Specialization[]
 }
 
 

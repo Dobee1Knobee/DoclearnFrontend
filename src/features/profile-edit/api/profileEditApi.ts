@@ -63,6 +63,9 @@ export const profileEditApi = createApi({
             if (requestData.education !== undefined) {
               fieldsToUpdate.education = requestData.education
             }
+            if (requestData.specializations !== undefined) {
+              fieldsToUpdate.specializations = requestData.specializations
+            }
 
             if (Object.keys(fieldsToUpdate).length > 0) {
               dispatch(updateUserFields(fieldsToUpdate))

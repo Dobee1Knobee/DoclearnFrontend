@@ -4,6 +4,7 @@ import type React from "react"
 import { Download, Trash2, FileText, Calendar, Eye, EyeOff, CheckCircle } from "lucide-react"
 import type { Document, DocumentCategory } from "@/entities/user/model/types"
 import styles from "./DocumentCard.module.css"
+import { VerifiedBadge } from "@/shared/ui/VerifiedBadge/VerifiedBadge"
 
 interface DocumentCardProps {
   document: Document
@@ -83,6 +84,12 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
             {document.isPublic ? <Eye size={12} /> : <EyeOff size={12} />}
             {document.isPublic ? "Публичный" : "Приватный"}
           </div>
+          {document.isVerified &&
+            <div className={styles.tooltipWrapper} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <VerifiedBadge className={styles.verifiedIcon} />
+              <span className={styles.tooltipText}>Верифицирован</span>
+            </div>
+          }
         </div>
       )}
 

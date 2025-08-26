@@ -18,7 +18,7 @@ interface NewProfileInfoBlockProps {
 
 export const NewProfileInfoBlock: React.FC<NewProfileInfoBlockProps> = ({ data, onChange }) => {
 
-    const moderationFields = ["placeWork", "placeStudy"]
+    // const moderationFields = ["placeWork", "placeStudy"]
 
     return (
     <div className={styles.block}>
@@ -50,7 +50,7 @@ export const NewProfileInfoBlock: React.FC<NewProfileInfoBlockProps> = ({ data, 
             <Form.Group>
                 <Form.Label className={styles.label}>
                     Место работы
-                    {moderationFields.includes("placeWork") && <span className={styles.moderationBadge}>Модерация</span>}
+                    {/* {moderationFields.includes("placeWork") && <span className={styles.moderationBadge}>Модерация</span>} */}
                 </Form.Label>
                 <Form.Control
                     type="text"
@@ -64,7 +64,7 @@ export const NewProfileInfoBlock: React.FC<NewProfileInfoBlockProps> = ({ data, 
             <Form.Group>
                 <Form.Label className={styles.label}>
                     Место учебы
-                    {moderationFields.includes("placeStudy") && <span className={styles.moderationBadge}>Модерация</span>}
+                    {/* {moderationFields.includes("placeStudy") && <span className={styles.moderationBadge}>Модерация</span>} */}
                     </Form.Label>
                 <Form.Control
                     type="text"
