@@ -1,0 +1,125 @@
+.filters {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: relative;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filterGroup {
+  margin-bottom: 20px;
+}
+
+.filterTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5388d8;
+  margin-bottom: 8px;
+}
+
+.select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #5388d8;
+  box-shadow: 0 0 0 3px rgba(83, 136, 216, 0.1);
+}
+
+.select:hover {
+  border-color: #5388d8;
+}
+
+.checkboxGroup,
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox,
+.radio {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #2c3e50;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.checkbox:hover,
+.radio:hover {
+  background: rgba(83, 136, 216, 0.05);
+}
+
+.checkbox input,
+.radio input {
+  margin-right: 12px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #5388d8;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.applyButton,
+.resetButton {
+  flex: 1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.applyButton {
+  background: #5388d8;
+  color: white;
+  border: 2px solid #5388d8;
+}
+
+.applyButton:hover {
+  background: #4a7bc8;
+  border-color: #4a7bc8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(83, 136, 216, 0.3);
+}
+
+.resetButton {
+  background: transparent;
+  color: #5388d8;
+  border: 2px solid #5388d8;
+}
+
+.resetButton:hover {
+  background: #5388d8;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(83, 136, 216, 0.2);
+}
