@@ -28,7 +28,6 @@ export const AnnouncementFilters: React.FC = () => {
   }
 
   const handleApply = () => {
-    console.log("[v0] Applying filters:", filters)
   }
 
   const handleReset = () => {

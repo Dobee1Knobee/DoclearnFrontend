@@ -65,6 +65,35 @@
   min-width: 0;
 }
 
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background: #5388d8;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(83, 136, 216, 0.3);
+  transition: all 0.2s ease;
+  z-index: 1000;
+}
+
+.fab:hover {
+  background: #4a7bc8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(83, 136, 216, 0.4);
+}
+
+.fab:active {
+  transform: translateY(0);
+}
+
 @media (max-width: 1024px) {
   .content {
     grid-template-columns: 240px 1fr;
@@ -93,5 +122,12 @@
 
   .searchContainer {
     max-width: none;
+  }
+
+  .fab {
+    bottom: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
   }
 }

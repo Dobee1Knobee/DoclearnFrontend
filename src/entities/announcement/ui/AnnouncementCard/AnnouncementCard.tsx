@@ -108,14 +108,14 @@ export const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
       {variant !== "compact" && (
         <div className={styles.imageContainer}>
           <img src={"/placeholder.webp"} alt={announcement.title} className={styles.image} />
-          {announcement.isPromoted && <div className={styles.promotedBadge}>Горячо</div>}
+          {announcement.isPromoted && <div className={styles.promotedBadge}>Срочно</div>}
         </div>
       )}
 
       <div className={styles.content}>
         {variant === "compact" && (
           <div className={styles.badges}>
-            {announcement.isPromoted && <div className={styles.promotedBadge}>Горячо</div>}
+            {announcement.isPromoted && <div className={styles.promotedBadge}>Срочно</div>}
           </div>
         )}
 
@@ -123,17 +123,19 @@ export const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
         <p className={styles.organizer}>{announcement.organizer}</p>
 
         <div className={styles.details}>
-          <div className={styles.detailItem}>
-            <Calendar size={16} className={styles.icon} />
-            <span>{formatDate(announcement.activeFrom)}</span>
-          </div>
-
-          {announcement.location && (
+          <div className={styles.dateLocationRow}>
             <div className={styles.detailItem}>
-              <MapPin size={16} className={styles.icon} />
-              <span>{getLocationText()}</span>
+              <Calendar size={16} className={styles.icon} />
+              <span>{formatDate(announcement.activeFrom)}</span>
             </div>
-          )}
+
+            {announcement.location && (
+              <div className={styles.detailItem}>
+                <MapPin size={16} className={styles.icon} />
+                <span>{getLocationText()}</span>
+              </div>
+            )}
+          </div>
 
           {getCategories().length > 0 && (
             <div className={styles.categoriesRow}>
