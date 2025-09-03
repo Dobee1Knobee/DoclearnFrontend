@@ -2,18 +2,13 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { FileText, User, Clock, Check, X, Eye, ChevronLeft, ChevronRight } from "lucide-react"
-import {
-  useGetPendingUsersQuery,
-  useApproveAllChangesMutation,
-  useRejectChangesMutation,
-  useGetPendingDocumentsQuery,
-  useApproveDocumentMutation,
-  useRejectDocumentMutation,
-} from "../api/adminModerationApi"
+import { FileText, User, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { useGetPendingUsersQuery, useGetPendingDocumentsQuery } from "../api/adminModerationApi"
 import { AdminModerationSpinner } from "./AdminModerationSpinner"
 import { AdminModerationError } from "./AdminModerationError"
 import { AdminModerationEmpty } from "./AdminModerationEmpty"
+import { DocumentCard } from "./DocumentCard"
+import { ProfileCard } from "./ProfileCard"
 import styles from "./AdminModeration.module.css"
 import type { PendingUser, DocumentCategory } from "../model/types"
 
@@ -67,11 +62,6 @@ export function AdminModeration() {
     refetch: refetchDocuments,
   } = useGetPendingDocumentsQuery()
 
-  const [approveChanges, { isLoading: isApproving }] = useApproveAllChangesMutation()
-  const [rejectChanges, { isLoading: isRejecting }] = useRejectChangesMutation()
-  const [approveDocument, { isLoading: isApprovingDoc }] = useApproveDocumentMutation()
-  const [rejectDocument, { isLoading: isRejectingDoc }] = useRejectDocumentMutation()
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleDateString("ru-RU", {
@@ -93,38 +83,6 @@ export function AdminModeration() {
       experience: "Опыт работы",
     }
     return labels[field] || field
-  }
-
-  const handleApprove = async (userId: string, type: string, documentId?: string) => {
-    if (type === "profile") {
-      try {
-        await approveChanges(userId).unwrap()
-      } catch (error) {
-        console.error("Ошибка при одобрении изменений:", error)
-      }
-    } else if (type === "document" && documentId) {
-      try {
-        await approveDocument({ userId, documentId }).unwrap()
-      } catch (error) {
-        console.error("Ошибка при одобрении документа:", error)
-      }
-    }
-  }
-
-  const handleReject = async (userId: string, type: string, documentId?: string) => {
-    if (type === "profile") {
-      try {
-        await rejectChanges(userId).unwrap()
-      } catch (error) {
-        console.error("Ошибка при отклонении изменений:", error)
-      }
-    } else if (type === "document" && documentId) {
-      try {
-        await rejectDocument({ userId, documentId }).unwrap()
-      } catch (error) {
-        console.error("Ошибка при отклонении документа:", error)
-      }
-    }
   }
 
   const handleView = (userId: string, type: string, documentUrl?: string) => {
@@ -170,61 +128,13 @@ export function AdminModeration() {
     return (
       <div className={styles.queueList}>
         {documentsResponse.data.map((item) => (
-          <div key={item.document._id} className={styles.queueItem}>
-            <div className={styles.itemHeader}>
-              <div className={styles.itemInfo}>
-                <h3 className={styles.itemTitle}>
-                  {categoryLabels[item.document.category as DocumentCategory]} - {item.userName}
-                </h3>
-                <div className={styles.itemMeta}>
-                  <div className={styles.itemUser}>
-                    <span>{item.userName}</span>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.itemActions}>
-                <button
-                  onClick={() => handleView(item.userId, "document", item.documentUrl)}
-                  className={`${styles.actionButton} ${styles.viewButton}`}
-                >
-                  <Eye size={16} />
-                  Просмотреть
-                </button>
-                <button
-                  onClick={() => handleApprove(item.userId, "document", item.document._id)}
-                  disabled={isApprovingDoc || isRejectingDoc}
-                  className={`${styles.actionButton} ${styles.approveButton}`}
-                >
-                  <Check size={16} />
-                  {isApprovingDoc ? "Одобряем..." : "Одобрить"}
-                </button>
-                <button
-                  onClick={() => handleReject(item.userId, "document", item.document._id)}
-                  disabled={isApprovingDoc || isRejectingDoc}
-                  className={`${styles.actionButton} ${styles.rejectButton}`}
-                >
-                  <X size={16} />
-                  {isRejectingDoc ? "Отклоняем..." : "Отклонить"}
-                </button>
-              </div>
-            </div>
-            <div className={styles.itemContent}>
-              <div className={styles.contentTitle}>Информация о документе:</div>
-              <div className={styles.contentText}>
-                <div style={{ marginBottom: "0.25rem" }}>
-                  <strong>Файл:</strong> {item.document.file.originalName} ({formatFileSize(item.document.file.size)})
-                </div>
-                <div style={{ marginBottom: "0.25rem" }}>
-                  <strong>Категория:</strong> {categoryLabels[item.document.category as DocumentCategory]}
-                </div>
-                {item.document.label && (
-                  <div style={{ marginBottom: "0.25rem" }}>
-                    <strong>Название:</strong> {item.document.label}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <DocumentCard
+            key={item.document._id}
+            item={item}
+            onView={handleView}
+            categoryLabels={categoryLabels}
+            formatFileSize={formatFileSize}
+          />
         ))}
       </div>
     )
@@ -251,81 +161,15 @@ export function AdminModeration() {
     return (
       <>
         <div className={styles.queueList}>
-          {response.data.users.map((user: PendingUser) => {
-            const changedFields = Object.keys(user.pendingChanges.data)
-            const changes = Object.entries(user.pendingChanges.data).reduce(
-              (acc, [key, value]) => {
-                acc[key] = value.value
-                return acc
-              },
-              {} as Record<string, string>,
-            )
-
-            return (
-              <div key={user._id} className={styles.queueItem}>
-                <div className={styles.itemHeader}>
-                  <div className={styles.itemInfo}>
-                    <h3 className={styles.itemTitle}>
-                      Изменения профиля - {user.firstName} {user.lastName}
-                    </h3>
-                    <div className={styles.itemMeta}>
-                      <div className={styles.itemUser}>
-                        <span>{user.email}</span>
-                      </div>
-                      <div className={styles.itemDate}>
-                        <Clock size={14} />
-                        <span>{formatDate(user.pendingChanges.submittedAt)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.itemActions}>
-                    <button
-                      onClick={() => handleView(user._id, "profile")}
-                      className={`${styles.actionButton} ${styles.viewButton}`}
-                    >
-                      <Eye size={16} />
-                      Просмотреть
-                    </button>
-                    <button
-                      onClick={() => handleApprove(user._id, "profile")}
-                      disabled={isApproving || isRejecting}
-                      className={`${styles.actionButton} ${styles.approveButton}`}
-                    >
-                      <Check size={16} />
-                      {isApproving ? "Одобряем..." : "Одобрить"}
-                    </button>
-                    <button
-                      onClick={() => handleReject(user._id, "profile")}
-                      disabled={isApproving || isRejecting}
-                      className={`${styles.actionButton} ${styles.rejectButton}`}
-                    >
-                      <X size={16} />
-                      {isRejecting ? "Отклоняем..." : "Отклонить"}
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.itemContent}>
-                  <div className={styles.contentTitle}>Измененные поля:</div>
-                  <div className={styles.fieldsList}>
-                    {changedFields.map((field) => (
-                      <span key={field} className={styles.fieldBadge}>
-                        {getFieldLabel(field)}
-                      </span>
-                    ))}
-                  </div>
-                  <div style={{ marginTop: "0.75rem" }}>
-                    <div className={styles.contentText}>
-                      {Object.entries(changes).map(([key, value]) => (
-                        <div key={key} style={{ marginBottom: "0.25rem" }}>
-                          <strong>{getFieldLabel(key)}:</strong> {value}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+          {response.data.users.map((user: PendingUser) => (
+            <ProfileCard
+              key={user._id}
+              user={user}
+              onView={handleView}
+              formatDate={formatDate}
+              getFieldLabel={getFieldLabel}
+            />
+          ))}
         </div>
 
         {response && response.data.totalPages > 1 && (

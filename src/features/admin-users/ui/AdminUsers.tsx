@@ -8,7 +8,7 @@ import { useGetAdminUsersQuery, useBanUserMutation, useUnbanUserMutation } from 
 import { AdminUsersSpinner } from "./AdminUsersSpinner"
 import { AdminUsersError } from "./AdminUsersError"
 import { AdminUsersEmpty } from "./AdminUsersEmpty"
-import { BanUserModal } from "./BanUserModal"
+import { ActionModal } from "@/shared/ui/ActionModal/ActionModal"
 import styles from "./AdminUsers.module.css"
 import type { SpecialistUser } from "@/entities/user/model/types"
 import { VerificationIcons } from "./VerificationIcons"
@@ -365,12 +365,13 @@ export function AdminUsers() {
         </div>
       )}
 
-      <BanUserModal
+      <ActionModal
         isOpen={banModalOpen}
         onClose={handleCloseBanModal}
         onConfirm={handleConfirmBan}
         userName={selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}` : ""}
         isLoading={isBanning}
+        type="ban"
       />
     </div>
   )

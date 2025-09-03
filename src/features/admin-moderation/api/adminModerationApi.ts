@@ -23,13 +23,13 @@ export const adminModerationApi = createApi({
       providesTags: ["PendingUsers"],
     }),
 
-    approveAllChanges: builder.mutation<void, string>({
-      query: (userId) => ({
-        url: `/admin/users/${userId}/approve-changes`,
-        method: "POST",
-      }),
-      invalidatesTags: ["PendingUsers"],
-    }),
+    // approveAllChanges: builder.mutation<void, string>({
+    //   query: (userId) => ({
+    //     url: `/admin/users/${userId}/approve-changes`,
+    //     method: "POST",
+    //   }),
+    //   invalidatesTags: ["PendingUsers"],
+    // }),
 
     approveSpecificFields: builder.mutation<void, { userId: string; fields: ApproveSpecificFieldsRequest }>({
       query: ({ userId, fields }) => ({
@@ -40,10 +40,12 @@ export const adminModerationApi = createApi({
       invalidatesTags: ["PendingUsers"],
     }),
 
-    rejectChanges: builder.mutation<void, string>({
-      query: (userId) => {
-        throw new Error("Изменения отклонены.")
-      },
+    rejectChanges: builder.mutation<void, { userId: string; comment: string }>({
+      query: ( { userId, comment }) => ({
+        url: `/admin/users/${userId}/reject-changes`,
+        method: "POST",
+        data: { comment },
+      }),
       invalidatesTags: ["PendingUsers"],
     }),
 
@@ -77,7 +79,7 @@ export const adminModerationApi = createApi({
 
 export const {
   useGetPendingUsersQuery,
-  useApproveAllChangesMutation,
+  // useApproveAllChangesMutation,
   useApproveSpecificFieldsMutation,
   useRejectChangesMutation,
   useGetPendingDocumentsQuery,

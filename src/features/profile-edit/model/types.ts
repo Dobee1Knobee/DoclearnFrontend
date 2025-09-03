@@ -1,4 +1,5 @@
 import type { Contact, Education, SpecialistRole } from "@/entities/user/model/types"
+import { Specialization } from "@/shared/data/specializations"
 
 export interface UpdateProfileRequest {
   firstName?: string
@@ -15,6 +16,7 @@ export interface UpdateProfileRequest {
   role?: SpecialistRole
   placeStudy?: string
   defaultAvatarPath?: string
+  specializations?: Specialization[]
 }
 
 export interface UpdateProfileResponse {

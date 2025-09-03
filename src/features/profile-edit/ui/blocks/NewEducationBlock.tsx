@@ -165,7 +165,7 @@ export const NewEducationBlock: React.FC<NewEducationBlockProps> = ({
           !edu.degree.trim() ||
           !edu.specialty.trim() ||
           !edu.startDate ||
-          !edu.graduationYear 
+          !edu.graduationYear
         ) {
           hasErrors = true
         }

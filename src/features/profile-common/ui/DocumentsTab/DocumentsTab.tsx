@@ -88,7 +88,7 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({ profile }) => {
         {documents.length > 0 ? (
           <div className={styles.documentsGrid}>
             {documents
-              .filter((doc) => doc.isPublic)
+              .filter((doc) => doc.isPublic && doc.isVerified)
               .map((document) => (
                 <DocumentCard
                   key={document._id}

@@ -84,17 +84,15 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
       case "researcher":
       case "admin":
       case "owner":
-        // Для этих ролей у профиля есть поле specializations
-        const specialistProfile = profile as ResearcherUser; // Приводим к типу DoctorUser, так как он содержит specializations
-        const mainSpecializations = specialistProfile.specializations?.filter(
-          (spec) => spec.main,
-        );
+        const specialistProfile = profile as ResearcherUser
+        const mainSpecializations = specialistProfile.specializations?.filter
+        ((spec) => spec.main)
         if (mainSpecializations && mainSpecializations.length > 0) {
-          return mainSpecializations.map((spec) => spec.name).join(", ");
+          return mainSpecializations.map((spec) => spec.name).join(", ")
         }
-        return "Специализация не указана";
+        return "Специализация не указана"
       default:
-        return "Специализация не указана";
+        return "Специализация не указана"
   }
   }
 
