@@ -1,0 +1,168 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.stepHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.stepTitle {
+  font-size: 18px;
+  color: #5388d8;
+  font-weight: 500;
+  margin: 0;
+}
+
+.content {
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+}
+
+.sectionDescription {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 48px 0;
+}
+
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.categoryCard {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 32px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.categoryCard:hover {
+  border-color: #5388d8;
+  box-shadow: 0 4px 12px rgba(83, 136, 216, 0.15);
+  transform: translateY(-2px);
+}
+
+.categoryCard.selected {
+  border-color: #5388d8;
+  background: #f8faff;
+  box-shadow: 0 4px 12px rgba(83, 136, 216, 0.2);
+}
+
+.categoryCard.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f9f9f9;
+  border-color: #e5e7eb;
+}
+
+.categoryCard.disabled:hover {
+  border-color: #e5e7eb;
+  box-shadow: none;
+  transform: none;
+}
+
+.categoryCard.disabled .categoryIcon {
+  color: #9ca3af;
+}
+
+.categoryCard.disabled .categoryTitle {
+  color: #9ca3af;
+}
+
+.categoryCard.disabled .categoryDescription {
+  color: #d1d5db;
+}
+
+.categoryIcon {
+  color: #5388d8;
+  margin-bottom: 16px;
+}
+
+.categoryTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.categoryDescription {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.nextButton {
+  background: #5388d8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nextButton:hover {
+  background: #4a7bc8;
+}
+
+@media (max-width: 768px) {
+  .categoriesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .categoryCard {
+    padding: 24px 16px;
+    min-height: 140px;
+  }
+
+  .categoryIcon {
+    margin-bottom: 12px;
+  }
+
+  .categoryTitle {
+    font-size: 16px;
+  }
+
+  .categoryDescription {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categoriesGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sectionTitle {
+    font-size: 24px;
+  }
+}

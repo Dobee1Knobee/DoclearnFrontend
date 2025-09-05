@@ -28,7 +28,6 @@ export default function HeaderLogin() {
   }
 
   const handleLoginSuccess = (token: string) => {
-    console.log("Login successful, token:", token)
     closeModals()
   }
 

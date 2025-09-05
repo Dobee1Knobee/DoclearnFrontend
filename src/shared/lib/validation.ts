@@ -35,7 +35,6 @@ export const validatePassword = (value: string) => {
   return true
 }
 
-
 export const validatePhone = (value: string): true | string => {
   if (!value) return errorMessages.required
   if (!phoneRegex.test(value)) return "Некорректный номер телефона"
@@ -50,4 +49,44 @@ export const validateUrl = (value: string): true | string => {
   } catch {
     return "Некорректный URL"
   }
+}
+
+export const validateTitle = (value: string): true | string => {
+  if (!value || value.trim() === "") return errorMessages.required
+  return true
+}
+
+export const validateOrganizer = (value: string): true | string => {
+  if (!value || value.trim() === "") return errorMessages.required
+  return true
+}
+
+export const validateDate = (value: string): true | string => {
+  if (!value) return errorMessages.required
+  const date = new Date(value)
+  if (isNaN(date.getTime())) return "Некорректная дата"
+  if (date < new Date()) return "Дата не может быть в прошлом"
+  return true
+}
+
+export const validateTime = (value: string): true | string => {
+  if (!value) return errorMessages.required
+  const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+  if (!timeRegex.test(value)) return "Некорректное время"
+  return true
+}
+
+export const validateOptionalUrl = (value: string): true | string => {
+  if (!value || value.trim() === "") return true
+  return validateUrl(value)
+}
+
+export const validateOptionalEmail = (value: string): true | string => {
+  if (!value || value.trim() === "") return true
+  return validateEmail(value)
+}
+
+export const validateOptionalPhone = (value: string): true | string => {
+  if (!value || value.trim() === "") return true
+  return validatePhone(value)
 }

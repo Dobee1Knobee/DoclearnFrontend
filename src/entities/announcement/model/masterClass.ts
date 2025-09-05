@@ -1,5 +1,5 @@
 import type { BaseAnnouncement } from './base'
-import type { AnnouncementCategories } from './conference'
+import type { AnnouncementCategories, Speaker } from './conference'
 
 export type MasterClassSkillLevel = 'beginner' | 'intermediate' | 'advanced';
 
@@ -12,6 +12,7 @@ export interface MasterClassInstructor {
 }
 
 export interface MasterClass extends BaseAnnouncement {
+  speakers?: Speaker[]
   instructor: MasterClassInstructor
 
   skillLevel: MasterClassSkillLevel
@@ -27,7 +28,7 @@ export interface MasterClass extends BaseAnnouncement {
   categories: AnnouncementCategories[]
   prerequisites?: string
 
-  certificate: boolean
+  certificates: boolean
 
   // Для практических занятий
   handsOn: boolean
