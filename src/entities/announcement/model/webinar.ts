@@ -1,7 +1,7 @@
 import type { BaseAnnouncement } from './base'
 import type { Speaker, AnnouncementCategories, TargetAudience } from './conference'
 
-export type WebinarPlatform = 'zoom' | 'teams' | 'youtube' | 'google_meet' | 'other';
+export type WebinarPlatform = 'zoom' | 'teams' | 'youtube' | 'google_meet' | 'yandex' | 'other';
 
 export interface WebinarPlatformDetails {
   meetingId?: string

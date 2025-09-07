@@ -56,7 +56,7 @@ const OrganizationRegistrationForm: React.FC<OrganizationRegistrationFormProps> 
   const password = watch("password")
 
   const onSubmit = (data: OrganizationRegistrationFormData) => {
-    console.log(">> Organization Registration payload:", data)
+    console.log(">> Organization Registration", data)
     setIsLoading(true)
 
     setTimeout(() => {

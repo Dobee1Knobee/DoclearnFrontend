@@ -42,7 +42,7 @@ export interface Course extends BaseAnnouncement {
   targetAudience: string[]
   categories: AnnouncementCategories[]
 
-  certificate: boolean
+  certificates: boolean
   diploma: boolean
 
   assessments: boolean // есть ли тестирования/экзамены

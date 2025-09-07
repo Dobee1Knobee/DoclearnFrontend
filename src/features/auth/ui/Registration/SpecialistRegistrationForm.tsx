@@ -70,7 +70,7 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
       role: "student",
       defaultAvatarPath: "/Avatars/Avatar1.webp",
     }
-    console.log(">> Specialist Registration payload:", {
+    console.log(">> Specialist Registration:", {
       formattedData,
     })
     dispatch(registerUser(formattedData))
@@ -228,6 +228,7 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
               }
               feedback={errors.agreeToTerms?.message}
               className="mt-4 mb-2"
+
             >
 
             </Form.Check>
