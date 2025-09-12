@@ -15,7 +15,7 @@ export const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   variant = "default",
   className = "",
 }) => {
-  const { price, currency, categories = [], location } = announcement
+  const { price, price_type, currency, categories = [], location } = announcement
 
   const cardClass = `${styles.card} ${variant === "compact" ? styles.compact : ""} ${className}`
 
@@ -65,7 +65,7 @@ export const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
         </div>
 
         <div className={styles.footer}>
-          <div className={styles.price}>{formatPrice(price, currency)}</div>
+          <div className={styles.price}>{formatPrice(price, price_type, currency)}</div>
         </div>
       </div>
     </div>
