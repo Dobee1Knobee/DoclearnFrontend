@@ -1,5 +1,5 @@
 import type { BaseAnnouncement } from './base'
-import type { Speaker, AnnouncementCategories } from './conference'
+import type { Speaker, AnnouncementCategory, Currency } from './base'
 
 export interface CourseModule {
   title: string
@@ -33,14 +33,14 @@ export interface Course extends BaseAnnouncement {
   currentParticipants: number
 
   price: number
-  currency: 'RUB' | 'USD' | 'EUR'
+  currency: Currency
 
   format: CourseFormat
   schedule: CourseSchedule
 
   prerequisites: string[]
   targetAudience: string[]
-  categories: AnnouncementCategories[]
+  categories: AnnouncementCategory[]
 
   certificates: boolean
   diploma: boolean

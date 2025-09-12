@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Plus, X } from "lucide-react"
 import type { CreateAnnouncementFormData } from "@/entities/announcement/model"
 import { FormField } from "@/shared/ui/FormField/FormField"
 import { SpeakersSection } from "./SpeakersSection"
@@ -24,6 +25,9 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
         startTime?: string
         locationType?: string
     }>({})
+
+    const [newMaterial, setNewMaterial] = useState("")
+    const [newEquipment, setNewEquipment] = useState("")
 
     const labels = getFormLabels(formData.category || "conference")
     const fieldsConfig = getFieldsConfig(formData.category || "conference")
@@ -90,6 +94,42 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
             price_type: checked ? "free" : "paid",
             ...(checked && { price: 0, currency: "RUB" as const }),
         })
+    }
+
+    const addMaterial = () => {
+        if (newMaterial.trim() && !(formData.materials || []).includes(newMaterial.trim())) {
+            onUpdate({ materials: [...(formData.materials || []), newMaterial.trim()] })
+            setNewMaterial("")
+        }
+    }
+
+    const removeMaterial = (materialToRemove: string) => {
+        onUpdate({ materials: (formData.materials || []).filter((material) => material !== materialToRemove) })
+    }
+
+    const handleMaterialKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            e.preventDefault()
+            addMaterial()
+        }
+    }
+
+    const addEquipment = () => {
+        if (newEquipment.trim() && !(formData.equipment || []).includes(newEquipment.trim())) {
+            onUpdate({ equipment: [...(formData.equipment || []), newEquipment.trim()] })
+            setNewEquipment("")
+        }
+    }
+
+    const removeEquipment = (equipmentToRemove: string) => {
+        onUpdate({ equipment: (formData.equipment || []).filter((equipment) => equipment !== equipmentToRemove) })
+    }
+
+    const handleEquipmentKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            e.preventDefault()
+            addEquipment()
+        }
     }
 
     return (
@@ -245,13 +285,33 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
 
                         {fieldsConfig.showEquipment && (
                             <FormField label="Предоставляемое оборудование">
-                                <textarea
-                                    className={styles.textarea}
-                                    placeholder="Какое оборудование будет предоставлено..."
-                                    value={formData.equipment?.join("\n") || ""}
-                                    onChange={(e) => handleInputChange("equipment", e.target.value.split("\n").filter(Boolean))}
-                                    rows={3}
-                                />
+                                <div className={styles.tagsContainer} style={{marginBottom: "1.25rem"}}>
+                                    {(formData.equipment || []).length > 0 && (
+                                        <div className={styles.tagsList}>
+                                            {(formData.equipment || []).map((equipment) => (
+                                                <div key={equipment} className={styles.tag}>
+                                                    <span>{equipment}</span>
+                                                    <button type="button" onClick={() => removeEquipment(equipment)} className={styles.removeTag}>
+                                                        <X size={14} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <div className={styles.addTag}>
+                                        <input
+                                            type="text"
+                                            className={styles.tagInput}
+                                            placeholder="Добавить оборудование"
+                                            value={newEquipment}
+                                            onChange={(e) => setNewEquipment(e.target.value)}
+                                            onKeyPress={handleEquipmentKeyPress}
+                                        />
+                                        <button type="button" onClick={addEquipment} className={styles.addTagButton}>
+                                            <Plus size={16} />
+                                        </button>
+                                    </div>
+                                </div>
                             </FormField>
                         )}
 
@@ -372,14 +432,34 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                 )}
 
                 {fieldsConfig.showMaterials && (
-                    <FormField label="Необходимые материалы">
-                        <textarea
-                            className={styles.textarea}
-                            placeholder="Что участникам нужно принести или подготовить..."
-                            value={formData.materials?.join("\n") || ""}
-                            onChange={(e) => handleInputChange("materials", e.target.value.split("\n").filter(Boolean))}
-                            rows={3}
-                        />
+                    <FormField label="Материалы с вебинара">
+                        <div className={styles.tagsContainer}>
+                            {(formData.materials || []).length > 0 && (
+                                <div className={styles.tagsList}>
+                                    {(formData.materials || []).map((material) => (
+                                        <div key={material} className={styles.tag}>
+                                            <span>{material}</span>
+                                            <button type="button" onClick={() => removeMaterial(material)} className={styles.removeTag}>
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            <div className={styles.addTag}>
+                                <input
+                                    type="text"
+                                    className={styles.tagInput}
+                                    placeholder="Добавить материал"
+                                    value={newMaterial}
+                                    onChange={(e) => setNewMaterial(e.target.value)}
+                                    onKeyPress={handleMaterialKeyPress}
+                                />
+                                <button type="button" onClick={addMaterial} className={styles.addTagButton}>
+                                    <Plus size={16} />
+                                </button>
+                            </div>
+                        </div>
                     </FormField>
                 )}
 

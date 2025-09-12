@@ -168,6 +168,79 @@
   align-items: flex-end;
 }
 
+.tagsContainer {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 12px;
+  min-height: 40px;
+}
+
+.tagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #5388d8;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.removeTag {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.removeTag:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.addTag {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tagInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.addTagButton {
+  background: #5388d8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.addTagButton:hover {
+  background: #4a7bc8;
+}
+
 .actions {
   display: flex;
   justify-content: space-between;

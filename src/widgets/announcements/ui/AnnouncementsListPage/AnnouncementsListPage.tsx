@@ -2,13 +2,13 @@
 
 import type React from "react"
 import { Search, Plus } from "lucide-react"
-import { AnnouncementFilters } from "../../../../features/announcements/ui/AnnouncementFilters/AnnouncementFilters"
-import { RecommendedAnnouncements } from "../../../../features/announcements/ui/RecommendedAnnouncements/RecommendedAnnouncements"
-import { AnnouncementsList } from "../../../../features/announcements/ui/AnnouncementsList/AnnouncementsList"
-import styles from "./AnnouncementsPage.module.css"
+import { AnnouncementFilters } from "../../../../features/announcements/ui/AnnouncementsListPage/AnnouncementFilters/AnnouncementFilters"
+import { RecommendedAnnouncements } from "../../../../features/announcements/ui/AnnouncementsListPage/RecommendedAnnouncements/RecommendedAnnouncements"
+import { AnnouncementsList } from "../../../../features/announcements/ui/AnnouncementsListPage/AnnouncementsList/AnnouncementsList"
+import styles from "./AnnouncementsListPage.module.css"
 import Link from "next/link"
 
-export const AnnouncementsPage: React.FC = () => {
+export const AnnouncementsListPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <div className={styles.container}>

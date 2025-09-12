@@ -1,5 +1,4 @@
-import type { BaseAnnouncement } from './base'
-import type { AnnouncementCategories } from './conference'
+import type { BaseAnnouncement, AnnouncementCategory, Currency } from './base'
 
 export type EmploymentType =
   | 'full-time'
@@ -13,7 +12,7 @@ export type WorkFormat = 'office' | 'remote' | 'hybrid'
 export interface SalaryRange {
   min?: number
   max?: number
-  currency: 'RUB' | 'USD' | 'EUR'
+  currency: Currency
   negotiable: boolean
 }
 
@@ -51,7 +50,7 @@ export interface Vacancy extends BaseAnnouncement {
 
   applicationDeadline?: string
 
-  categories: AnnouncementCategories[]
+  categories: AnnouncementCategory[]
 
   urgent: boolean
   featured: boolean

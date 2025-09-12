@@ -1,5 +1,4 @@
-import type { BaseAnnouncement } from './base'
-import type { Speaker, AnnouncementCategories, TargetAudience } from './conference'
+import type { BaseAnnouncement, Speaker, AnnouncementCategory, TargetAudience, Currency, Language, PriceType } from './base'
 
 export type WebinarPlatform = 'zoom' | 'teams' | 'youtube' | 'google_meet' | 'yandex' | 'other';
 
@@ -23,11 +22,12 @@ export interface Webinar extends BaseAnnouncement {
   registrationLink?: string
 
   price: number
-  currency: 'RUB' | 'USD' | 'EUR'
+  price_type: PriceType
+  currency: Currency
 
-  categories: AnnouncementCategories[]
+  categories: AnnouncementCategory[]
   targetAudience: TargetAudience[]
-  language: 'ru' | 'en' | 'multi'
+  language: Language
 
   duration: number
   prerequisites?: string

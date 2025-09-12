@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { Plus, X } from "lucide-react"
 import type { CreateAnnouncementFormData, TargetAudience } from "@/entities/announcement/model"
-import type { AnnouncementCategories } from "@/entities/announcement/model/conference"
+import type { AnnouncementCategory } from "@/entities/announcement/model"
 import styles from "./AdditionalDetails.module.css"
 import { getFormLabels } from "@/shared/lib/formLabels"
 
@@ -24,7 +24,7 @@ const targetAudienceOptions: { value: TargetAudience; label: string }[] = [
     { value: "general", label: "Широкая аудитория" },
 ]
 
-const categoriesOptions: { value: AnnouncementCategories; label: string }[] = [
+const categoriesOptions: { value: AnnouncementCategory; label: string }[] = [
     { value: "medical", label: "Медицина" },
     { value: "it", label: "IT и технологии" },
     { value: "educational", label: "Образование" },
@@ -60,7 +60,7 @@ export function AdditionalDetails({ formData, onUpdate, onNext, onPrevious }: Ad
         }
     }
 
-    const handleCategoriesChange = (category: AnnouncementCategories, checked: boolean) => {
+    const handleCategoriesChange = (category: AnnouncementCategory, checked: boolean) => {
         const currentCategories = formData.categories || []
         if (checked) {
             onUpdate({ categories: [...currentCategories, category] })
