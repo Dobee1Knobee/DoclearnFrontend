@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Plus, X } from "lucide-react"
 import type { Speaker } from "@/entities/announcement/model"
 import { FormField } from "@/shared/ui/FormField/FormField"
+import { validateName } from "@/shared/lib/validation"
 import styles from "./SpeakersSection.module.css"
 
 interface SpeakersSectionProps {
@@ -18,6 +19,8 @@ export function SpeakersSection({ speakers, onUpdate }: SpeakersSectionProps) {
   const validateSpeaker = () => {
     const newErrors: { name?: string; eventRole?: string } = {}
 
+    // const nameValidation = validateName(newSpeaker.name)
+    // if (nameValidation !== true) newErrors.name = nameValidation
 
     if (!newSpeaker.eventRole.trim()) newErrors.eventRole = "Роль спикера обязательна"
 
@@ -91,4 +94,3 @@ export function SpeakersSection({ speakers, onUpdate }: SpeakersSectionProps) {
     </div>
   )
 }
-

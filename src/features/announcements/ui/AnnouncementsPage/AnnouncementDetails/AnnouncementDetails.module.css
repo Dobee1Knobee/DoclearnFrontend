@@ -1,0 +1,168 @@
+.details {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  border: 1px solid #e9ecef;
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionIcon {
+  color: #5388d8;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #495057;
+}
+
+.program {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  border-left: 4px solid #5388d8;
+}
+
+.programLine {
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: #495057;
+}
+
+.programLine:last-child {
+  margin-bottom: 0;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detailLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.detailValue {
+  font-size: 15px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 15px;
+  color: #495057;
+}
+
+.listItem:last-child {
+  border-bottom: none;
+}
+
+.listItem::before {
+  content: "•";
+  color: #5388d8;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.prerequisites {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #495057;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.categories,
+.audience {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.categoryTag,
+.audienceTag {
+  background: #5388d8;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.audienceTag {
+  background: #28a745;
+}
+
+.certificateIcon {
+  color: #ffc107;
+}
+
+.certificateText {
+  color: #495057;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: #e9ecef;
+  color: #495057;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .details {
+    padding: 24px;
+  }
+
+  .detailsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+  }
+}

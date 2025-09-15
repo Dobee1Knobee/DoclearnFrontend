@@ -1,7 +1,7 @@
 "use client"
 
-import { AnnouncementsPage } from "../../widgets/announcements/ui/AnnouncementsPage/AnnouncementsPage"
+import { AnnouncementsListPage } from "../../widgets/announcements/ui/AnnouncementsListPage/AnnouncementsListPage"
 
 export default function Page() {
-  return <AnnouncementsPage />
+  return <AnnouncementsListPage />
 }

@@ -1,5 +1,4 @@
-import type { BaseAnnouncement } from './base';
-import type { AnnouncementCategories } from './conference';
+import type { BaseAnnouncement, AnnouncementCategory, Currency } from './base';
 
 export interface InternshipSupervisor {
   userId: string
@@ -33,7 +32,7 @@ export interface Internship extends BaseAnnouncement {
 
   isPaid: boolean
   stipend?: number
-  currency?: 'RUB' | 'USD' | 'EUR'
+  currency?: Currency
 
   maxInterns: number
   currentInterns: number
@@ -43,5 +42,5 @@ export interface Internship extends BaseAnnouncement {
   remote: boolean
   partTime: boolean
 
-  categories: AnnouncementCategories[]
+  categories: AnnouncementCategory[]
 }

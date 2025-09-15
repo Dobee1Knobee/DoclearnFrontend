@@ -11,6 +11,7 @@ import {
   locationTypeTranslations,
   skillLevelTranslations,
 } from "@/shared/lib/translations"
+import { formatDate } from "@/shared/lib/formatters"
 import styles from "./PreviewAndPublish.module.css"
 
 interface PreviewAndPublishProps {
@@ -21,15 +22,6 @@ interface PreviewAndPublishProps {
 }
 
 export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: PreviewAndPublishProps) {
-  const formatDate = (dateString: string) => {
-    if (!dateString) return ""
-    const date = new Date(dateString)
-    return date.toLocaleDateString("ru-RU", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    })
-  }
 
   const formatTime = (timeString: string) => {
     if (!timeString) return ""

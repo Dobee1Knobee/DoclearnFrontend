@@ -1,0 +1,133 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e9ecef;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.infoItem {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.infoItem:last-child {
+  margin-bottom: 0;
+}
+
+.icon {
+  color: #5388d8;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoLabel {
+  font-size: 13px;
+  color: #6c757d;
+  margin-bottom: 4px;
+}
+
+.infoValue {
+  font-size: 15px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.infoAddress {
+  font-size: 13px;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+.price {
+  font-size: 18px;
+  color: #5388d8;
+  font-weight: 700;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.contactItem:last-child {
+  margin-bottom: 0;
+}
+
+.contactIcon {
+  color: #5388d8;
+  flex-shrink: 0;
+}
+
+.contactLink {
+  color: #5388d8;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s ease;
+}
+
+.contactLink:hover {
+  color: #4070b8;
+  text-decoration: underline;
+}
+
+.externalIcon {
+  opacity: 0.7;
+}
+
+.registerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #5388d8;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.registerButton:hover {
+  background: #4070b8;
+}
+
+.recordingInfo {
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 20px;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+  }
+}

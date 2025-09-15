@@ -7,17 +7,50 @@ export type AnnouncementStatus =
   | 'archived'
   | 'moderator_removed'
 
+export type AnnouncementType =
+  | "conference"
+  | "masterclass"
+  | "course"
+  | "webinar"
+  | "internship"
+  | "university"
+  | "vacancy"
+  | "equipment"
+
+export type AnnouncementCategory =
+  | 'medical'
+  | 'it'
+  | 'educational'
+  | 'business'
+  | 'science'
+  | 'other'
+
+export type TargetAudience =
+  | 'doctors'
+  | 'students'
+  | 'researchers'
+  | 'specialists'
+  | 'general'
+
 export type AnnouncementLocationType = 'online' | 'offline' | 'hybrid'
+
+export type Currency = 'RUB' | 'USD' | 'EUR'
+
+export type PriceType = 'free' | 'paid'
+
+export type Language = "ru" | "en" | "multi"
+
+export interface Coordinates {
+  lat: number
+  lng: number
+}
 
 export interface AnnouncementLocation {
   type: AnnouncementLocationType
   address?: string
   city?: string
   country?: string
-  coordinates?: {
-    lat: number
-    lng: number
-  }
+  coordinates?: Coordinates
 }
 
 export interface AnnouncementContactInfo {
@@ -26,7 +59,17 @@ export interface AnnouncementContactInfo {
   website?: string
 }
 
+export interface Speaker {
+  userId: string
+  name: string
+  eventRole: string
+  bio?: string
+  photo?: string
+  status: "pending" | "confirmed" | "declined"
+}
+
 export interface BaseAnnouncement {
+  type: AnnouncementType
   title: string
   description: string
   organizer: string
@@ -34,7 +77,6 @@ export interface BaseAnnouncement {
   activeTo?: string
   status: AnnouncementStatus
   moderationNotes?: string
-  type: string
 
   location?: AnnouncementLocation
   contactInfo?: AnnouncementContactInfo

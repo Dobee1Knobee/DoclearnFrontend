@@ -1,17 +1,4 @@
-import type { BaseAnnouncement } from './base';
-
-export interface Speaker {
-  userId: string
-  name: string
-  eventRole: string
-  bio?: string
-  photo?: string
-  status: 'pending' | 'confirmed' | 'declined'
-}
-
-export type AnnouncementCategories = 'medical' | 'it' | 'educational' | 'business' | 'science' | 'other'
-
-export type TargetAudience = 'doctors' | 'students' | 'researchers' | 'specialists' | 'general'
+import type { BaseAnnouncement, Speaker, AnnouncementCategory, TargetAudience, Currency, Language, PriceType } from './base';
 
 export interface Conference extends BaseAnnouncement {
   speakers: Speaker[]
@@ -22,15 +9,15 @@ export interface Conference extends BaseAnnouncement {
   registrationLink?: string
 
   maxParticipants?: number
-  price_type: 'free' | 'paid'
+  price_type: PriceType
   currentParticipants: number
 
   price: number
-  currency: 'RUB' | 'USD' | 'EUR'
+  currency: Currency
 
-  categories: AnnouncementCategories[]
+  categories: AnnouncementCategory[]
   targetAudience: TargetAudience[]
-  language: 'ru' | 'en' | 'multi'
+  language: Language
 
   certificates: boolean
   cmeCredits?: number

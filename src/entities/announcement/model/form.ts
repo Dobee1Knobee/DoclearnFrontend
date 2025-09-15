@@ -1,18 +1,6 @@
-import type { BaseAnnouncement, AnnouncementLocation, AnnouncementContactInfo } from "./base"
-import type { AnnouncementCategories, TargetAudience, Speaker } from "./conference"
+import type { BaseAnnouncement, AnnouncementType, AnnouncementLocation, AnnouncementContactInfo, AnnouncementCategory, TargetAudience, Speaker, Language, PriceType, Currency } from "./base"
 import type { MasterClassSkillLevel } from "./masterClass"
 
-export type AnnouncementLanguage = "ru" | "en" | "multi"
-
-export type AnnouncementType =
-  | "conference"
-  | "masterclass"
-  | "course"
-  | "webinar"
-  | "internship"
-  | "university"
-  | "vacancy"
-  | "equipment"
 
 export interface CreateAnnouncementFormData {
   category: AnnouncementType | null
@@ -26,9 +14,9 @@ export interface CreateAnnouncementFormData {
   location: AnnouncementLocation
   maxParticipants: number | null
   participantLimit: number | null
-  price_type: "free" | "paid"
+  price_type: PriceType
   price: number
-  currency: "RUB" | "USD" | "EUR"
+  currency: Currency
   program: string
   speakers: Speaker[]
   certificates: boolean
@@ -49,11 +37,13 @@ export interface CreateAnnouncementFormData {
   platform?: string
   prerequisites?: string
 
+  // Дополнительные детали
   description: string
-  categories: AnnouncementCategories[]
+  categories: AnnouncementCategory[]
   targetAudience: TargetAudience[]
-  language: AnnouncementLanguage
+  language: Language
   tags: string[]
 
+  // Предпросмотр
   isPromoted: boolean
 }
