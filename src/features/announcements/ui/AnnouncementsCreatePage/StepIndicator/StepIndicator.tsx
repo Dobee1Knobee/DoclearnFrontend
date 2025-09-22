@@ -25,6 +25,8 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
           )}
         </div>
       ))}
+      <div className={`${styles.horizontalLine} ${styles.line12} ${currentStep > 1 ? styles.activeLine : ""}`} />
+      <div className={`${styles.horizontalLine} ${styles.line34} ${currentStep > 3 ? styles.activeLine : ""}`} />
     </div>
   )
 }

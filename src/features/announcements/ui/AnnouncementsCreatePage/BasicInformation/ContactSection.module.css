@@ -24,14 +24,24 @@
   box-shadow: 0 0 0 3px rgba(83, 136, 216, 0.1);
 }
 
-
 .input:invalid {
   border-color: #ef4444;
 }
 
-
 @media (max-width: 768px) {
   .row {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .input {
+    padding: 12px 16px;
+    font-size: 16px;
   }
 }

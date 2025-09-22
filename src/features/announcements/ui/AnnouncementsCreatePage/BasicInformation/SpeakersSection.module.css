@@ -79,3 +79,31 @@
 .addSpeakerButton:hover {
   background: #4a7bc8;
 }
+
+@media (max-width: 480px) {
+  .addSpeaker {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .addSpeakerButton {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+
+  .speakerInput {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+
+  .speakerItem {
+    padding: 12px 16px;
+  }
+
+  .speakerInfo {
+    font-size: 16px;
+  }
+}

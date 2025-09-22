@@ -250,6 +250,32 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                     </FormField>
                 )}
 
+                <div className={styles.checkboxRow} style={{marginTop: "1rem", marginBottom: "-1rem"}}>
+                    <div className={styles.checkboxField}>
+                        <label className={styles.checkboxLabel}>
+                            <input
+                                type="checkbox"
+                                style={{ accentColor: "#5388d8" }}
+                                checked={formData.registrationRequired || false}
+                                onChange={(e) => handleInputChange("registrationRequired", e.target.checked)}
+                            />
+                            Требуется регистрация
+                        </label>
+                    </div>
+                </div>
+
+                {formData.registrationRequired && (
+                    <FormField label="Ссылка для регистрации">
+                        <input
+                            type="url"
+                            className={styles.input}
+                            placeholder="https://..."
+                            value={formData.registrationLink || ""}
+                            onChange={(e) => handleInputChange("registrationLink", e.target.value)}
+                        />
+                    </FormField>
+                )}
+
                 {formData.category === "masterclass" && (
                     <>
                         {fieldsConfig.showSkillLevel && (
@@ -285,7 +311,7 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
 
                         {fieldsConfig.showEquipment && (
                             <FormField label="Предоставляемое оборудование">
-                                <div className={styles.tagsContainer} style={{marginBottom: "1.25rem"}}>
+                                <div className={styles.tagsContainer} style={{ marginBottom: "1.25rem" }}>
                                     {(formData.equipment || []).length > 0 && (
                                         <div className={styles.tagsList}>
                                             {(formData.equipment || []).map((equipment) => (
@@ -524,12 +550,7 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                     </div>
                 )}
 
-                <ContactSection
-                    contactInfo={formData.contactInfo}
-                    registrationLink={formData.registrationLink}
-                    onContactUpdate={handleContactChange}
-                    onRegistrationLinkUpdate={(value) => handleInputChange("registrationLink", value)}
-                />
+                <ContactSection contactInfo={formData.contactInfo} onContactUpdate={handleContactChange} />
 
                 <div className={styles.actions}>
                     <button onClick={onPrevious} className={styles.backButton}>

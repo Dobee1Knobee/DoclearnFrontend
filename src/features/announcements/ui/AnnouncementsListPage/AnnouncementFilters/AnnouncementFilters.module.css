@@ -17,7 +17,7 @@
 }
 
 .filterGroup {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 .filterTitle {
@@ -123,4 +123,95 @@
   color: white;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(83, 136, 216, 0.2);
+}
+
+@media (max-width: 768px) {
+  .filters {
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    height: 100%;
+    max-height: none;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(83, 136, 216, 0.3) transparent;
+  }
+
+  .filters::-webkit-scrollbar {
+    display: block;
+    width: 4px;
+  }
+
+  .filters::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .filters::-webkit-scrollbar-thumb {
+    background: rgba(83, 136, 216, 0.3);
+    border-radius: 2px;
+  }
+
+  .filters::-webkit-scrollbar-thumb:hover {
+    background: rgba(83, 136, 216, 0.5);
+  }
+
+  .filterGroup {
+    margin-bottom: 24px;
+  }
+
+  .filterTitle {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .select {
+    padding: 14px 16px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .checkbox,
+  .radio {
+    padding: 10px 12px;
+    font-size: 16px;
+  }
+
+  .actions {
+    margin-top: 32px;
+    padding-bottom: 20px;
+  }
+
+  .applyButton,
+  .resetButton {
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters {
+    padding: 0;
+  }
+
+  .filterGroup {
+    margin-bottom: 20px;
+  }
+
+  .filterTitle {
+    font-size: 15px;
+  }
+
+  .select {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+
+  .checkbox,
+  .radio {
+    padding: 8px 10px;
+    font-size: 15px;
+  }
 }

@@ -160,6 +160,9 @@
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s ease;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
 }
 
 .addTagButton:hover {
@@ -216,16 +219,28 @@
   }
 
   .checkboxGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .actions {
     flex-direction: column;
     gap: 12px;
   }
+}
+
+@media (max-width: 480px) {
+  .checkboxGrid {
+    grid-template-columns: 1fr;
+  }
 
   .addTag {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
+  }
+
+  .addTagButton {
+    width: 100%;
+    height: 40px;
   }
 }

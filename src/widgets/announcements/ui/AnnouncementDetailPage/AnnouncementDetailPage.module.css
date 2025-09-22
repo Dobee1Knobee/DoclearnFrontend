@@ -10,17 +10,26 @@
 .content {
   display: grid;
   grid-template-columns: 1fr 350px;
+  grid-template-areas:
+    "header sidebar"
+    "main sidebar";
   gap: 32px;
   align-items: start;
 }
 
+.header {
+  grid-area: header;
+}
+
 .main {
+  grid-area: main;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
 .sidebar {
+  grid-area: sidebar;
   position: sticky;
   top: 24px;
 }
@@ -28,12 +37,15 @@
 @media (max-width: 1024px) {
   .content {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "sidebar"
+      "main";
     gap: 24px;
   }
 
   .sidebar {
     position: static;
-    order: -1;
   }
 }
 

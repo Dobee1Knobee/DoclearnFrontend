@@ -223,7 +223,7 @@
 
 @media (max-width: 768px) {
   .compact {
-    max-width: 200px;
+    max-width: 280px;
     min-height: 140px;
   }
 

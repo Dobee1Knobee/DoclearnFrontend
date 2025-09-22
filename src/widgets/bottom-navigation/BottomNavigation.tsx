@@ -27,8 +27,8 @@ export default function BottomNavigation({ isAuthenticated = false }: BottomNavi
                     <FileText className={`${styles.icon} ${isAggregatorActive ? styles.iconActive : ""}`} />
                 </Link>
                 {isAuthenticated && (
-                    <Link href="/Learn">
-                        <BookOpen className={`${styles.icon} ${pathname === "/Learn" ? styles.iconActive : ""}`} />
+                    <Link href="/announcements">
+                        <BookOpen className={`${styles.icon} ${pathname === "/announcements" ? styles.iconActive : ""}`} />
                     </Link>
                 )}
             </div>

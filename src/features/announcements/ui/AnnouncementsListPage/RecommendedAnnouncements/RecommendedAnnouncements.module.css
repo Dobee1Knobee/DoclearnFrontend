@@ -23,7 +23,6 @@
 .cardLink {
   text-decoration: none;
   color: inherit;
-  display: block;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -41,7 +40,49 @@
 
 @media (max-width: 768px) {
   .grid {
-    grid-template-columns: 1fr;
-    gap: 8px;
+    display: flex;
+    grid-template-columns: none;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .grid::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+  }
+
+  .grid::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 2px;
+  }
+
+  .grid::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  .card {
+    flex: 0 0 280px;
+    height: auto;
+  }
+
+  .cardLink {
+    flex: 0 0 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    flex: 0 0 260px;
+  }
+
+  .cardLink {
+    flex: 0 0 260px;
   }
 }

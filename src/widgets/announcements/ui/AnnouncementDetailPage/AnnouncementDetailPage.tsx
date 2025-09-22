@@ -14,17 +14,20 @@ export const AnnouncementDetailPage: React.FC<AnnouncementDetailPageProps> = ({ 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.main}>
+        <div className={styles.header}>
           <AnnouncementHeader announcement={announcement} />
+        </div>
+
+        <div className={styles.sidebar}>
+          <AnnouncementSidebar announcement={announcement} />
+        </div>
+
+        <div className={styles.main}>
           <AnnouncementDetails announcement={announcement} />
 
           {announcement.speakers && announcement.speakers.length > 0 && (
             <SpeakersSection speakers={announcement.speakers} />
           )}
-        </div>
-
-        <div className={styles.sidebar}>
-          <AnnouncementSidebar announcement={announcement} />
         </div>
       </div>
     </div>

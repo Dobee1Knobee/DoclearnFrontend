@@ -8,21 +8,14 @@ import styles from "./ContactSection.module.css"
 
 interface ContactSectionProps {
   contactInfo: AnnouncementContactInfo
-  registrationLink: string
   onContactUpdate: (field: keyof AnnouncementContactInfo, value: string) => void
-  onRegistrationLinkUpdate: (value: string) => void
 }
 
-export function ContactSection({
-  contactInfo,
-  registrationLink,
-  onContactUpdate,
-  onRegistrationLinkUpdate,
-}: ContactSectionProps) {
+export function ContactSection({ contactInfo, onContactUpdate }: ContactSectionProps) {
   const [errors, setErrors] = useState<{
     email?: string
     phone?: string
-    registrationLink?: string
+    website?: string
   }>({})
 
   const validateField = (field: string, value: string) => {
@@ -35,7 +28,7 @@ export function ContactSection({
       case "phone":
         validation = validateOptionalPhone(value)
         break
-      case "registrationLink":
+      case "website":
         validation = validateOptionalUrl(value)
         break
     }
@@ -49,14 +42,14 @@ export function ContactSection({
   return (
     <div className={styles.contactSection}>
       <div className={styles.row}>
-        <FormField label="Ссылка для регистрации" error={errors.registrationLink}>
+        <FormField label="Веб-сайт" error={errors.website}>
           <input
             type="url"
             className={styles.input}
             placeholder="https://..."
-            value={registrationLink}
-            onChange={(e) => onRegistrationLinkUpdate(e.target.value)}
-            onBlur={(e) => validateField("registrationLink", e.target.value)}
+            value={contactInfo.website || ""}
+            onChange={(e) => onContactUpdate("website", e.target.value)}
+            onBlur={(e) => validateField("website", e.target.value)}
           />
         </FormField>
 
