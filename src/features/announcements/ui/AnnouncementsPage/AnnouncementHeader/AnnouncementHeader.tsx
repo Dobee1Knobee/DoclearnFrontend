@@ -1,15 +1,23 @@
 import type React from "react"
-import { Calendar, MapPin, Eye } from "lucide-react"
 import { categoryTypeTranslations } from "@/shared/lib/translations"
-import { formatDate, getLocationText } from "@/shared/lib/formatters"
-import type { Conference, Webinar, MasterClass } from "@/entities/announcement/model"
+import type { Conference, Webinar, MasterClass, Vacancy, Olympiad } from "@/entities/announcement/model"
 import styles from "./AnnouncementHeader.module.css"
 
 interface AnnouncementHeaderProps {
-  announcement: Conference | Webinar | MasterClass
+  announcement: Conference | Webinar | MasterClass | Vacancy | Olympiad
 }
 
 export const AnnouncementHeader: React.FC<AnnouncementHeaderProps> = ({ announcement }) => {
+  const getOlympiadLevelBadge = (level: string) => {
+    const translations: Record<string, string> = {
+      intrauniversity: "Внутривузовская",
+      regional: "Региональная",
+      national: "Всероссийская",
+      international: "Международная",
+    }
+    return translations[level] || level
+  }
+
   return (
     <div className={styles.header}>
       <div className={styles.badges}>
@@ -17,12 +25,23 @@ export const AnnouncementHeader: React.FC<AnnouncementHeaderProps> = ({ announce
           {categoryTypeTranslations[announcement.type as keyof typeof categoryTypeTranslations] || announcement.type}
         </span>
         {announcement.isPromoted && <span className={styles.promotedBadge}>Рекомендуемое</span>}
+        {announcement.type === "Vacancy" && (announcement as Vacancy).urgent && (
+          <span className={styles.urgentBadge}>Срочно</span>
+        )}
+        {announcement.type === "Vacancy" && (announcement as Vacancy).featured && (
+          <span className={styles.featuredBadge}>Топ вакансия</span>
+        )}
+        {announcement.type === "Olimpiad" && (
+          <span className={styles.promotedBadge}>
+            {getOlympiadLevelBadge((announcement as Olympiad).olympiadLevel)}
+          </span>
+        )}
       </div>
 
       <h1 className={styles.title}>{announcement.title}</h1>
 
       <div className={styles.organizer}>
-        Организатор: <span className={styles.organizerName}>{announcement.organizer}</span>
+        Организатор: <span className={styles.organizerName}>{announcement.organizerName}</span>
       </div>
 
       {/* <div className={styles.meta}>

@@ -2,9 +2,9 @@
 
 import { Calendar, MapPin, Clock, Users, Globe } from "lucide-react"
 import type { CreateAnnouncementFormData } from "@/entities/announcement/model"
-import { 
-  targetAudienceTranslations, 
-  categoryTranslations, 
+import {
+  targetAudienceTranslations,
+  categoryTranslations,
   currencyTranslations,
   categoryTypeTranslations,
   languageTranslations,
@@ -19,14 +19,23 @@ interface PreviewAndPublishProps {
   onUpdate: (updates: Partial<CreateAnnouncementFormData>) => void
   onSubmit: () => void
   onPrevious: () => void
+  onSaveDraft?: () => void
+  isSubmitting?: boolean
 }
 
-export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: PreviewAndPublishProps) {
+export function PreviewAndPublish({
+  formData,
+  onUpdate,
+  onSubmit,
+  onPrevious,
+  onSaveDraft,
+  isSubmitting,
+}: PreviewAndPublishProps) {
 
-  const formatTime = (timeString: string) => {
-    if (!timeString) return ""
-    return timeString
-  }
+  // const formatTime = (timeString: string) => {
+  //   if (!timeString) return ""
+  //   return timeString
+  // }
 
   const getPriceText = () => {
     if (formData.price_type === "free") {
@@ -80,11 +89,11 @@ export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: 
 
         <div className={styles.cardContent}>
           <h3 className={styles.cardTitle}>{formData.title || "Название мероприятия"}</h3>
-          <p className={styles.cardOrganizer}>{formData.organizer || "Организатор"}</p>
+          <p className={styles.cardOrganizer}>{formData.organizerName || "Организатор"}</p>
 
           <div className={styles.cardDetailsGrid}>
             <div className={styles.detailItem}>
-              <Calendar size={16} className={styles.icon}/>
+              <Calendar size={16} className={styles.icon} />
               <span>
                 {formatDate(formData.activeFrom)}
                 {formData.activeTo &&
@@ -95,30 +104,30 @@ export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: 
 
             {formData.location.city && (
               <div className={styles.detailItem}>
-                <MapPin size={16} className={styles.icon}/>
+                <MapPin size={16} className={styles.icon} />
                 <span>{formData.location.city}</span>
               </div>
             )}
 
-            <div className={styles.detailItem}>
+            {/* <div className={styles.detailItem}>
               <Clock size={16} className={styles.icon}/>
               <span>
                 {formatTime(formData.startTime)}
                 {formData.endTime && ` - ${formatTime(formData.endTime)}`}
               </span>
-            </div>
+            </div> */}
 
             <div className={styles.detailItem}>
-              <Globe size={16} className={styles.icon}/>
+              <Globe size={16} className={styles.icon} />
               <span>
-                {locationTypeTranslations[formData.location.type as keyof typeof locationTypeTranslations] ||
-                  formData.location.type}
+                {locationTypeTranslations[formData.format as keyof typeof locationTypeTranslations] ||
+                  formData.format}
               </span>
             </div>
 
             {(formData.maxParticipants || formData.participantLimit) && (
               <div className={styles.detailItem}>
-                <Users size={16} className={styles.icon}/>
+                <Users size={16} className={styles.icon} />
                 <span>До {formData.maxParticipants || formData.participantLimit} участников</span>
               </div>
             )}
@@ -178,7 +187,7 @@ export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: 
             </div>
           )}
 
-          {formData.category === "conference" && formData.program && (
+          {formData.category === "Conference" && formData.program && (
             <div className={styles.summaryItem}>
               <span className={styles.summaryLabel}>Программа:</span>
               <span className={styles.summaryValue}>{formData.program}</span>
@@ -206,7 +215,7 @@ export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: 
             </div>
           )}
 
-          {formData.category === "masterclass" && (
+          {formData.category === "Masterclass" && (
             <>
               {formData.skillLevel && (
                 <div className={styles.summaryItem}>
@@ -256,7 +265,7 @@ export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: 
             </>
           )}
 
-          {formData.category === "webinar" && (
+          {formData.category === "Webinar" && (
             <>
               {formData.isRecorded !== undefined && (
                 <div className={styles.summaryItem}>
@@ -278,6 +287,31 @@ export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: 
               )}
             </>
           )}
+
+          {formData.category === "Conference" &&
+            formData.hasStages &&
+            formData.stages &&
+            formData.stages.length > 0 && (
+              <div className={styles.summaryItem}>
+                <span className={styles.summaryLabel}>Этапы конференции:</span>
+                <span className={styles.summaryValue}>
+                  {formData.stages.map((stage, idx) => (
+                    <div key={stage.id} style={{ marginBottom: "8px" }}>
+                      <strong>
+                        Этап {idx + 1}: {stage.name}
+                      </strong>
+                      {stage.description && (
+                        <div style={{ fontSize: "13px", color: "#6b7280" }}>{stage.description}</div>
+                      )}
+                      {stage.date && <div style={{ fontSize: "13px" }}>Дата: {formatDate(stage.date)}</div>}
+                      {stage.maxParticipants && (
+                        <div style={{ fontSize: "13px" }}>Макс. участников: {stage.maxParticipants}</div>
+                      )}
+                    </div>
+                  ))}
+                </span>
+              </div>
+            )}
 
           {formData.speakers.length > 0 && (
             <div className={styles.summaryItem}>
@@ -312,12 +346,19 @@ export function PreviewAndPublish({ formData, onUpdate, onSubmit, onPrevious }: 
       </div>
 
       <div className={styles.actions}>
-        <button onClick={onPrevious} className={styles.backButton}>
+        <button onClick={onPrevious} className={styles.backButton} disabled={isSubmitting}>
           Назад
         </button>
-        <button onClick={onSubmit} className={styles.publishButton}>
-          Опубликовать объявление
-        </button>
+        <div className={styles.rightActions}>
+          {onSaveDraft && (
+            <button onClick={onSaveDraft} className={styles.draftButton} disabled={isSubmitting} type="button">
+              {isSubmitting ? "Сохранение..." : "Сохранить черновик"}
+            </button>
+          )}
+          <button onClick={onSubmit} className={styles.publishButton} disabled={isSubmitting}>
+            {isSubmitting ? "Отправка на модерацию..." : "Опубликовать объявление"}
+          </button>
+        </div>
       </div>
     </div>
   )

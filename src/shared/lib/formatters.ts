@@ -18,7 +18,7 @@ export const formatDate = (dateString: string): string => {
 
 export const getLocationText = (location?: AnnouncementLocation): string => {
   if (!location) return ""
-  return location.city || locationTypeTranslations[location.type] || ""
+  return location.city || ""
 }
 
 export const translateCategory = (category: AnnouncementCategory): string => {

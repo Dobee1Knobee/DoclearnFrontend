@@ -5,7 +5,7 @@ import { Plus, X } from "lucide-react"
 import type { CreateAnnouncementFormData } from "@/entities/announcement/model"
 import { FormField } from "@/shared/ui/FormField/FormField"
 import { SpeakersSection } from "./SpeakersSection"
-import { ContactSection } from "./ContactSection"
+import { StagesSection } from "./StagesSection"
 import { validateTitle, validateOrganizer, validateDate, validateTime } from "@/shared/lib/validation"
 import { getFormLabels, getFieldsConfig } from "@/shared/lib/formLabels"
 import styles from "./BasicInformation.module.css"
@@ -15,22 +15,31 @@ interface BasicInformationProps {
     onUpdate: (updates: Partial<CreateAnnouncementFormData>) => void
     onNext: () => void
     onPrevious: () => void
+    onSaveDraft?: () => void
+    isSubmitting?: boolean
 }
 
-export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: BasicInformationProps) {
+export function BasicInformation({
+    formData,
+    onUpdate,
+    onNext,
+    onPrevious,
+    onSaveDraft,
+    isSubmitting
+}: BasicInformationProps) {
     const [errors, setErrors] = useState<{
         title?: string
-        organizer?: string
+        organizerName?: string
         activeFrom?: string
-        startTime?: string
-        locationType?: string
+        format?: string
+        description?: string
     }>({})
 
     const [newMaterial, setNewMaterial] = useState("")
     const [newEquipment, setNewEquipment] = useState("")
 
-    const labels = getFormLabels(formData.category || "conference")
-    const fieldsConfig = getFieldsConfig(formData.category || "conference")
+    const labels = getFormLabels(formData.category || "Conference")
+    const fieldsConfig = getFieldsConfig(formData.category || "Conference")
 
     const handleInputChange = (field: keyof CreateAnnouncementFormData, value: any) => {
         onUpdate({ [field]: value })
@@ -39,44 +48,24 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
         }
     }
 
-    const handleLocationChange = (field: keyof CreateAnnouncementFormData["location"], value: any) => {
-        onUpdate({
-            location: {
-                ...formData.location,
-                [field]: value,
-            },
-        })
-        if (field === "type" && errors.locationType) {
-            setErrors((prev) => ({ ...prev, locationType: undefined }))
-        }
-    }
-
-    const handleContactChange = (field: keyof CreateAnnouncementFormData["contactInfo"], value: any) => {
-        onUpdate({
-            contactInfo: {
-                ...formData.contactInfo,
-                [field]: value,
-            },
-        })
-    }
-
     const validateForm = () => {
         const newErrors: typeof errors = {}
 
         const titleValidation = validateTitle(formData.title)
         if (titleValidation !== true) newErrors.title = titleValidation
 
-        const organizerValidation = validateOrganizer(formData.organizer)
-        if (organizerValidation !== true) newErrors.organizer = organizerValidation
+        const organizerValidation = validateOrganizer(formData.organizerName)
+        if (organizerValidation !== true) newErrors.organizerName = organizerValidation
 
         const dateValidation = validateDate(formData.activeFrom)
         if (dateValidation !== true) newErrors.activeFrom = dateValidation
 
-        const timeValidation = validateTime(formData.startTime)
-        if (timeValidation !== true) newErrors.startTime = timeValidation
+        if (!formData.format) {
+            newErrors.format = "Выберите формат проведения"
+        }
 
-        if (!formData?.location?.type) {
-            newErrors.locationType = "Выберите формат проведения"
+        if (!formData.description || formData.description.trim().length === 0) {
+            newErrors.description = "Описание мероприятия обязательно для заполнения"
         }
 
         setErrors(newErrors)
@@ -86,6 +75,8 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
     const handleNext = () => {
         if (validateForm()) {
             onNext()
+        } else {
+            window.scrollTo({ top: 250, behavior: "smooth" })
         }
     }
 
@@ -132,6 +123,14 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
         }
     }
 
+    const handleSaveDraft = () => {
+        if (validateForm() && onSaveDraft) {
+            onSaveDraft()
+        } else {
+            window.scrollTo({ top: 250, behavior: "smooth" })
+        }
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.stepHeader}>
@@ -150,13 +149,13 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                         />
                     </FormField>
 
-                    <FormField label="Организатор" required error={errors.organizer}>
+                    <FormField label="Организатор" required error={errors.organizerName}>
                         <input
                             type="text"
                             className={styles.input}
                             placeholder="Название организации"
-                            value={formData.organizer}
-                            onChange={(e) => handleInputChange("organizer", e.target.value)}
+                            value={formData.organizerName}
+                            onChange={(e) => handleInputChange("organizerName", e.target.value)}
                         />
                     </FormField>
                 </div>
@@ -180,33 +179,23 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                         />
                     </FormField>
                 </div>
-
-                <div className={styles.row}>
-                    <FormField label="Время начала" required error={errors.startTime}>
-                        <input
-                            type="time"
-                            className={styles.input}
-                            value={formData.startTime}
-                            onChange={(e) => handleInputChange("startTime", e.target.value)}
-                        />
-                    </FormField>
-
-                    <FormField label="Время окончания">
-                        <input
-                            type="time"
-                            className={styles.input}
-                            value={formData.endTime}
-                            onChange={(e) => handleInputChange("endTime", e.target.value)}
+                <div style={{ marginBottom: "1rem" }}>
+                    <FormField label="Описание мероприятия" required error={errors.description} >
+                        <textarea
+                            className={styles.textarea}
+                            placeholder="Подробное описание мероприятия, его целей и ожидаемых результатов..."
+                            value={formData.description}
+                            onChange={(e) => handleInputChange("description", e.target.value)}
+                            rows={5}
                         />
                     </FormField>
                 </div>
-
                 <div className={styles.row}>
-                    <FormField label="Формат проведения" required error={errors.locationType}>
+                    <FormField label="Формат проведения" required error={errors.format}>
                         <select
                             className={styles.select}
-                            value={formData?.location?.type || ""}
-                            onChange={(e) => handleLocationChange("type", e.target.value)}
+                            value={formData.format || ""}
+                            onChange={(e) => handleInputChange("format", e.target.value)}
                         >
                             <option value="">Выберите формат</option>
                             <option value="offline">Очно</option>
@@ -222,12 +211,12 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                                 className={styles.input}
                                 placeholder="Максимальное количество"
                                 value={
-                                    formData.category === "webinar" ? formData.participantLimit || "" : formData.
+                                    formData.category === "Webinar" ? formData.participantLimit || "" : formData.
                                         maxParticipants || ""
                                 }
                                 onChange={(e) => {
                                     const value = e.target.value ? Number.parseInt(e.target.value) : null
-                                    if (formData.category === "webinar") {
+                                    if (formData.category === "Webinar") {
                                         handleInputChange("participantLimit", value)
                                     } else {
                                         handleInputChange("maxParticipants", value)
@@ -238,19 +227,7 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                     )}
                 </div>
 
-                {fieldsConfig.showProgram && (
-                    <FormField label={labels.program}>
-                        <textarea
-                            className={styles.textarea}
-                            placeholder={`Опишите ${labels.program.toLowerCase()}...`}
-                            value={formData.program}
-                            onChange={(e) => handleInputChange("program", e.target.value)}
-                            rows={4}
-                        />
-                    </FormField>
-                )}
-
-                <div className={styles.checkboxRow} style={{marginTop: "1rem", marginBottom: "-1rem"}}>
+                <div className={styles.checkboxRow} style={{ marginTop: "1rem", marginBottom: "-1rem" }}>
                     <div className={styles.checkboxField}>
                         <label className={styles.checkboxLabel}>
                             <input
@@ -276,7 +253,7 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                     </FormField>
                 )}
 
-                {formData.category === "masterclass" && (
+                {formData.category === "Masterclass" && (
                     <>
                         {fieldsConfig.showSkillLevel && (
                             <div className={styles.row}>
@@ -368,7 +345,7 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                     </>
                 )}
 
-                {formData.category === "webinar" && (
+                {formData.category === "Webinar" && (
                     <>
                         {fieldsConfig.showPlatform && (
                             <div className={styles.row}>
@@ -445,7 +422,7 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                     </>
                 )}
 
-                {(formData.category === "masterclass" || formData.category === "webinar") && fieldsConfig.showPrerequisites && (
+                {(formData.category === "Masterclass" || formData.category === "Webinar") && fieldsConfig.showPrerequisites && (
                     <FormField label="Предварительные требования">
                         <textarea
                             className={styles.textarea}
@@ -494,6 +471,34 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                         speakers={formData.speakers}
                         onUpdate={(speakers) => onUpdate({ speakers })}
                     />
+                )}
+
+                {formData.category === "Conference" && (
+                    <>
+                        <div className={styles.checkboxRow} style={{ marginTop: "1.5rem", marginBottom: "0.5rem" }}>
+                            <div className={styles.checkboxField}>
+                                <label className={styles.checkboxLabel}>
+                                    <input
+                                        type="checkbox"
+                                        style={{ accentColor: "#5388d8" }}
+                                        checked={formData.hasStages || false}
+                                        onChange={(e) => {
+                                            const hasStages = e.target.checked
+                                            onUpdate({
+                                                hasStages,
+                                                stages: hasStages ? formData.stages || [] : [],
+                                            })
+                                        }}
+                                    />
+                                    Конференция имеет этапы
+                                </label>
+                            </div>
+                        </div>
+
+                        {formData.hasStages && (
+                            <StagesSection stages={formData.stages || []} onUpdate={(stages) => onUpdate({ stages })} />
+                        )}
+                    </>
                 )}
 
                 <div className={styles.checkboxRow}>
@@ -550,17 +555,34 @@ export function BasicInformation({ formData, onUpdate, onNext, onPrevious }: Bas
                     </div>
                 )}
 
-                <ContactSection contactInfo={formData.contactInfo} onContactUpdate={handleContactChange} />
+                {fieldsConfig.showProgram && (
+                    <FormField label={labels.program}>
+                        <textarea
+                            className={styles.textarea}
+                            placeholder={`Опишите ${labels.program.toLowerCase()}...`}
+                            value={formData.program}
+                            onChange={(e) => handleInputChange("program", e.target.value)}
+                            rows={4}
+                        />
+                    </FormField>
+                )}
 
                 <div className={styles.actions}>
                     <button onClick={onPrevious} className={styles.backButton}>
                         Назад
                     </button>
-                    <button onClick={handleNext} className={styles.nextButton}>
-                        Далее
-                    </button>
+                    <div className={styles.rightActions}>
+                        {onSaveDraft && (
+                            <button onClick={handleSaveDraft} className={styles.draftButton} disabled={isSubmitting} type="button">
+                                {isSubmitting ? "Сохранение..." : "Сохранить черновик"}
+                            </button>
+                        )}
+                        <button onClick={handleNext} className={styles.nextButton}>
+                            Далее
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

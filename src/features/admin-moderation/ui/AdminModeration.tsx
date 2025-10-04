@@ -2,17 +2,22 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { FileText, User, X, ChevronLeft, ChevronRight } from "lucide-react"
-import { useGetPendingUsersQuery, useGetPendingDocumentsQuery } from "../api/adminModerationApi"
+import { FileText, User, X, ChevronLeft, ChevronRight, Megaphone } from "lucide-react"
+import {
+  useGetPendingUsersQuery,
+  useGetPendingDocumentsQuery,
+  useGetPendingAnnouncementsQuery,
+} from "../api/adminModerationApi"
 import { AdminModerationSpinner } from "./AdminModerationSpinner"
 import { AdminModerationError } from "./AdminModerationError"
 import { AdminModerationEmpty } from "./AdminModerationEmpty"
 import { DocumentCard } from "./DocumentCard"
 import { ProfileCard } from "./ProfileCard"
+import { AnnouncementCard } from "./AnnouncementCard"
 import styles from "./AdminModeration.module.css"
 import type { PendingUser, DocumentCategory } from "../model/types"
 
-type ModerationTab = "documents" | "profiles"
+type ModerationTab = "documents" | "profiles" | "announcements"
 
 const categoryLabels: Record<DocumentCategory, string> = {
   higher_education_diploma: "Диплом о высшем образовании",
@@ -40,7 +45,7 @@ const formatFileSize = (bytes: number): string => {
 }
 
 export function AdminModeration() {
-  const [activeTab, setActiveTab] = useState<ModerationTab>("profiles")
+  const [activeTab, setActiveTab] = useState<ModerationTab>("documents")
   const [currentPage, setCurrentPage] = useState(1)
   const [viewingDocument, setViewingDocument] = useState<string | null>(null)
 
@@ -61,6 +66,13 @@ export function AdminModeration() {
     isLoading: documentsLoading,
     refetch: refetchDocuments,
   } = useGetPendingDocumentsQuery()
+
+  const {
+    data: announcementsResponse,
+    error: announcementsError,
+    isLoading: announcementsLoading,
+    refetch: refetchAnnouncements,
+  } = useGetPendingAnnouncementsQuery()
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -85,11 +97,13 @@ export function AdminModeration() {
     return labels[field] || field
   }
 
-  const handleView = (userId: string, type: string, documentUrl?: string) => {
+  const handleView = (Id: string, type: string, documentUrl?: string) => {
     if (type === "profile") {
-      router.push(`/profile/${userId}`)
+      router.push(`/profile/${Id}`)
     } else if (type === "document" && documentUrl) {
       setViewingDocument(documentUrl)
+    } else if (type === "announcement") {
+      router.push(`/announcements/${Id}`)
     }
   }
 
@@ -214,6 +228,44 @@ export function AdminModeration() {
     )
   }
 
+  const renderAnnouncements = () => {
+    if (announcementsLoading) {
+      return <AdminModerationSpinner />
+    }
+
+    if (announcementsError) {
+      const errorMessage =
+        "data" in announcementsError && announcementsError.data
+          ? (announcementsError.data as any)?.message || "Произошла ошибка при загрузке объявлений"
+          : "Произошла ошибка при загрузке объявлений"
+
+      return <AdminModerationError error={errorMessage} onRetry={refetchAnnouncements} />
+    }
+
+    if (!announcementsResponse?.data.length) {
+      return (
+        <div className={styles.placeholder}>
+          <Megaphone size={48} className={styles.placeholderIcon} />
+          <h3 className={styles.placeholderTitle}>Нет объявлений на модерации</h3>
+          <p className={styles.placeholderText}>Все объявления проверены</p>
+        </div>
+      )
+    }
+
+    return (
+      <div className={styles.queueList}>
+        {announcementsResponse.data.map((announcement) => (
+          <AnnouncementCard
+            key={announcement._id}
+            announcement={announcement}
+            onView={handleView}
+            formatDate={formatDate}
+          />
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -236,9 +288,24 @@ export function AdminModeration() {
           <User size={16} />
           Профили ({response?.data.total || 0})
         </button>
+        <button
+          onClick={() => setActiveTab("announcements")}
+          className={`${styles.tab} ${activeTab === "announcements" ? styles.active : ""}`}
+        >
+          <Megaphone size={16} />
+          Объявления ({announcementsResponse?.data.length || 0})
+        </button>
       </div>
 
-      <div className={styles.content}>{activeTab === "documents" ? renderDocuments() : renderProfiles()}</div>
+      <div className={styles.content}>
+        {activeTab === "documents"
+          ? renderDocuments()
+          : activeTab === "profiles"
+            ? renderProfiles()
+            : activeTab === "announcements"
+              ? renderAnnouncements()
+              : null}
+      </div>
 
       {viewingDocument && (
         <div className={styles.modal} onClick={() => setViewingDocument(null)}>

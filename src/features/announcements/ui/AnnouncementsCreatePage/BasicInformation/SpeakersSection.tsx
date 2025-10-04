@@ -36,8 +36,6 @@ export function SpeakersSection({ speakers, onUpdate }: SpeakersSectionProps) {
           userId: `temp-${Date.now()}`,
           name: newSpeaker.name.trim(),
           eventRole: newSpeaker.eventRole.trim(),
-          bio: newSpeaker.bio.trim(),
-          photo: newSpeaker.photo.trim(),
           status: "pending" as const,
         },
       ])

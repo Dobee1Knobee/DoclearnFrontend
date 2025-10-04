@@ -31,6 +31,7 @@
   font-size: 16px;
   line-height: 1.6;
   color: #495057;
+  white-space: pre-line;
 }
 
 .program {
@@ -47,6 +48,17 @@
 }
 
 .programLine:last-child {
+  margin-bottom: 0;
+}
+
+.programText{
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.programText:last-child {
   margin-bottom: 0;
 }
 
@@ -72,6 +84,76 @@
   font-size: 15px;
   color: #2c3e50;
   font-weight: 500;
+}
+
+/* добавляю стили для вакансий */
+.salaryInfo {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  background: #f0f9f4;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #2ed573;
+}
+
+.requirements {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.requirementItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.requirementLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.requirementValue {
+  font-size: 15px;
+  color: #495057;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.hiringManager {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid #5388d8;
+}
+
+.managerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.managerName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.managerPosition {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.deadline {
+  font-size: 16px;
+  color: #ff6b35;
+  font-weight: 600;
+  background: #fff5f2;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ff6b35;
 }
 
 .list {

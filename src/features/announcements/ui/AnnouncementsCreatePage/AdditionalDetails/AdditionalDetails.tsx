@@ -6,6 +6,7 @@ import { useState } from "react"
 import { Plus, X } from "lucide-react"
 import type { CreateAnnouncementFormData, TargetAudience } from "@/entities/announcement/model"
 import type { AnnouncementCategory } from "@/entities/announcement/model"
+import { ContactSection } from "../BasicInformation/ContactSection"
 import styles from "./AdditionalDetails.module.css"
 import { getFormLabels } from "@/shared/lib/formLabels"
 
@@ -14,6 +15,8 @@ interface AdditionalDetailsProps {
     onUpdate: (updates: Partial<CreateAnnouncementFormData>) => void
     onNext: () => void
     onPrevious: () => void
+    onSaveDraft?: () => void
+    isSubmitting?: boolean
 }
 
 const targetAudienceOptions: { value: TargetAudience; label: string }[] = [
@@ -33,9 +36,16 @@ const categoriesOptions: { value: AnnouncementCategory; label: string }[] = [
     { value: "other", label: "Другое" },
 ]
 
-export function AdditionalDetails({ formData, onUpdate, onNext, onPrevious }: AdditionalDetailsProps) {
+export function AdditionalDetails({
+    formData,
+    onUpdate,
+    onNext,
+    onPrevious,
+    onSaveDraft,
+    isSubmitting,
+}: AdditionalDetailsProps) {
     const [newTag, setNewTag] = useState("")
-    const labels = getFormLabels(formData.category || "conference")
+    const labels = getFormLabels(formData.category || "Conference")
 
 
     const handleInputChange = (field: keyof CreateAnnouncementFormData, value: any) => {
@@ -46,6 +56,15 @@ export function AdditionalDetails({ formData, onUpdate, onNext, onPrevious }: Ad
         onUpdate({
             location: {
                 ...formData.location,
+                [field]: value,
+            },
+        })
+    }
+
+    const handleContactChange = (field: keyof CreateAnnouncementFormData["contactInfo"], value: any) => {
+        onUpdate({
+            contactInfo: {
+                ...formData.contactInfo,
                 [field]: value,
             },
         })
@@ -94,16 +113,7 @@ export function AdditionalDetails({ formData, onUpdate, onNext, onPrevious }: Ad
             </div>
 
             <div className={styles.form}>
-                <div className={styles.field}>
-                    <label className={styles.label}>Описание мероприятия</label>
-                    <textarea
-                        className={styles.textarea}
-                        placeholder="Подробное описание мероприятия, его целей и ожидаемых результатов..."
-                        value={formData.description}
-                        onChange={(e) => handleInputChange("description", e.target.value)}
-                        rows={5}
-                    />
-                </div>
+                <ContactSection contactInfo={formData.contactInfo} onContactUpdate={handleContactChange} />
 
                 <div className={styles.field}>
                     <label className={styles.label}>Целевая аудитория</label>
@@ -211,9 +221,16 @@ export function AdditionalDetails({ formData, onUpdate, onNext, onPrevious }: Ad
                     <button onClick={onPrevious} className={styles.backButton}>
                         Назад
                     </button>
-                    <button onClick={onNext} className={styles.nextButton}>
-                        Далее
-                    </button>
+                    <div className={styles.rightActions}>
+                        {onSaveDraft && (
+                            <button onClick={onSaveDraft} className={styles.draftButton} disabled={isSubmitting} type="button">
+                                {isSubmitting ? "Сохранение..." : "Сохранить черновик"}
+                            </button>
+                        )}
+                        <button onClick={onNext} className={styles.nextButton}>
+                            Далее
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

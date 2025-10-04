@@ -7,6 +7,7 @@ import { authorProfileApi } from "@/features/author-profile/api/authorProfileApi
 import { profileEditApi } from "@/features/profile-edit/api/profileEditApi"
 import { adminUsersApi } from "@/features/admin-users/api/adminUsersApi"
 import { adminModerationApi } from "@/features/admin-moderation/api/adminModerationApi"
+import { createConferenceApi } from "@/features/announcements/api/createConferenceApi"
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     [profileEditApi.reducerPath]: profileEditApi.reducer,
     [adminUsersApi.reducerPath]: adminUsersApi.reducer,
     [adminModerationApi.reducerPath]: adminModerationApi.reducer,
+    [createConferenceApi.reducerPath]: createConferenceApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -23,6 +25,7 @@ export const store = configureStore({
       profileEditApi.middleware,
       adminUsersApi.middleware,
       adminModerationApi.middleware,
+      createConferenceApi.middleware,
     ),
 })
 

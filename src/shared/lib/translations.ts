@@ -28,9 +28,10 @@ export const currencyTranslations = {
 } as const
 
 export const categoryTypeTranslations = {
-  conference: "Конференция",
-  masterclass: "Мастер-класс",
-  webinar: "Вебинар",
+  Conference: "Конференция",
+  Masterclass: "Мастер-класс",
+  Webinar: "Вебинар",
+  Vacancy: "Вакансия",
 } as const
 
 export const languageTranslations = {

@@ -10,6 +10,7 @@ import { CasesTab } from "./CasesTab/CasesTab"
 import { EducationTab } from "./EducationTab/EducationTab"
 // import { ContactsTab } from "./ContactsTab/ContactsTab"
 import { DocumentsTab } from "./DocumentsTab/DocumentsTab"
+import { AnnouncementsTab } from "./AnnouncementsTab/AnnouncementsTab"
 
 interface ProfileTabsProps {
   profile: SpecialistUser
@@ -21,6 +22,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
   const getAvailableTabs = () => {
     const baseTabs = [
       { id: "overview", label: "Обзор" },
+      { id: "announcements", label: "Мои объявления" },
       { id: "publications", label: "Публикации" },
     ]
 
@@ -61,6 +63,8 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ profile }) => {
       //   return <ContactsTab contacts={profile.contacts} />
       case 'documents':
         return <DocumentsTab profile={profile} />
+      case "announcements":
+        return <AnnouncementsTab />
       default:
         return null
     }

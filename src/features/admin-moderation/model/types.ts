@@ -93,6 +93,45 @@ export interface DocumentActionRequest {
   documentId: string
 }
 
+export interface PendingAnnouncement {
+  _id: string
+  title: string
+  description: string
+  organizer: string[]
+  activeFrom: string
+  activeTo: string
+  status: string
+  type: string
+  registrationRequired: boolean
+  currentParticipants: number
+  price: number
+  price_type: string
+  currency: string
+  categories: string[]
+  targetAudience: string[]
+  language: string
+  certificates: boolean
+  format: string
+  speakers: string[]
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
+export interface PendingAnnouncementsResponse {
+  success: boolean
+  data: PendingAnnouncement[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+    hasNext: boolean
+    hasPrev: boolean
+  }
+}
+
+
 export type DocumentCategory =
   | "higher_education_diploma"
   | "residency_diploma"

@@ -249,6 +249,11 @@
   border-top: 1px solid #e5e7eb;
 }
 
+.rightActions {
+  display: flex;
+  gap: 12px;
+}
+
 .backButton {
   background: white;
   color: #374151;
@@ -264,6 +269,27 @@
   background: #f9fafb;
   border-color: #9ca3af;
 }
+
+.draftButton {
+  background: white;
+  color: #5388d8;
+  border: 1px solid #5388d8;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.draftButton:hover:not(:disabled) {
+  background: #f0f7ff;
+}
+
+.draftButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 .nextButton {
   background: #5388d8;
@@ -301,6 +327,11 @@
   }
 
   .actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rightActions {
     flex-direction: column;
     gap: 12px;
   }

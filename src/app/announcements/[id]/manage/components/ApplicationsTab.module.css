@@ -1,0 +1,187 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.placeholder h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.placeholder p {
+  font-size: 0.9375rem;
+  color: #666;
+  margin: 0;
+  max-width: 400px;
+}
+
+.applicationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.applicationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.applicationCard:hover {
+  border-color: #5388d8;
+  box-shadow: 0 4px 12px rgba(83, 136, 216, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.participantInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.participantName {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.participantEmail {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.submittedDate {
+  font-size: 0.875rem;
+  color: #999;
+  white-space: nowrap;
+}
+
+.talkInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.talkTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.abstract {
+  font-size: 0.9375rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.filesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filesLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.filesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #5388d8;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.fileItem:hover {
+  border-color: #5388d8;
+  background: #f8fafc;
+}
+
+.fileName {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.fileSize {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.approveButton,
+.rejectButton {
+  padding: 0.625rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.approveButton {
+  background: #22c55e;
+  color: white;
+}
+
+.approveButton:hover {
+  background: #16a34a;
+}
+
+.rejectButton {
+  background: #ef4444;
+  color: white;
+  border: 1px solid #ef4444;
+}
+
+.rejectButton:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}

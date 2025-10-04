@@ -5,6 +5,7 @@ import type {
   ApproveSpecificFieldsRequest,
   PendingDocumentsResponse,
   DocumentActionRequest,
+  PendingAnnouncementsResponse,
 } from "../model/types"
 
 export const adminModerationApi = createApi({
@@ -12,7 +13,7 @@ export const adminModerationApi = createApi({
   baseQuery: axiosBaseQuery({
     baseUrl: "https://api.doclearn.ru",
   }),
-  tagTypes: ["PendingUsers", "PendingDocuments"],
+  tagTypes: ["PendingUsers", "PendingDocuments", "PendingAnnouncements"],
   endpoints: (builder) => ({
     getPendingUsers: builder.query<PendingUsersResponse, { page: number }>({
       query: ({ page }) => ({
@@ -41,7 +42,7 @@ export const adminModerationApi = createApi({
     }),
 
     rejectChanges: builder.mutation<void, { userId: string; comment: string }>({
-      query: ( { userId, comment }) => ({
+      query: ({ userId, comment }) => ({
         url: `/admin/users/${userId}/reject-changes`,
         method: "POST",
         data: { comment },
@@ -74,6 +75,14 @@ export const adminModerationApi = createApi({
       }),
       invalidatesTags: ["PendingDocuments"],
     }),
+
+    getPendingAnnouncements: builder.query<PendingAnnouncementsResponse, void>({
+      query: () => ({
+        url: `/admin/annoucments/moderation`,
+        method: "GET",
+      }),
+      providesTags: ["PendingAnnouncements"],
+    }),
   }),
 })
 
@@ -85,4 +94,5 @@ export const {
   useGetPendingDocumentsQuery,
   useApproveDocumentMutation,
   useRejectDocumentMutation,
+  useGetPendingAnnouncementsQuery,
 } = adminModerationApi

@@ -1,6 +1,6 @@
 export const getFormLabels = (category: string) => {
   const labels = {
-    conference: {
+    Conference: {
       title: "Название конференции",
       program: "Программа конференции",
       speakers: "Спикеры конференции",
@@ -8,7 +8,7 @@ export const getFormLabels = (category: string) => {
       maxParticipants: "Максимальное количество участников",
       categories: "Категории конференции",
     },
-    masterclass: {
+    Masterclass: {
       title: "Название мастер-класса",
       program: "Описание мастер-класса",
       speakers: "Инструкторы",
@@ -16,7 +16,7 @@ export const getFormLabels = (category: string) => {
       maxParticipants: "Максимальное количество участников",
       categories: "Категории мастер-класса",
     },
-    webinar: {
+    Webinar: {
       title: "Название вебинара",
       program: "Описание вебинара",
       speakers: "Спикеры вебинара",
@@ -26,12 +26,12 @@ export const getFormLabels = (category: string) => {
     },
   }
 
-  return labels[category as keyof typeof labels] || labels.conference
+  return labels[category as keyof typeof labels] || labels.Conference
 }
 
 export const getFieldsConfig = (category: string) => {
   const config = {
-    conference: {
+    Conference: {
       showProgram: true,
       showSpeakers: true,
       showMaxParticipants: true,
@@ -46,7 +46,7 @@ export const getFieldsConfig = (category: string) => {
       showPlatform: false,
       showRecording: false,
     },
-    masterclass: {
+    Masterclass: {
       showProgram: false,
       showSpeakers: true,
       showMaxParticipants: true,
@@ -59,7 +59,7 @@ export const getFieldsConfig = (category: string) => {
       showPlatform: false,
       showRecording: false,
     },
-    webinar: {
+    Webinar: {
       showProgram: false,
       showSpeakers: true,
       showMaxParticipants: true,
@@ -75,5 +75,5 @@ export const getFieldsConfig = (category: string) => {
     },
   }
 
-  return config[category as keyof typeof config] || config.conference
+  return config[category as keyof typeof config] || config.Conference
 }

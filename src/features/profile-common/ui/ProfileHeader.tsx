@@ -168,6 +168,14 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     router.push(`/profile/${_id}/edit#contacts`)
   }
 
+  const handleFollowersClick = () => {
+    router.push(`/profile/${_id}/followers`)
+  }
+
+  const handleFollowingClick = () => {
+    router.push(`/profile/${_id}/following`)
+  }
+
   const renderActionButton = () => {
     const isButtonLoading = isFollowLoading || isUnfollowLoading || isProcessing
     const publicContacts =
@@ -292,13 +300,13 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
           </div>
         </div>
         <div className={styles.statsBlock}>
-          <div className={styles.stat}>
+          <div className={styles.stat} onClick={handleFollowersClick} style={{ cursor: "pointer" }}>
             <span className={styles.statValue}>
               {localFollowersCount !== null ? localFollowersCount : stats?.followersCount || 0}
             </span>
             <span className={styles.statLabel}>Подписчики</span>
           </div>
-          <div className={styles.stat}>
+          <div className={styles.stat} onClick={handleFollowingClick} style={{ cursor: "pointer" }}>
             <span className={styles.statValue}>{stats?.followingCount || 0}</span>
             <span className={styles.statLabel}>Подписки</span>
           </div>

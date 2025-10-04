@@ -32,4 +32,7 @@ export interface Webinar extends BaseAnnouncement {
   duration: number
   prerequisites?: string
   materials?: string[]
+
+  format: "online" | "offline" | "hybrid"
+  previewImage?: string
 }

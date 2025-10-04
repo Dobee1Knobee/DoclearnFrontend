@@ -215,6 +215,11 @@
   margin-top: 32px;
 }
 
+.rightActions {
+  display: flex;
+  gap: 12px;
+}
+
 .backButton {
   background: white;
   color: #374151;
@@ -226,9 +231,34 @@
   transition: all 0.2s ease;
 }
 
-.backButton:hover {
+.backButton:hover:not(:disabled) {
   background: #f9fafb;
   border-color: #9ca3af;
+}
+
+.backButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.draftButton {
+  background: white;
+  color: #5388d8;
+  border: 1px solid #5388d8;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.draftButton:hover:not(:disabled) {
+  background: #f0f7ff;
+}
+
+.draftButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .publishButton {
@@ -243,8 +273,13 @@
   transition: background-color 0.2s ease;
 }
 
-.publishButton:hover {
+.publishButton:hover:not(:disabled) {
   background: #059669;
+}
+
+.publishButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
@@ -273,6 +308,11 @@
     gap: 12px;
   }
 
+  .rightActions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
   .cardDetailsGrid {
     grid-template-columns: 1fr;
     gap: 8px;

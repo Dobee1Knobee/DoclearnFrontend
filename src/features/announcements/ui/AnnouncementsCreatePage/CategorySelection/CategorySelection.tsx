@@ -15,56 +15,62 @@ interface CategoryOption {
 
 const categories: CategoryOption[] = [
   {
-    id: "conference",
+    id: "Conference",
     title: "Конференции",
     description: "Медицинские конференции и симпозиумы",
     icon: Calendar,
   },
   {
-    id: "masterclass",
+    id: "Masterclass",
     title: "Мастер-классы",
     description: "Практические мастер-классы от экспертов",
     icon: Users,
   },
   {
-    id: "webinar",
+    id: "Webinar",
     title: "Вебинары",
     description: "Онлайн-лекции и вебинары",
     icon: Video,
   },
-  {
-    id: "course",
-    title: "Курсы ПК",
-    description: "Курсы повышения квалификации",
-    icon: BookOpen,
-  },
+  // {
+  //   id: "Course",
+  //   title: "Курсы ПК",
+  //   description: "Курсы повышения квалификации",
+  //   icon: BookOpen,
+  // },
 //   {
 //     id: "internship",
 //     title: "Стажировки",
 //     description: "Стажировки и ординатура",
 //     icon: Stethoscope,
 //   },
-  {
-    id: "university",
-    title: "ВУЗы",
-    description: "Образовательные учреждения",
+  // {
+  //   id: "University",
+  //   title: "ВУЗы",
+  //   description: "Образовательные учреждения",
+  //   icon: GraduationCap,
+  // },
+    {
+    id: "Olimpiad",
+    title: "Олимпиады",
+    description: "Студенческие олимпиады",
     icon: GraduationCap,
   },
   {
-    id: "vacancy",
+    id: "Vacancy",
     title: "Вакансии",
     description: "Медицинские вакансии",
     icon: Building,
   },
-//   {
-//     id: "equipment",
-//     title: "Оборудование",
-//     description: "Медицинское оборудование",
-//     icon: Wrench,
-//   },
+  {
+    id: "Equipment",
+    title: "Оборудование",
+    description: "Медицинское оборудование",
+    icon: Wrench,
+  },
 ]
 
-const enabledCategories: AnnouncementType[] = ["conference", "masterclass", "webinar"]
+const enabledCategories: AnnouncementType[] = ["Conference", "Masterclass", "Webinar", "Equipment", "Vacancy", "Olimpiad",]
 
 interface CategorySelectionProps {
   selectedCategory: AnnouncementType | null

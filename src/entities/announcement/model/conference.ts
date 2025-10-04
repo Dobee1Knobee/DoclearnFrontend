@@ -1,7 +1,18 @@
-import type { BaseAnnouncement, Speaker, AnnouncementCategory, TargetAudience, Currency, Language, PriceType } from './base';
+import type {
+  BaseAnnouncement, 
+  Speaker,
+  CustomSpeaker,
+  AnnouncementCategory, 
+  TargetAudience, 
+  Currency, 
+  Language, 
+  PriceType,
+  ConferenceStage
+} from './base';
 
 export interface Conference extends BaseAnnouncement {
   speakers: Speaker[]
+  customSpeakers?: CustomSpeaker[]
   program?: string
   scheduleUrl?: string
 
@@ -9,9 +20,9 @@ export interface Conference extends BaseAnnouncement {
   registrationLink?: string
 
   maxParticipants?: number
-  price_type: PriceType
   currentParticipants: number
 
+  price_type: PriceType
   price: number
   currency: Currency
 
@@ -21,4 +32,8 @@ export interface Conference extends BaseAnnouncement {
 
   certificates: boolean
   cmeCredits?: number
+
+  format: "online" | "offline" | "hybrid"
+  stages?: ConferenceStage[]
+  hasStages?: boolean
 }

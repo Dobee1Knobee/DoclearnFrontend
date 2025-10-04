@@ -1,0 +1,197 @@
+.stagesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.description {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: -8px;
+  margin-bottom: 0;
+}
+
+.stagesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stageItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  gap: 12px;
+}
+
+.stageHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.stageOrder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  background: #5388d8;
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stageInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.stageName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.stageDescription {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.stageDetails {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.stageDetail {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.stageActions {
+  display: flex;
+  gap: 4px;
+}
+
+.moveButton,
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #6b7280;
+}
+
+.moveButton:hover:not(:disabled) {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.moveButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.removeButton {
+  color: #ef4444;
+}
+
+.removeButton:hover {
+  background: #fee2e2;
+}
+
+.addStage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+}
+
+.stageInput,
+.stageTextarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.stageInput:focus,
+.stageTextarea:focus {
+  outline: none;
+  border-color: #5388d8;
+  box-shadow: 0 0 0 3px rgba(83, 136, 216, 0.1);
+}
+
+.stageTextarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.stageRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.addStageButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #5388d8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addStageButton:hover {
+  background: #4070c0;
+}
+
+@media (max-width: 768px) {
+  .stageRow {
+    grid-template-columns: 1fr;
+  }
+
+  .stageItem {
+    flex-direction: column;
+  }
+
+  .stageActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

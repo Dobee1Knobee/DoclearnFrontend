@@ -30,6 +30,25 @@
   font-weight: 500;
 }
 
+/* добавляю стили для бейджей вакансий */
+.urgentBadge {
+  background: #ff6b35;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.featuredBadge {
+  background: #2ed573;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .title {
   font-size: 32px;
   font-weight: 700;

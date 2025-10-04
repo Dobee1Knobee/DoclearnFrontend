@@ -17,7 +17,7 @@ export interface MasterClass extends BaseAnnouncement {
   skillLevel: MasterClassSkillLevel
   maxParticipants: number
   currentParticipants: number
-  price: number;
+  price: number
   price_type: PriceType
   currency: Currency
 
@@ -35,4 +35,7 @@ export interface MasterClass extends BaseAnnouncement {
   // Для практических занятий
   handsOn: boolean
   groupWork: boolean
+
+  format: "online" | "offline" | "hybrid"
+  previewImage?: string
 }
