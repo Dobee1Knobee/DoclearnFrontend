@@ -15,43 +15,45 @@ export default function Navigation({ isAuthenticated = false }: NavigationProps)
 
   const isAggregatorActive = pathname.startsWith("/Aggregator")
 
-  // if (isMobile) {
-  //   return (
-  //     <div className={styles.iconsContainer}>
-  //       <Link href="/News">
-  //         <Newspaper className={`${styles.icon} ${pathname === "/News" ? styles.iconActive : ""}`} />
-  //       </Link>
-  //       <Link href="/Feed">
-  //         <MessageSquare className={`${styles.icon} ${pathname === "/Feed" ? styles.iconActive : ""}`} />
-  //       </Link>
-  //       <Link href="/Aggregator">
-  //         <FileText className={`${styles.icon} ${isAggregatorActive ? styles.iconActive : ""}`} />
-  //       </Link>
-  //       {isAuthenticated && (
-  //         <Link href="/Learn">
-  //           <BookOpen className={`${styles.icon} ${pathname === "/Learn" ? styles.iconActive : ""}`} />
-  //         </Link>
-  //       )}
-  //     </div>
-  //   )
-  // }
+  const items = [
+    {
+      href: "/News",
+      label: "Новости",
+      icon: Newspaper,
+      active: pathname === "/News",
+    },
+    {
+      href: "/Feed",
+      label: "Лента",
+      icon: MessageSquare,
+      active: pathname === "/Feed",
+    },
+    {
+      href: "/Aggregator",
+      label: "Статьи",
+      icon: FileText,
+      active: isAggregatorActive,
+    },
+    ...(isAuthenticated
+      ? [
+          {
+            href: "/announcements",
+            label: "Анонсы",
+            icon: BookOpen,
+            active: pathname === "/announcements",
+          },
+        ]
+      : []),
+  ]
 
   return (
-      <div className={styles.iconsContainer}>
-        <Link href="/News">
-          <Newspaper className={`${styles.icon} ${pathname === "/News" ? styles.iconActive : ""}`} />
+    <nav className={styles.iconsContainer} aria-label="Основная навигация">
+      {items.map(({ href, label, icon: Icon, active }) => (
+        <Link key={href} href={href} className={`${styles.navLink} ${active ? styles.navLinkActive : ""}`}>
+          <Icon className={`${styles.icon} ${active ? styles.iconActive : ""}`} />
+          <span className={styles.navLabel}>{label}</span>
         </Link>
-        <Link href="/Feed">
-          <MessageSquare className={`${styles.icon} ${pathname === "/Feed" ? styles.iconActive : ""}`} />
-        </Link>
-        <Link href="/Aggregator">
-          <FileText className={`${styles.icon} ${isAggregatorActive ? styles.iconActive : ""}`} />
-        </Link>
-        {isAuthenticated && (
-          <Link href="/announcements">
-            <BookOpen className={`${styles.icon} ${pathname === "/announcements" ? styles.iconActive : ""}`} />
-          </Link>
-        )}
-      </div>
+      ))}
+    </nav>
   )
 }

@@ -42,6 +42,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
         <div className="text-center">
           <Image src="/logo.webp" alt="DocLearn Logo" className={styles.logo} width={200} height={100} />
           <h2 className={styles.modalTitle}>Войти</h2>
+          <p className={styles.modalSubtitle}>Продолжайте обучение и работу с профессиональным сообществом.</p>
         </div>
         <LoginForm onSuccess={onSuccess} onForgotPassword={onForgotPassword} />
       </Modal.Body>

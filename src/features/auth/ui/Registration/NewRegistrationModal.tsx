@@ -62,7 +62,14 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
 
   return (
     <>
-      <Modal show={show} onHide={handleMainModalClose} centered className={styles.customModal} backdrop="static">
+      <Modal
+        show={show}
+        onHide={handleMainModalClose}
+        centered
+        className={`${styles.customModal} ${styles.registrationModal}`}
+        dialogClassName={styles.registrationDialog}
+        backdrop="static"
+      >
         <button type="button" className={styles.closeButton} onClick={handleMainModalClose} aria-label="Закрыть">
           <X size={20} />
         </button>
@@ -70,6 +77,7 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
           <div className="text-center">
             <Image src="/logo.webp" alt="DocLearn Logo" className={styles.logo} width={200} height={100} />
             <h2 className={styles.modalTitle}>Регистрация</h2>
+            <p className={styles.modalSubtitle}>Создайте аккаунт и получите доступ к материалам, анонсам и сообществу.</p>
             <div className={styles.roleToggle} role="group" aria-label="Выбор типа аккаунта">
               <button
                 className={`${styles.toggleButton} ${accountType === "specialist" ? "active" : ""}`}
@@ -77,7 +85,10 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
                 type="button"
                 aria-pressed={accountType === "specialist"}
               >
-                <FaUserDoctor size={32} />
+                <span className={styles.toggleContent}>
+                  <FaUserDoctor size={20} />
+                  <span className={styles.toggleLabel}>Специалист</span>
+                </span>
               </button>
               <button
                 className={`${styles.toggleButton} ${accountType === "organization" ? "active" : ""}`}
@@ -85,7 +96,10 @@ const NewRegistrationModal: React.FC<NewRegistrationModalProps> = ({ show, handl
                 type="button"
                 aria-pressed={accountType === "organization"}
               >
-                <FaHospital size={40} className="pb-2"/>
+                <span className={styles.toggleContent}>
+                  <FaHospital size={20} />
+                  <span className={styles.toggleLabel}>Организация</span>
+                </span>
               </button>
             </div>
           </div>

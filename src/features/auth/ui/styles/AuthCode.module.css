@@ -1,61 +1,79 @@
-
 .logoModalCode {
-    display: block;
-    margin: 0 auto 20px auto;
-    width: 200px;
-    height: auto;
-  }
-  
-  .modalCodeTitle {
-    font-size: 24px;
-    font-weight: 600;
-  }
-  
-  .codeInputContainer {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .codeInput {
-    width: 50px;
-    height: 60px;
-    text-align: center;
-    font-size: 24px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    transition: border-color 0.3s;
-  }
-  
-  .codeInput:focus {
-    outline: none;
-    border-color: #5388d8;
-  }
+  display: block;
+  margin: 0 auto 12px;
+  width: 164px;
+  height: auto;
+}
 
-  .closeButton {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.25rem;
-    z-index: 1051;
-  }
-  
-  .btnCodeCustom {
-    width: 80%;
-    height: 50px;
-    font-size: 18px;
-    border-radius: 10px;
-    margin-top: 20px;
-    background-color: #5388d8 !important;
-  }
+.modalCodeTitle {
+  font-size: 21px;
+  font-weight: 700;
+  color: #22344c;
+}
 
-  .errorMessage {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
-  }
+.codeInputContainer {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.codeInput {
+  width: 46px;
+  height: 56px;
+  text-align: center;
+  font-size: 23px;
+  font-weight: 700;
+  border-radius: 12px;
+  border: 1px solid rgba(83, 136, 216, 0.3);
+  background: rgba(255, 255, 255, 0.95);
+  color: #274266;
+  box-shadow: 0 8px 16px rgba(83, 136, 216, 0.1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.codeInput:focus {
+  outline: none;
+  border-color: #5388d8;
+  box-shadow: 0 0 0 4px rgba(83, 136, 216, 0.16);
+}
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(83, 136, 216, 0.1);
+  color: #3d6fb9;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1051;
+}
+
+.closeButton:hover {
+  background: rgba(83, 136, 216, 0.2);
+}
+
+.btnCodeCustom {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 12px;
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(140deg, #5388d8, #3368bb) !important;
+  box-shadow: 0 12px 22px rgba(83, 136, 216, 0.32);
+}
+
+.errorMessage {
+  color: #cf2f45;
+  font-size: 13px;
+  margin-top: 8px;
+}

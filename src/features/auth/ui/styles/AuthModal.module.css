@@ -3,78 +3,222 @@
   font-family: var(--font-montserrat), sans-serif;
 }
 
+.customModal :global(.modal-dialog) {
+  max-width: 560px;
+}
+
+.registrationDialog {
+  width: min(980px, calc(100vw - 36px));
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.registrationModal :global(.modal-dialog) {
+  max-width: none;
+}
+
 .customModal :global(.modal-content) {
-  border-radius: 20px;
-  padding: 40px;
-  max-width: 500px;
-  height: auto;
-  border: none;
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  padding: 24px 24px 12px;
+  width: 100%;
+  border: 1px solid rgba(83, 136, 216, 0.22);
+  background: linear-gradient(155deg, #ffffff 0%, #f4f9ff 58%, #edf5ff 100%);
+  box-shadow: 0 28px 60px rgba(43, 85, 149, 0.24);
+}
+
+.registrationModal :global(.modal-content) {
+  padding: 14px 18px 8px;
+}
+
+.registrationModal :global(.modal-body) {
+  padding: 0.35rem 0.5rem 0;
+}
+
+.registrationModal :global(.modal-footer) {
+  margin-top: 4px;
+  padding-top: 10px;
+  padding-bottom: 4px;
+}
+
+.customModal :global(.modal-content)::before,
+.customModal :global(.modal-content)::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.customModal :global(.modal-content)::before {
+  width: 180px;
+  height: 180px;
+  top: -86px;
+  right: -44px;
+  background: radial-gradient(circle, rgba(83, 136, 216, 0.26), rgba(83, 136, 216, 0));
+}
+
+.customModal :global(.modal-content)::after {
+  width: 220px;
+  height: 220px;
+  bottom: -118px;
+  left: -84px;
+  background: radial-gradient(circle, rgba(122, 176, 255, 0.2), rgba(122, 176, 255, 0));
+}
+
+.customModal :global(.modal-body),
+.customModal :global(.modal-footer) {
+  position: relative;
+  z-index: 1;
+}
+
+.customModal :global(.modal-footer) {
+  border-top: 1px solid rgba(83, 136, 216, 0.15);
+  margin-top: 8px;
+  padding-top: 14px;
 }
 
 .logo {
   display: block;
-  margin: 0 auto 20px auto;
-  width: 200px;
+  margin: 0 auto 4px;
+  width: 136px;
   height: auto;
 }
 
 .modalTitle {
-  font-size: 36px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  text-align: center;
+  margin: 0;
+  font-size: clamp(1.65rem, 3.6vw, 2.15rem);
+  line-height: 1.08;
+  font-weight: 700;
+  color: #1e2e42;
+}
+
+.modalSubtitle {
+  margin: 4px auto 8px;
+  max-width: 440px;
+  color: #536883;
+  line-height: 1.5;
+  font-size: 13px;
 }
 
 .roleToggle {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .toggleButton {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: 2px solid #5388d8;
-  border-radius: 10px;
-  background-color: #f0f4ff;
-  color: #5388d8;
+  position: relative;
+  isolation: isolate;
+  padding: 10px 12px;
+  border: 1px solid rgba(83, 136, 216, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #3d6fb9;
   cursor: pointer;
-  margin-right: 20px;
-  width: 120px;
-  height: 55px;
-  transition: all 0.2s ease;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.toggleButton:hover {
+  transform: translateY(-1px);
+  border-color: #5388d8;
 }
 
 .toggleButton:global(.active) {
-  background-color: #5388d8;
-  color: white;
+  border-color: transparent;
+  color: #ffffff;
+  background: linear-gradient(140deg, #5388d8, #6ea3ef);
+  box-shadow: 0 12px 24px rgba(83, 136, 216, 0.34);
 }
 
-.toggleButton:last-child {
-  margin-right: 0;
+.toggleContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.toggleLabel {
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .closeButton {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(83, 136, 216, 0.12);
+  color: #3968b0;
   cursor: pointer;
-  padding: 0.25rem;
+  z-index: 2;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.closeButton:hover {
+  background: rgba(83, 136, 216, 0.2);
+  transform: scale(1.03);
 }
 
 .errorMessage {
-  color: red;
+  color: #cf2f45;
   font-size: 14px;
   margin-top: 10px;
 }
 
 .loginLink,
 .registrationLink {
-  font-size: 16px;
-  color: #5388d8;
+  font-size: 15px;
+  font-weight: 600;
+  color: #3d70bf;
   text-decoration: none;
-  margin-top: 20px;
 }
 
+.loginLink:hover,
+.registrationLink:hover {
+  color: #244e96;
+}
+
+@media (max-width: 650px) {
+  .registrationDialog {
+    width: calc(100vw - 16px);
+  }
+
+  .customModal :global(.modal-content) {
+    margin: 0 8px;
+    border-radius: 20px;
+    padding: 22px 14px 12px;
+  }
+
+  .registrationModal :global(.modal-content) {
+    padding: 20px 14px 12px;
+  }
+
+  .registrationModal :global(.modal-body) {
+    padding: 0.75rem 0.4rem 0;
+  }
+
+  .logo {
+    width: 140px;
+  }
+
+  .modalSubtitle {
+    margin-top: 8px;
+    font-size: 13px;
+  }
+
+  .toggleLabel {
+    font-size: 13px;
+  }
+}

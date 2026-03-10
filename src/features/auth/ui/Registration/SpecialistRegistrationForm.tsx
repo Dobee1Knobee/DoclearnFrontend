@@ -64,9 +64,15 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
   }, [registrationEmail, loading, authError, onSuccess])
 
   const onSubmit = (data: SpecialistRegistrationFormData) => {
-    const { confirmPassword, agreeToTerms, ...registerData } = data
     const formattedData: RegisterSpecialistDto = {
-      ...registerData,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      middleName: data.middleName,
+      birthday: data.birthday,
+      placeStudy: data.placeStudy,
+      placeWork: data.placeWork,
+      email: data.email,
+      password: data.password,
       role: "student",
       defaultAvatarPath: "/Avatars/Avatar1.webp",
     }
@@ -77,127 +83,147 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.authForm}>
-      <FormInput
-        name="lastName"
-        label="Фамилия"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-          validate: validateName,
-        }}
-        error={errors.lastName}
-        placeholder="Введите фамилию"
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className={`${styles.authForm} ${styles.registrationForm}`}>
+      <div className={styles.registrationGrid}>
+        <div>
+          <FormInput
+            name="lastName"
+            label="Фамилия"
+            control={control}
+            rules={{
+              required: errorMessages.required,
+              validate: validateName,
+            }}
+            error={errors.lastName}
+            placeholder="Введите фамилию"
+          />
+        </div>
 
-      <FormInput
-        name="firstName"
-        label="Имя"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-          validate: validateName,
-        }}
-        error={errors.firstName}
-        placeholder="Введите имя"
-      />
+        <div>
+          <FormInput
+            name="firstName"
+            label="Имя"
+            control={control}
+            rules={{
+              required: errorMessages.required,
+              validate: validateName,
+            }}
+            error={errors.firstName}
+            placeholder="Введите имя"
+          />
+        </div>
 
-      <FormInput
-        name="middleName"
-        label="Отчество"
-        control={control}
-        rules={{
-          validate: validateOptionalName,
-        }}
-        error={errors.middleName}
-        placeholder="Введите отчество, если оно есть"
-      />
+        <div>
+          <FormInput
+            name="middleName"
+            label="Отчество"
+            control={control}
+            rules={{
+              validate: validateOptionalName,
+            }}
+            error={errors.middleName}
+            placeholder="Введите отчество, если оно есть"
+          />
+        </div>
 
-      <FormInput
-        name="birthday"
-        label="Дата рождения"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-          validate: (value: string) => {
-            const birthDate = new Date(value)
-            const today = new Date()
-            const age = today.getFullYear() - birthDate.getFullYear()
+        <div>
+          <FormInput
+            name="birthday"
+            label="Дата рождения"
+            control={control}
+            rules={{
+              required: errorMessages.required,
+              validate: (value: string) => {
+                const birthDate = new Date(value)
+                const today = new Date()
+                const age = today.getFullYear() - birthDate.getFullYear()
 
-            if (age < 16) {
-              return "Возраст должен быть не менее 16 лет"
-            }
-            if (age > 100) {
-              return "Проверьте правильность даты рождения"
-            }
-            return true
-          },
-        }}
-        error={errors.birthday}
-        type="date"
-      />
+                if (age < 16) {
+                  return "Возраст должен быть не менее 16 лет"
+                }
+                if (age > 100) {
+                  return "Проверьте правильность даты рождения"
+                }
+                return true
+              },
+            }}
+            error={errors.birthday}
+            type="date"
+          />
+        </div>
 
-      <FormInput
-        name="placeStudy"
-        label="Место учёбы"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-        }}
-        error={errors.placeStudy}
-        placeholder="Введите место учёбы"
-      />
+        <div>
+          <FormInput
+            name="placeStudy"
+            label="Место учёбы"
+            control={control}
+            rules={{
+              required: errorMessages.required,
+            }}
+            error={errors.placeStudy}
+            placeholder="Введите место учёбы"
+          />
+        </div>
 
-      <FormInput
-        name="placeWork"
-        label="Место работы (необязательно)"
-        control={control}
-        rules={{}}
-        error={errors.placeWork}
-        placeholder="Введите место работы"
-      />
+        <div>
+          <FormInput
+            name="placeWork"
+            label="Место работы (необязательно)"
+            control={control}
+            rules={{}}
+            error={errors.placeWork}
+            placeholder="Введите место работы"
+          />
+        </div>
 
-      <FormInput
-        name="email"
-        label="Почта"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-          validate: validateEmail,
-        }}
-        error={errors.email}
-        placeholder="Введите почту"
-        type="email"
-      />
+        <div>
+          <FormInput
+            name="email"
+            label="Почта"
+            control={control}
+            rules={{
+              required: errorMessages.required,
+              validate: validateEmail,
+            }}
+            error={errors.email}
+            placeholder="Введите почту"
+            type="email"
+          />
+        </div>
 
-      <PasswordInput
-        name="password"
-        label="Пароль"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-          validate: validatePassword,
-        }}
-        error={errors.password}
-        placeholder="Введите пароль"
-      />
+        <div>
+          <PasswordInput
+            name="password"
+            label="Пароль"
+            control={control}
+            rules={{
+              required: errorMessages.required,
+              validate: validatePassword,
+            }}
+            error={errors.password}
+            placeholder="Введите пароль"
+          />
+        </div>
 
-      <PasswordInput
-        name="confirmPassword"
-        label="Повторите пароль"
-        control={control}
-        rules={{
-          required: errorMessages.required,
-          validate: (value: string) => {
-            if (value !== password) {
-              return errorMessages.passwordMismatch
-            }
-            return true
-          },
-        }}
-        error={errors.confirmPassword}
-        placeholder="Повторите пароль"
-      />
+        <div className={styles.fullWidthField}>
+          <PasswordInput
+            name="confirmPassword"
+            label="Повторите пароль"
+            control={control}
+            rules={{
+              required: errorMessages.required,
+              validate: (value: string) => {
+                if (value !== password) {
+                  return errorMessages.passwordMismatch
+                }
+                return true
+              },
+            }}
+            error={errors.confirmPassword}
+            placeholder="Повторите пароль"
+          />
+        </div>
+      </div>
 
       <Controller
         name="agreeToTerms"
@@ -214,6 +240,7 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
               onChange={(e) => onChange(e.target.checked)}
               onBlur={onBlur}
               isInvalid={!!errors.agreeToTerms}
+              className={styles.termsCheck}
               label={
                 <>
                   Я&nbsp;согласен&nbsp;с&nbsp;условиями{" "}
@@ -227,13 +254,9 @@ const SpecialistRegistrationForm: React.FC<SpecialistRegistrationFormProps> = ({
                 </>
               }
               feedback={errors.agreeToTerms?.message}
-              className="mt-4 mb-2"
-
-            >
-
-            </Form.Check>
+            ></Form.Check>
             {errors.agreeToTerms && (
-              <Form.Control.Feedback type="invalid" className="d-block mb-3">
+              <Form.Control.Feedback type="invalid" className={styles.formErrorBlock}>
                 {errors.agreeToTerms.message}
               </Form.Control.Feedback>
             )}

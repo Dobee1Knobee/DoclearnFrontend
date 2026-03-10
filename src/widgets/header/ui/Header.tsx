@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Button, Spinner } from "react-bootstrap"
 import Image from "next/image"
 import { Search, X } from "lucide-react"
@@ -19,7 +19,6 @@ import { useSearch } from "@/features/search/hooks/useSearch"
 import { SearchInput } from "@/features/search/ui/SearchInput"
 import { SearchDropdown } from "@/features/search/ui/SearchDropdown"
 import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
-import desktopLogo from "@/../../public/logo.webp"
 import mobileLogo from "@/../../public/mobileLogo1.png"
 import Link from "next/link"
 
@@ -90,10 +89,10 @@ export default function Header() {
   }
 
   const openMobileSearch = () => setShowMobileSearch(true)
-  const closeMobileSearch = () => {
+  const closeMobileSearch = useCallback(() => {
     setShowMobileSearch(false)
     clearSearch()
-  }
+  }, [clearSearch])
 
   const handleMobileSearchClose = () => {
     closeMobileSearch()
@@ -125,7 +124,7 @@ export default function Header() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [showProfilePopup, searchOpen, showMobileSearch, closeSearch])
+  }, [showProfilePopup, searchOpen, showMobileSearch, closeSearch, closeMobileSearch])
 
   return (
     <header className={styles.header}>

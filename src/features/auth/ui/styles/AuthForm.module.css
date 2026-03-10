@@ -1,51 +1,61 @@
+.authForm {
+  margin-top: 4px;
+}
+
+.registrationForm {
+  margin-top: 2px;
+}
+
+.registrationGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 12px;
+}
+
+.fullWidthField {
+  grid-column: 1 / -1;
+}
+
+.authForm :global(.form-group),
+.authForm :global(.mb-3) {
+  margin-bottom: 14px;
+}
+
+.registrationForm :global(.form-group),
+.registrationForm :global(.mb-3) {
+  margin-bottom: 10px;
+}
+
 .customInput {
-  border-radius: 10px;
-  height: 50px;
-  padding: 10px;
-  font-size: 18px;
-  border: 2px solid #5388d8;
-  margin-bottom: 20px;
   width: 100%;
+  min-height: 48px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(83, 136, 216, 0.28);
+  background: rgba(255, 255, 255, 0.96);
+  font-size: 15px;
+  color: #21324a;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.customInput::placeholder {
+  color: #8092ab;
 }
 
 .customInput:focus {
-  box-shadow: 0 0 0 0.2rem rgba(83, 136, 216, 0.25);
-  border-color: #5388d8;
+  border-color: #4b7ac6;
+  box-shadow: 0 0 0 4px rgba(83, 136, 216, 0.15);
+  background: #fff;
   outline: none;
 }
 
-.btnCustom {
-  width: 100%;
-  height: 50px;
-  font-size: 18px;
-  border-radius: 10px;
-  margin-top: 20px;
-  background-color: #5388d8;
-  border: none;
-  color: white;
-  transition: background-color 0.2s ease;
-}
-
-.btnCustom:hover {
-  background-color: #4070b8;
-}
-
-.btnCustom:disabled {
-  background-color: #5388d8;
-  opacity: 0.65;
-}
-
-.forgotPassword {
-  font-size: 14px;
-  color: #5388d8;
-  text-decoration: none;
-  margin-top: 10px;
-}
-
-.errorMessage {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
+.formLabel {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #324a6a;
 }
 
 .passwordWrapper {
@@ -54,42 +64,155 @@
 
 .passwordToggleIcon {
   position: absolute;
-  right: 10px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  color: #5c84c1;
   cursor: pointer;
-  color: #5388d8;
+  transition: color 0.15s ease;
+}
+
+.passwordToggleIcon:hover {
+  color: #3d6eb9;
 }
 
 .hasError {
-  right: 35px;
-}
-
-.formLabel {
-  font-weight: 500;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.dateInput {
-  appearance: none;
-  -webkit-appearance: none;
-  padding: 10px;
-  font-size: 18px;
-  outline: none;
-}
-
-.dateInput::-webkit-calendar-picker-indicator {
-  opacity: 1;
-  cursor: pointer;
+  right: 34px;
 }
 
 .feedbackInvalid {
   display: block;
   width: 100%;
-  margin-top: -15px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: red;
+  margin-top: 3px;
+  margin-bottom: 0;
+  font-size: 12px;
+  color: #cf2f45;
 }
 
+.errorMessage {
+  margin: 6px 0 8px;
+  font-size: 13px;
+  color: #cf2f45;
+}
+
+.forgotPassword {
+  font-size: 13px;
+  color: #406fba;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.forgotPassword:hover {
+  color: #244e96;
+}
+
+.btnCustom {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 12px;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fff;
+  background: linear-gradient(140deg, #5388d8, #3268bb) !important;
+  box-shadow: 0 12px 22px rgba(83, 136, 216, 0.32);
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btnCustom:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.98);
+}
+
+.btnCustom:disabled {
+  opacity: 0.72;
+  box-shadow: none;
+}
+
+.dateInput {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.authForm :global(.form-check) {
+  margin-top: 10px;
+  margin-bottom: 4px;
+  border: 1px solid rgba(83, 136, 216, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 10px 12px 10px 36px;
+}
+
+.termsCheck {
+  margin-top: 10px;
+}
+
+.registrationForm .termsCheck {
+  margin-top: 4px;
+}
+
+.formErrorBlock {
+  display: block;
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #cf2f45;
+}
+
+.authForm :global(.form-check-input) {
+  width: 18px;
+  height: 18px;
+  margin-left: -24px;
+  border: 1px solid rgba(83, 136, 216, 0.6);
+}
+
+.authForm :global(.form-check-input:checked) {
+  background-color: #5388d8;
+  border-color: #5388d8;
+}
+
+.authForm :global(.form-check-label) {
+  font-size: 13px;
+  color: #415b7e;
+  line-height: 1.5;
+}
+
+.authForm :global(.form-check-label a) {
+  color: #3f6fb9;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.authForm :global(.form-check-label a:hover) {
+  color: #254f97;
+}
+
+@media (max-width: 650px) {
+  .registrationGrid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .customInput {
+    min-height: 44px;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .btnCustom {
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  .authForm :global(.form-check-label) {
+    font-size: 12px;
+  }
+}
