@@ -1,374 +1,344 @@
-.container {
+.layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 0rem;
-  max-width: 1150px;   
-  margin: 0 auto;      
+  grid-template-columns: minmax(0, 1.45fr) 320px;
+  gap: 1.25rem;
 }
 
-.leftColumn {
+.mainColumn,
+.sideColumn {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.15rem;
 }
 
-.rightColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+.storyCard,
+.sideCard {
+  border-radius: 24px;
+  border: 1px solid rgba(83, 136, 216, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.98));
+  box-shadow: 0 16px 40px rgba(36, 73, 138, 0.06);
 }
 
-.section {
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 1.5rem;
+.storyCard,
+.sideCard {
+  padding: 1.3rem;
 }
 
-.sectionTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
+.cardTopline {
+  margin-bottom: 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7b94b6;
 }
 
 .sectionHeader {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  gap: 0.75rem;
   margin-bottom: 1rem;
 }
 
-/* О себе */
-.aboutList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.sectionTitle,
+.sideTitle {
+  margin: 0;
+  color: #1c2738;
+  font-size: 1.22rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
 }
 
-.aboutItem {
-  display: flex;
+.sectionTag {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #4b5563;
-  font-size: 0.875rem;
-}
-
-.aboutIcon {
-  color: #5388d8;
-  flex-shrink: 0;
-}
-
-.showMoreButton {
-  background: none;
-  border: none;
-  color: #5388d8;
-  font-size: 0.875rem;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  margin-top: 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.showMoreButton:hover {
+  min-height: 32px;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
   background: rgba(83, 136, 216, 0.1);
+  color: #4273c4;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
-/* Ближайшие события */
-.eventsList {
+.aboutContent {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
-.eventItem {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 8px;
-  background: #ffffff;
-  transition: background-color 0.2s;
-}
-
-.eventItem:hover {
-  background: #f1f5f9;
-}
-
-.eventDetails {
-  flex: 1;
-}
-
-.eventIcon {
-  flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  color: white;
+.aboutLead {
+  margin: 0;
+  color: #33485f;
+  font-size: 1rem;
+  line-height: 1.78;
   font-weight: 600;
 }
 
-.conferenceIcon {
-  background: #3b82f6;
-}
-
-.webinarIcon {
-  background: #10b981;
-}
-
-.eventTitle {
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 0.25rem;
-  font-size: 0.875rem;
-}
-
-.eventMeta {
-  color: #6b7280;
-  font-size: 0.75rem;
-}
-
-/* Приём пациентов */
-.statusBadge {
-  background: #dcfce7;
-  color: #16a34a;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
+.aboutParagraph {
+  margin: 0;
+  color: #53657b;
+  font-size: 0.92rem;
+  line-height: 1.72;
   font-weight: 500;
 }
 
-.appointmentDetails {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.emptyStory {
+  padding: 1rem 1.05rem;
+  border-radius: 18px;
+  background: #f7faff;
+  border: 1px dashed rgba(83, 136, 216, 0.24);
 }
 
-.appointmentItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #e5e7eb;
+.emptyTitle {
+  margin: 0 0 0.4rem;
+  color: #1f3046;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-.appointmentItem:last-child {
-  border-bottom: none;
+.emptyText,
+.sideText {
+  margin: 0;
+  color: #64778e;
+  font-size: 0.9rem;
+  line-height: 1.68;
 }
 
-.appointmentLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #4b5563;
-  font-size: 0.875rem;
-}
-
-.appointmentValue {
-  font-weight: 600;
-  color: #1a1a1a;
-  font-size: 0.875rem;
-}
-
-.appointmentSlots {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-
-.timeSlot {
-  padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #4b5563;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.timeSlot:hover {
-  border-color: #5388d8;
-  color: #5388d8;
-}
-
-.selectTimeButton {
-  width: 100%;
-  padding: 0.75rem;
-  background: #5388d8;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.2s;
-}
-
-.selectTimeButton:hover {
-  background: #4070b8;
-}
-
-/* Достижения */
-.achievementsSection {
-  grid-column: 1 / -1;  
-}
-
-.achievementsHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.addButton {
-  background: none;
-  border: none;
-  color: #5388d8;
-  font-size: 0.875rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.addButton:hover {
-  background: rgba(83, 136, 216, 0.1);
-}
-
-.achievementsList {
+.quickGrid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
-.achievementItem {
-  display: flex;
-  flex-direction: column;
+.quickCard {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
   align-items: center;
-  text-align: center;
-  padding: 1rem 0.5rem;
-  border-radius: 8px;
-  background: #ffffff;
-  transition: transform 0.2s, box-shadow 0.2s;
+  gap: 0.9rem;
+  min-height: 108px;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(83, 136, 216, 0.1);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(83, 136, 216, 0.08), transparent 28%),
+    linear-gradient(180deg, #ffffff, #f8fbff);
+  text-align: left;
   cursor: pointer;
-  height: 7.5rem;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
-.achievementItem:hover {
+.quickCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgba(83, 136, 216, 0.24);
+  box-shadow: 0 18px 40px rgba(36, 73, 138, 0.08);
 }
 
-.achievementIcon {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #5388d8;
-}
-
-.achievementTitle {
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 0.25rem;
-  font-size: 0.875rem;
-  line-height: 1.2;
-}
-
-.achievementYear {
-  color: #6b7280;
-  font-size: 0.75rem;
-}
-
-.tooltipWrapper {
-  position: relative;
-  display: inline-block; 
-}
-
-.tooltipText {
-  visibility: hidden;
-  opacity: 0;
-  width: max-content;
-  max-width: 200px;
-  background: #5388d8;
-  color: #fff;
-  text-align: center;
-  border-radius: 4px;
-  padding: 0.5rem;
-  font-size: 0.75rem;
-  position: absolute;
-  /* bottom: 105%; */
-  top: 105%;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: opacity 0.2s;
-  z-index: 10;
-  pointer-events: none;
-}
-
-/* При наведении — показываем тултип */
-.tooltipWrapper:hover .tooltipText {
-  visibility: visible;
-  opacity: 1;
-}
-
-/* Блюр в разработке */
-.sectionWithOverlay {
-  position: relative;
-}
-
-.blurOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border-radius: 12px;
-  display: flex;
+.quickCardIcon {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
-  border: 1px solid #e5e7eb;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  color: #4a79c7;
+  background: linear-gradient(135deg, #eef4ff, #deebff);
 }
 
-.developmentMessage {
-  background: #f8fafc;
-  color: #6b7280;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  border: 1px solid #d1d5db;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.quickCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
 }
 
+.quickCardValue {
+  color: #1e2c40;
+  font-size: 1.56rem;
+  line-height: 0.95;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
 
-@media (max-width: 768px) {
-  .container {
+.quickCardTitle {
+  color: #314860;
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.quickCardDescription {
+  color: #7c8da3;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quickCardArrow {
+  color: #b7c4d5;
+}
+
+.completionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.completionTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.completionIcon {
+  color: #5388d8;
+}
+
+.completionPercent {
+  color: #5388d8;
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.completionText {
+  margin: 0 0 0.8rem;
+  color: #61748c;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.progressTrack {
+  height: 8px;
+  border-radius: 999px;
+  background: #e8eef6;
+  overflow: hidden;
+  margin-bottom: 0.95rem;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5388d8, #356cbf);
+}
+
+.missingList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.factList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.missingTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 34px;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: #f4f8fc;
+  color: #53657a;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.missingIcon,
+.factIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgba(83, 136, 216, 0.12);
+  color: #5388d8;
+  flex-shrink: 0;
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 42px;
+  margin-top: 0.95rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid rgba(83, 136, 216, 0.16);
+  border-radius: 14px;
+  background: #ffffff;
+  color: #356cbf;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.editButton:hover {
+  background: #f7fbff;
+  border-color: #5388d8;
+}
+
+.factItem {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 0.7rem;
+  align-items: start;
+}
+
+.factBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.factLabel {
+  color: #8193aa;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.factValue {
+  color: #24354b;
+  font-size: 0.93rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+@media (max-width: 1180px) {
+  .layout {
     grid-template-columns: 1fr;
-    padding: 0rem;
   }
-  
-  .achievementsList {
-    grid-template-columns: repeat(2, 1fr);
+
+  .quickGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
-  .appointmentSlots {
-    flex-wrap: wrap;
+
+  .sideColumn {
+    order: -1;
   }
-  
-  .section {
-    padding: 1rem;
+}
+
+@media (max-width: 760px) {
+  .quickGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

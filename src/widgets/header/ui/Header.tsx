@@ -21,8 +21,10 @@ import { SearchDropdown } from "@/features/search/ui/SearchDropdown"
 import { useAvatarCache } from "@/shared/hooks/useAvatarCache"
 import mobileLogo from "@/../../public/mobileLogo1.png"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 export default function Header() {
+  const pathname = usePathname()
   const dispatch = useAppDispatch()
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const user = useAppSelector(selectUser)
@@ -98,7 +100,33 @@ export default function Header() {
     closeMobileSearch()
   }
 
-  const avatarUrl = user ? getAvatarUrl(user.avatarUrl, user.avatarId, user._id, user.defaultAvatarPath) : "/placeholder.webp"
+  const fallbackAvatarSrc = user?.defaultAvatarPath || "/placeholder.webp"
+  const resolvedAvatarUrl = user
+    ? getAvatarUrl(user.avatarUrl, user.avatarId, user._id, fallbackAvatarSrc)
+    : "/placeholder.webp"
+  const [avatarSrc, setAvatarSrc] = useState(resolvedAvatarUrl)
+
+  useEffect(() => {
+    setAvatarSrc(resolvedAvatarUrl)
+  }, [resolvedAvatarUrl])
+
+  const handleAvatarError = () => {
+    if (avatarSrc !== fallbackAvatarSrc) {
+      setAvatarSrc(fallbackAvatarSrc)
+      return
+    }
+
+    if (fallbackAvatarSrc !== "/placeholder.webp") {
+      setAvatarSrc("/placeholder.webp")
+    }
+  }
+
+  const isProfileArea = pathname.startsWith("/profile/") || pathname === "/profile-demo"
+  const isFeedArea = pathname === "/Feed"
+
+  if (isProfileArea || isFeedArea) {
+    return null
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -227,13 +255,14 @@ export default function Header() {
           <div className={styles.avatarContainer} ref={profilePopupRef}>
             <div className={styles.avatarWrapper} onClick={toggleProfilePopup}>
               <Image
-                src={avatarUrl || "/placeholder.webp"}
+                src={avatarSrc || "/placeholder.webp"}
                 alt="User Avatar"
                 width={45}
                 height={45}
                 className={styles.avatar}
                 priority={false}
-                unoptimized={avatarUrl.startsWith("blob:")}
+                unoptimized={avatarSrc.startsWith("blob:")}
+                onError={handleAvatarError}
               />
             </div>
             {showProfilePopup && (

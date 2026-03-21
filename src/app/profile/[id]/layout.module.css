@@ -1,0 +1,38 @@
+.profileLayout {
+  display: flex;
+  max-width: 1520px;
+  margin: 1rem auto 2rem;
+  padding: 0 1.2rem;
+  gap: 1.35rem;
+  min-height: calc(100vh - 3rem);
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.mainContent::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(83, 136, 216, 0.08), transparent 18%),
+    radial-gradient(circle at 88% 12%, rgba(83, 136, 216, 0.06), transparent 18%);
+  z-index: -1;
+}
+
+.sidebarPlaceholder {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .profileLayout {
+    flex-direction: column;
+    margin-top: 4.5rem;
+    padding: 0 0.85rem 1rem;
+    gap: 1rem;
+  }
+}

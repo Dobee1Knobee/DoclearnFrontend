@@ -1,0 +1,11 @@
+.container {
+  max-width: 1000px;
+  margin: 5.5rem auto 2rem;
+  padding: 0 1.5rem;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}

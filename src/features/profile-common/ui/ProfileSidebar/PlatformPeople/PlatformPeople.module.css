@@ -1,0 +1,176 @@
+.block {
+  padding: 0.5rem;
+  border-radius: 14px;
+  border: 1px solid rgba(83, 136, 216, 0.08);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.embedded {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.blockHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.blockTitle {
+  margin: 0;
+  color: #8193a8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.refreshButton,
+.followButton,
+.profileButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.refreshButton {
+  min-height: 26px;
+  padding: 0.25rem 0.45rem;
+  border: 1px solid #dfe8f1;
+  background: #ffffff;
+  color: #6f87a2;
+}
+
+.refreshButton:hover,
+.profileButton:hover {
+  border-color: #5388d8;
+  color: #356cbf;
+  background: #f7fbff;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.personCard {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 48px;
+  padding: 0.35rem;
+  border-radius: 10px;
+  background: rgba(248, 251, 255, 0.7);
+  border: 1px solid rgba(232, 239, 248, 0.6);
+}
+
+.personMain {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #edf3fc;
+  flex-shrink: 0;
+}
+
+.personInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  min-width: 0;
+}
+
+.personName {
+  color: #203047;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.personMeta {
+  color: #8193a8;
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.followButton,
+.profileButton {
+  min-height: 28px;
+  padding: 0.35rem 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.followButton {
+  border: none;
+  background: #5388d8;
+  color: #ffffff;
+}
+
+.followButton:hover {
+  background: #4070c4;
+}
+
+.profileButton {
+  border: 1px solid #dfe8f1;
+  background: #ffffff;
+  color: #5a6f88;
+}
+
+.stateText {
+  color: #8e9fb4;
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.spinning {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .personCard {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .followButton,
+  .profileButton {
+    width: 100%;
+  }
+}

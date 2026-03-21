@@ -1,124 +1,169 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem;
 }
 
-.header {
+.hero {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.2rem;
+  border-radius: 24px;
+  border: 1px solid rgba(83, 136, 216, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.98));
+}
+
+.eyebrow {
+  display: inline-flex;
+  margin-bottom: 0.45rem;
+  color: #7a93b3;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
   margin: 0;
+  color: #1f2d42;
+  font-size: 1.26rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
 }
 
-.uploadButton {
-  display: flex;
+.subtitle {
+  max-width: 760px;
+  margin: 0.35rem 0 0;
+  color: #687b92;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.uploadButton,
+.emptyAction {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background-color: #5388d8 !important;
-  border-color: #5388d8 !important;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 46px;
+  padding: 0.75rem 1.1rem;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #5388d8, #356cbf);
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-.uploadButton:hover {
-  background-color: #4070b8 !important;
-  border-color: #4070b8 !important;
-  transform: translateY(-1px);
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.uploadIcon {
-  flex-shrink: 0;
+.statCard {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 0.8rem;
+  align-items: center;
+  min-height: 92px;
+  padding: 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(83, 136, 216, 0.1);
+  background: linear-gradient(180deg, #ffffff, #f9fbff);
 }
 
-.content {
-  flex: 1;
-  min-height: 300px;
+.statIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(83, 136, 216, 0.1);
+  color: #5388d8;
+}
+
+.statValue {
+  display: block;
+  color: #22344b;
+  font-size: 1.52rem;
+  line-height: 0.95;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.statLabel {
+  display: block;
+  margin-top: 0.25rem;
+  color: #7c8fa6;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .documentsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin-top: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.empty {
+.emptyState {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.8rem;
+  padding: 3rem 2rem;
+  border-radius: 24px;
+  border: 1px dashed rgba(83, 136, 216, 0.22);
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(255, 255, 255, 0.98));
   text-align: center;
-  padding: 3rem 1rem;
-  color: #6b7280;
 }
 
 .emptyIcon {
-  margin-bottom: 1rem;
-  opacity: 0.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  background: rgba(83, 136, 216, 0.1);
+  color: #5388d8;
 }
 
 .emptyTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 0.5rem;
+  margin: 0;
+  color: #22344b;
+  font-size: 1.14rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .emptyText {
-  font-size: 0.875rem;
-  max-width: 300px;
-  line-height: 1.5;
+  max-width: 620px;
   margin: 0;
+  color: #677b93;
+  font-size: 0.9rem;
+  line-height: 1.68;
 }
 
-@media (max-width: 1000px) {
-  .documentsGrid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 900px) {
+  .documentsGrid,
+  .statsGrid {
+    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 768px) {
-  .header {
+@media (max-width: 640px) {
+  .hero {
     flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
   }
 
   .uploadButton {
-    justify-content: center;
-  }
-
-  .documentsGrid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    gap: 1rem;
-  }
-
-  .documentsGrid {
-    gap: 0.75rem;
-  }
-}
-
-@media (min-width: 1400px) {
-  .documentsGrid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    width: 100%;
   }
 }

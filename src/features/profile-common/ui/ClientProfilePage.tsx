@@ -1,18 +1,22 @@
 "use client"
 
 import type React from "react"
+import { Suspense } from "react"
 import type { SpecialistUser } from "@/entities/user/model/types"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useGetAuthorProfileQuery } from "@/features/author-profile/api/authorProfileApi"
 import { useAppSelector } from "@/shared/hooks/hooks"
 import { selectUser, selectIsAuthenticated, selectIsInitialized } from "@/features/auth/model/selectors"
-import { Spinner } from "react-bootstrap"
-import { ProfileHeader } from "./ProfileHeader"
-import { ProfileTabs } from "./ProfileTabs"
+import { ProfileHero } from "./ProfileHero/ProfileHero"
+import { ProfileContentRouter } from "./ProfileContentRouter"
+import { ProfileSkeleton } from "./ProfileSkeleton/ProfileSkeleton"
+import styles from "./ClientProfilePage.module.css"
 
-export const ClientProfilePage: React.FC = () => {
+const ClientProfilePageInner: React.FC = () => {
   const params = useParams()
+  const searchParams = useSearchParams()
   const userId = params.id as string
+  const activeTab = searchParams.get("tab") || "overview"
 
   const currentUser = useAppSelector(selectUser)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
@@ -30,7 +34,7 @@ export const ClientProfilePage: React.FC = () => {
 
   let profile: SpecialistUser | undefined
   let isLoading: boolean
-  let error: any
+  let error: unknown
 
   if (!isInitialized) {
     isLoading = true
@@ -47,40 +51,48 @@ export const ClientProfilePage: React.FC = () => {
   }
 
   if (isLoading) {
-    return (
-      <div className="text-center p-4">
-        <Spinner animation="border" style={{ color: "#5388d8" }} />
-        <p className="mt-3">Загрузка профиля...</p>
-      </div>
-    )
+    return <ProfileSkeleton />
   }
 
   if (error) {
     const errorMessage =
-      "data" in error && error.data && typeof error.data === "object" && "message" in error.data
-        ? (error.data as any).message
+      typeof error === "object" &&
+      error !== null &&
+      "data" in error &&
+      typeof (error as { data?: unknown }).data === "object" &&
+      (error as { data?: unknown }).data !== null &&
+      "message" in ((error as { data?: Record<string, unknown> }).data as Record<string, unknown>)
+        ? String(((error as { data?: Record<string, unknown> }).data as Record<string, unknown>).message)
         : "Ошибка загрузки профиля"
 
     return (
-      <div className="text-center p-4">
-        <h3 className="text-danger mb-3">{errorMessage}</h3>
-        <p className="text-muted">Попробуйте обновить страницу или вернуться позже</p>
+      <div className={styles.stateCard}>
+        <h3 className={styles.stateErrorTitle}>{errorMessage}</h3>
+        <p className={styles.stateMuted}>Попробуйте обновить страницу или вернуться позже</p>
       </div>
     )
   }
 
   if (!profile) {
     return (
-      <div className="text-center p-4">
-        <h3 className="text-danger mb-3">Профиль не найден</h3>
+      <div className={styles.stateCard}>
+        <h3 className={styles.stateErrorTitle}>Профиль не найден</h3>
       </div>
     )
   }
 
   return (
-    <>
-      <ProfileHeader profile={profile} />
-      <ProfileTabs profile={profile} />
-    </>
+    <div className={styles.wrapper}>
+      <ProfileHero profile={profile} />
+      <ProfileContentRouter profile={profile} activeTab={activeTab} />
+    </div>
+  )
+}
+
+export const ClientProfilePage: React.FC = () => {
+  return (
+    <Suspense fallback={<ProfileSkeleton />}>
+      <ClientProfilePageInner />
+    </Suspense>
   )
 }

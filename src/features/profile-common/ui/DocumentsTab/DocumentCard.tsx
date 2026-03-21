@@ -1,15 +1,15 @@
 "use client"
 
 import type React from "react"
-import { Download, Trash2, FileText, Calendar, Eye, EyeOff, CheckCircle } from "lucide-react"
+import { CalendarDays, Download, Eye, EyeOff, FileText, ShieldCheck, Trash2 } from "lucide-react"
 import type { Document, DocumentCategory } from "@/entities/user/model/types"
-import styles from "./DocumentCard.module.css"
 import { VerifiedBadge } from "@/shared/ui/VerifiedBadge/VerifiedBadge"
+import styles from "./DocumentCard.module.css"
 
 interface DocumentCardProps {
   document: Document
-  onDownload: (documentId: string) => void
-  onDelete: (documentId: string) => void
+  onDownload: (document: Document) => void
+  onDelete: (document: Document) => void
   showActions?: boolean
   showVisibility?: boolean
 }
@@ -31,15 +31,15 @@ const categoryLabels: Record<DocumentCategory, string> = {
   other: "Другое",
 }
 
-export const DocumentCard: React.FC<DocumentCardProps> = ({ 
-    document, 
-    onDownload, 
-    onDelete, 
-    showActions = true, 
-    showVisibility = true, 
-  }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+export const DocumentCard: React.FC<DocumentCardProps> = ({
+  document,
+  onDownload,
+  onDelete,
+  showActions = true,
+  showVisibility = true,
+}) => {
+  const formatDate = (value: string) => {
+    const date = new Date(value)
     return date.toLocaleDateString("ru-RU", {
       day: "2-digit",
       month: "2-digit",
@@ -47,64 +47,58 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
     })
   }
 
-  const handleDownload = () => {
-    onDownload(document._id)
-  }
-
-  const handleDelete = () => {
-    onDelete(document._id)
-  }
+  const documentTitle = document.label || categoryLabels[document.category]
 
   return (
-    <div className={styles.documentCard}>
-      {/* <div className={`${styles.categoryBadge} ${styles[document.category]}`}>{categoryLabels[document.category]}</div> */}
+    <article className={styles.card}>
+      <div className={styles.topline}>
+        <span className={styles.categoryPill}>{categoryLabels[document.category]}</span>
+        {document.isVerified && (
+          <span className={styles.verifiedPill}>
+            <ShieldCheck size={14} />
+            Проверен
+          </span>
+        )}
+      </div>
 
-      <div className={styles.cardHeader}>
-        <div style={{ display: "flex", alignItems: "flex-start" }}>
-          <div className={styles.documentIcon}>
-            <FileText size={24} />
-          </div>
-          <div className={styles.documentInfo}>
-            {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <h4 className={styles.documentTitle}>{document.label || categoryLabels[document.category]}</h4>
-              {document.isVerified && <CheckCircle size={16} className={styles.verifiedIcon} />}
-            </div> */}
-            <h4 className={styles.documentTitle}>{document.label || categoryLabels[document.category]}</h4>
-            <p className={styles.documentCategory}>{categoryLabels[document.category]}</p>
-          </div>
+      <div className={styles.header}>
+        <div className={styles.iconWrap}>
+          <FileText size={24} />
+        </div>
+        <div className={styles.info}>
+          <h4 className={styles.title}>{documentTitle}</h4>
+          <p className={styles.subtitle}>{categoryLabels[document.category]}</p>
         </div>
       </div>
-      {showVisibility && (
-        <div className={styles.documentMeta}>
-          <div className={styles.uploadDate}>
-            <Calendar size={12} />
-            {formatDate(document.uploadedAt)}
-          </div>
-          <div className={`${styles.publicBadge} ${document.isPublic ? styles.public : styles.private}`}>
-            {document.isPublic ? <Eye size={12} /> : <EyeOff size={12} />}
-            {document.isPublic ? "Публичный" : "Приватный"}
-          </div>
-          {document.isVerified &&
-            <div className={styles.tooltipWrapper} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <VerifiedBadge className={styles.verifiedIcon} />
-              <span className={styles.tooltipText}>Верифицирован</span>
-            </div>
-          }
-        </div>
-      )}
 
-      <div className={styles.cardActions}>
-        <button type="button" className={`${styles.actionButton} ${styles.download}`} onClick={handleDownload}>
+      <div className={styles.metaRow}>
+        <span className={styles.metaItem}><CalendarDays size={14} /> {formatDate(document.uploadedAt)}</span>
+        {showVisibility && (
+          <span className={`${styles.visibilityPill} ${document.isPublic ? styles.public : styles.private}`}>
+            {document.isPublic ? <Eye size={14} /> : <EyeOff size={14} />}
+            {document.isPublic ? "Публичный" : "Приватный"}
+          </span>
+        )}
+        {document.isVerified && (
+          <span className={styles.badgeWithIcon}>
+            <VerifiedBadge className={styles.verifiedIcon} />
+            Верифицирован
+          </span>
+        )}
+      </div>
+
+      <div className={styles.actions}>
+        <button type="button" className={`${styles.actionButton} ${styles.download}`} onClick={() => onDownload(document)}>
           <Download size={16} />
           Скачать
         </button>
         {showActions && (
-          <button type="button" className={`${styles.actionButton} ${styles.delete}`} onClick={handleDelete}>
+          <button type="button" className={`${styles.actionButton} ${styles.delete}`} onClick={() => onDelete(document)}>
             <Trash2 size={16} />
             Удалить
           </button>
         )}
       </div>
-    </div>
+    </article>
   )
 }

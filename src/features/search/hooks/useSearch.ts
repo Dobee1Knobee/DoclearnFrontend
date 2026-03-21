@@ -37,7 +37,9 @@ export const useSearch = () => {
 
   const performSearch = useCallback(
     async (query: string) => {
-      if (query.length < 2) {
+      const normalizedQuery = query.trim()
+
+      if (normalizedQuery.length < 2) {
         setState((prev) => ({
           ...prev,
           results: [],
@@ -50,7 +52,8 @@ export const useSearch = () => {
         return
       }
 
-      const cached = searchCache.current.get(query)
+      const cacheKey = normalizedQuery.toLowerCase()
+      const cached = searchCache.current.get(cacheKey)
       if (cached && Date.now() - cached.timestamp < 5 * 60 * 1000) {
         setState((prev) => ({
           ...prev,
@@ -67,10 +70,9 @@ export const useSearch = () => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
 
       try {
-        const response = await searchUsers(query.trim())
-        console.log("Ответ от поиска: ", response)
+        const response = await searchUsers(normalizedQuery)
 
-        searchCache.current.set(query, {
+        searchCache.current.set(cacheKey, {
           results: response.data.usersWithAvatars,
           count: response.data.total,
           timestamp: Date.now(),

@@ -20,6 +20,8 @@ import { Alert } from "react-bootstrap"
 import styles from "./ProfileEditForm.module.css"
 import { useScrollToHash } from "@/shared/hooks/useScrollToHash"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Eye, FileText, GraduationCap, Layers3 } from "lucide-react"
 
 interface NewProfileEditFormProps {
   profile: SpecialistUser
@@ -27,6 +29,7 @@ interface NewProfileEditFormProps {
 
 export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile }) => {
   useScrollToHash()
+  const router = useRouter()
 
   const [uploadAvatar, { isLoading: isUploadingAvatar }] = useUploadAvatarMutation()
   const { cacheAvatar, invalidateAvatar } = useAvatarCache()
@@ -207,6 +210,48 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
 
   const isSaveDisabled = (!hasChanges && !uploadedAvatarFile) || isUpdating || isUploadingAvatar || hasValidationErrors
 
+  const completionChecks = [
+    Boolean(formData.firstName?.trim()),
+    Boolean(formData.lastName?.trim()),
+    Boolean(formData.bio?.trim()),
+    Boolean(formData.location?.trim()),
+    Boolean(formData.placeWork?.trim() || formData.placeStudy?.trim()),
+    Boolean(Array.isArray(formData.contacts) && formData.contacts.some((item) => item.value?.trim())),
+    Boolean(
+      Array.isArray(formData.education)
+        ? formData.education.length > 0
+        : formData.education && (formData.education as any).institution,
+    ),
+    Boolean(Array.isArray(formData.workHistory) && formData.workHistory.length > 0),
+    Boolean(formData.avatar || uploadedAvatarFile || formData.defaultAvatarPath),
+  ]
+
+  const completionPercent = Math.round((completionChecks.filter(Boolean).length / completionChecks.length) * 100)
+  const filledContacts = Array.isArray(formData.contacts)
+    ? formData.contacts.filter((item) => item.value?.trim()).length
+    : 0
+  const educationCount = Array.isArray(formData.education)
+    ? formData.education.length
+    : formData.education && (formData.education as any)._id
+      ? 1
+      : 0
+  const missingHighlights = [
+    !formData.bio?.trim() ? "описание профиля" : null,
+    !(formData.placeWork?.trim() || formData.placeStudy?.trim()) ? "место работы или учебы" : null,
+    filledContacts === 0 ? "контакты" : null,
+    educationCount === 0 ? "образование" : null,
+  ].filter(Boolean) as string[]
+
+  const roleLabelMap: Record<string, string> = {
+    student: "Студент",
+    resident: "Ординатор",
+    postgraduate: "Аспирант",
+    doctor: "Врач",
+    researcher: "Исследователь",
+    admin: "Администратор",
+    owner: "Владелец",
+  }
+
   const renderRoleSpecificBlocks = () => {
     const role = formData.role
 
@@ -302,8 +347,81 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
       <UnsavedChangesWarning hasUnsavedChanges={hasChanges} />
 
       <div className={styles.container}>
+        <div className={styles.heroCard}>
+          <div className={styles.heroCopy}>
+            <span className={styles.eyebrow}>Редактирование профиля</span>
+            <h1 className={styles.title}>Соберите сильный профессиональный профиль</h1>
+            <p className={styles.description}>
+              Здесь профиль превращается из обычной анкеты в полноценную профессиональную карточку: с историей, контактами,
+              образованием и доказательствами квалификации.
+            </p>
+
+            <div className={styles.heroMeta}>
+              <span className={styles.roleBadge}>{roleLabelMap[formData.role] || "Профиль"}</span>
+              <span className={hasChanges ? styles.stateBadgeWarning : styles.stateBadgeSuccess}>
+                {hasChanges ? "Есть несохраненные изменения" : "Изменения сохранены"}
+              </span>
+            </div>
+
+            <div className={styles.inlineProgress}>
+              <div className={styles.progressHeader}>
+                <div>
+                  <span className={styles.progressEyebrow}>Прогресс</span>
+                  <h2 className={styles.progressTitle}>Насколько цельно выглядит профиль</h2>
+                </div>
+                <span className={styles.progressValue}>{completionPercent}%</span>
+              </div>
+
+              <div className={styles.progressTrack}>
+                <div className={styles.progressFill} style={{ width: `${completionPercent}%` }} />
+              </div>
+
+              <div className={styles.progressHints}>
+                {missingHighlights.length > 0 ? (
+                  missingHighlights.map((item) => (
+                    <span key={item} className={styles.hintBadge}>{item}</span>
+                  ))
+                ) : (
+                  <span className={styles.hintBadgeComplete}>Профиль выглядит заполненным</span>
+                )}
+              </div>
+            </div>
+
+            <div className={styles.heroActions}>
+              <button className={styles.previewButton} onClick={() => router.push(`/profile/${profile._id}`)}>
+                <Eye size={16} />
+                Посмотреть профиль
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.summaryGrid}>
+            <div className={styles.summaryCard}>
+              <span className={styles.summaryIcon}><Layers3 size={18} /></span>
+              <div className={styles.summaryTextBlock}>
+                <strong className={styles.summaryValue}>{completionPercent}%</strong>
+                <span className={styles.summaryLabel}>заполненность</span>
+              </div>
+            </div>
+            <div className={styles.summaryCard}>
+              <span className={styles.summaryIcon}><FileText size={18} /></span>
+              <div className={styles.summaryTextBlock}>
+                <strong className={styles.summaryValue}>{filledContacts}</strong>
+                <span className={styles.summaryLabel}>контактов заполнено</span>
+              </div>
+            </div>
+            <div className={styles.summaryCard}>
+              <span className={styles.summaryIcon}><GraduationCap size={18} /></span>
+              <div className={styles.summaryTextBlock}>
+                <strong className={styles.summaryValue}>{educationCount}</strong>
+                <span className={styles.summaryLabel}>этапов образования</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className={styles.header}>
-          <h1 className={styles.title}>Редактирование профиля</h1>
+          <h2 className={styles.sectionHeading}>Основная информация</h2>
         </div>
 
         <div className={styles.topSection}>
@@ -352,41 +470,43 @@ export const NewProfileEditForm: React.FC<NewProfileEditFormProps> = ({ profile 
 
         {renderRoleSpecificBlocks()}
 
-        {saveStatus === "success" && (
-          <Alert variant="success" className={styles.alert}>
-            Профиль успешно обновлен!
-          </Alert>
-        )}
+        <div className={styles.alertsStack}>
+          {saveStatus === "success" && (
+            <Alert variant="success" className={styles.alert}>
+              Профиль успешно обновлен!
+            </Alert>
+          )}
 
-        {moderationMessage && (
-          <Alert variant="info" className={styles.alert}>
-            {moderationMessage}
-          </Alert>
-        )}
+          {moderationMessage && (
+            <Alert variant="info" className={styles.alert}>
+              {moderationMessage}
+            </Alert>
+          )}
 
-        {saveStatus === "error" && (
-          <Alert variant="danger" className={styles.alert}>
-            {errorMessage}
-          </Alert>
-        )}
+          {saveStatus === "error" && (
+            <Alert variant="danger" className={styles.alert}>
+              {errorMessage}
+            </Alert>
+          )}
 
-        {avatarSaveStatus === "success" && (
-          <Alert variant="success" className={styles.alert}>
-            Аватар успешно загружен!
-          </Alert>
-        )}
+          {avatarSaveStatus === "success" && (
+            <Alert variant="success" className={styles.alert}>
+              Аватар успешно загружен!
+            </Alert>
+          )}
 
-        {avatarSaveStatus === "error" && (
-          <Alert variant="danger" className={styles.alert}>
-            {avatarErrorMessage}
-          </Alert>
-        )}
+          {avatarSaveStatus === "error" && (
+            <Alert variant="danger" className={styles.alert}>
+              {avatarErrorMessage}
+            </Alert>
+          )}
 
-        {attemptedSave && hasValidationErrors && (
-          <Alert variant="warning" className={styles.alert}>
-            Исправьте ошибки в форме перед сохранением
-          </Alert>
-        )}
+          {attemptedSave && hasValidationErrors && (
+            <Alert variant="warning" className={styles.alert}>
+              Исправьте ошибки в форме перед сохранением
+            </Alert>
+          )}
+        </div>
 
         <div className={styles.bottomActions}>
           <button className={styles.cancelButton} onClick={handleCancel} disabled={isUpdating}>

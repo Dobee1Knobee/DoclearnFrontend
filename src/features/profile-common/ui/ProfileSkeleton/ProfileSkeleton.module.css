@@ -1,0 +1,126 @@
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Hero */
+.hero {
+  border-radius: 16px;
+  border: 1px solid rgba(83, 136, 216, 0.08);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.banner {
+  height: 80px;
+  background: linear-gradient(90deg, #e8eef6, #f0f4fa, #e8eef6);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.heroBody {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 1.75rem 1.5rem;
+  align-items: flex-start;
+}
+
+.avatarSkeleton {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  margin-top: -40px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #e8eef6, #f0f4fa, #e8eef6);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+  border: 4px solid #fff;
+}
+
+.infoSkeleton {
+  flex: 1;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metaSkeleton {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.statsSkeleton {
+  display: flex;
+  gap: 1rem;
+  padding-top: 1.25rem;
+}
+
+.statBlock {
+  width: 60px;
+  height: 44px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #e8eef6, #f0f4fa, #e8eef6);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Generic lines */
+.line {
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e8eef6, #f0f4fa, #e8eef6);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+  height: 14px;
+}
+
+.lineLg { width: 50%; height: 20px; }
+.lineMd { width: 30%; height: 14px; }
+.lineFull { width: 100%; height: 12px; }
+.chip { width: 80px; height: 28px; border-radius: 8px; }
+.sectionTitle { width: 25%; height: 18px; margin-bottom: 1rem; }
+
+/* Content area */
+.content {
+  border-radius: 16px;
+  border: 1px solid rgba(83, 136, 216, 0.08);
+  background: #ffffff;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.card {
+  height: 100px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #e8eef6, #f0f4fa, #e8eef6);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@media (max-width: 768px) {
+  .heroBody {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+}

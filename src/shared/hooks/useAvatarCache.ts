@@ -4,6 +4,14 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { avatarCacheService } from "../services/avatarCacheService"
 import type { AvatarFile } from "@/entities/user/model/types"
 
+const pendingAvatarLoads = new Set<string>()
+const failedAvatarLoads = new Set<string>()
+
+const isCacheableAvatarUrl = (url?: string): boolean => {
+  if (!url) return false
+  return /^https?:\/\//.test(url)
+}
+
 interface UseAvatarCacheResult {
   getAvatarUrl: (
     avatarUrl?: string,
@@ -93,11 +101,21 @@ export const useAvatarCache = (): UseAvatarCacheResult => {
         return avatarUrl || defaultAvatarPath || "/placeholder.webp"
       }
 
+      if (!isCacheableAvatarUrl(avatarUrl)) {
+        return avatarUrl || defaultAvatarPath || "/placeholder.webp"
+      }
+
+      if (pendingAvatarLoads.has(avatarIdString) || failedAvatarLoads.has(avatarIdString)) {
+        return avatarUrl || defaultAvatarPath || "/placeholder.webp"
+      }
+
+      pendingAvatarLoads.add(avatarIdString)
+
       // Асинхронно загружаем из IndexedDB и обновляем локальный кэш
       avatarCacheService
         .getCachedAvatar(avatarIdString)
-        .then((cached) => {
-          if (cached) {
+        .then(async (cached) => {
+          if (cached && cached.blob instanceof Blob) {
             const blobUrl = URL.createObjectURL(cached.blob)
             createdUrls.current.add(blobUrl)
             setCachedUrls((prev) => {
@@ -107,13 +125,29 @@ export const useAvatarCache = (): UseAvatarCacheResult => {
             })
           } else if (avatarUrl && userId) {
             // Если в кэше нет, но есть оригинальный URL - кэшируем его
-            avatarCacheService.cacheAvatar(avatarUrl, avatarIdString, userId).catch((error) => {
-              console.error("Avatar cache: Failed to cache avatar:", error)
+            await avatarCacheService.cacheAvatar(avatarUrl, avatarIdString, userId)
+
+            const freshCached = await avatarCacheService.getCachedAvatar(avatarIdString)
+            if (!freshCached || !(freshCached.blob instanceof Blob)) {
+              failedAvatarLoads.add(avatarIdString)
+              return
+            }
+
+            const blobUrl = URL.createObjectURL(freshCached.blob)
+            createdUrls.current.add(blobUrl)
+            setCachedUrls((prev) => {
+              const newMap = new Map(prev)
+              newMap.set(avatarIdString, blobUrl)
+              return newMap
             })
           }
         })
         .catch((error) => {
+          failedAvatarLoads.add(avatarIdString)
           console.error("Avatar cache: Failed to get avatar from IndexedDB:", error)
+        })
+        .finally(() => {
+          pendingAvatarLoads.delete(avatarIdString)
         })
 
       // Возвращаем оригинальный URL или дефолтный пока загружается кэш
@@ -124,11 +158,18 @@ export const useAvatarCache = (): UseAvatarCacheResult => {
 
   const cacheAvatar = useCallback(async (avatarUrl: string, avatarId: string, userId?: string): Promise<void> => {
     try {
+      if (!isCacheableAvatarUrl(avatarUrl)) {
+        return
+      }
+
+      pendingAvatarLoads.add(avatarId)
+      failedAvatarLoads.delete(avatarId)
+
       await avatarCacheService.cacheAvatar(avatarUrl, avatarId, userId)
 
       // Обновляем локальный кэш
       const cached = await avatarCacheService.getCachedAvatar(avatarId)
-      if (cached) {
+      if (cached && cached.blob instanceof Blob) {
         const blobUrl = URL.createObjectURL(cached.blob)
         createdUrls.current.add(blobUrl)
         setCachedUrls((prev) => {
@@ -138,8 +179,11 @@ export const useAvatarCache = (): UseAvatarCacheResult => {
         })
       }
     } catch (error) {
+      failedAvatarLoads.add(avatarId)
       console.error("Avatar cache: Failed to cache avatar:", error)
       // Не выбрасываем ошибку, чтобы не ломать основной функционал
+    } finally {
+      pendingAvatarLoads.delete(avatarId)
     }
   }, [])
 
@@ -159,6 +203,8 @@ export const useAvatarCache = (): UseAvatarCacheResult => {
         }
 
         // Удаляем из IndexedDB
+        pendingAvatarLoads.delete(avatarId)
+        failedAvatarLoads.delete(avatarId)
         await avatarCacheService.invalidateAvatar(avatarId)
       } catch (error) {
         console.error("Avatar cache: Failed to invalidate avatar:", error)

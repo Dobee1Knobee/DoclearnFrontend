@@ -3,7 +3,11 @@ import type { SearchResponse } from "../model/types"
 
 export const searchUsers = async (query: string): Promise<SearchResponse> => {
   try {
-    const response = await http.get(`https://api.doclearn.ru/user/search?q=${encodeURIComponent(query)}`)
+    const response = await http.get("/user/search", {
+      params: {
+        q: query,
+      },
+    })
     return response.data
   } catch (error: any) {
     if (error.response?.status === 429) {

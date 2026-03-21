@@ -14,11 +14,10 @@ export const authorProfileApi = createApi({
       }),
       transformResponse: (response: any): SpecialistUser => {
         const userData = response.data || response
-        const transformedProfile: SpecialistUser = {
+        return {
           ...userData,
-          publications: [],
+          publications: userData.publications || [],
         }
-        return transformedProfile
       },
       transformErrorResponse: (response: any) => {
         if (response.status === 404) {
@@ -42,11 +41,10 @@ export const authorProfileApi = createApi({
       }),
       transformResponse: (response: any): SpecialistUser => {
         const userData = response.data || response
-        const transformedProfile: SpecialistUser = {
+        return {
           ...userData,
-          publications: [],
+          publications: userData.publications || [],
         }
-        return transformedProfile
       },
       providesTags: [
         { type: "Profile", id: "ME" },

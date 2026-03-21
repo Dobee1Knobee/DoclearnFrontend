@@ -6,7 +6,7 @@ type RouteParams = Promise<{ id: string }>
 export default async function ProfilePage(
   { params }: { params: RouteParams }
 ) {
-  const { id } = await params
+  await params
   return (
     // style={{ marginTop: '7rem', marginBottom: '5rem', maxWidth: '1200px' }}
     <div className={styles.container}>

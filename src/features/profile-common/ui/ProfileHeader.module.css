@@ -1,17 +1,22 @@
 .container {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 2rem 1rem;
-  margin-bottom: 2rem;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1.5rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) auto auto;
+  gap: 18px;
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(83, 136, 216, 0.2);
+  background:
+    radial-gradient(circle at 12% -24%, rgba(83, 136, 216, 0.2), transparent 38%),
+    linear-gradient(145deg, #ffffff, #f2f8ff);
+  box-shadow: 0 18px 40px rgba(50, 102, 182, 0.14);
+  margin-bottom: 18px;
 }
 
 .topRow {
-  display: contents;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .left {
@@ -19,142 +24,125 @@
 }
 
 .avatar {
-  width: 100px;
-  height: 100px;
+  width: 108px;
+  height: 108px;
   border-radius: 50%;
-  border: 4px solid #5388d8;
+  border: 3px solid #ffffff;
+  box-shadow: 0 12px 26px rgba(83, 136, 216, 0.3);
   object-fit: cover;
 }
 
 .center {
-  flex: 0 0 auto;
   min-width: 0;
 }
 
 .name {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1f3047;
 }
 
 .verifiedIconsContainer {
   display: inline-flex;
-  align-items: center;
-  /* margin-left: 0.125rem; */
-  vertical-align: middle; 
-}
-
-.verifiedIcon {
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-left: 0.25rem;
+  vertical-align: middle;
 }
 
 .specialization {
-  margin-top: 0.25rem;
-  color: #374151;
-  font-size: 1rem;
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-top: 4px;
+  color: #4a6081;
+  font-size: 0.96rem;
+  font-weight: 500;
 }
 
 .meta {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .metaItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.375rem;
-  color: #6b7280;
-  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  border: 1px solid rgba(83, 136, 216, 0.2);
+  background: rgba(255, 255, 255, 0.82);
+  padding: 6px 10px;
+  color: #617493;
+  font-size: 0.82rem;
 }
 
 .metaText {
-  line-height: 1.3;
-  max-width: 150px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
+  max-width: 170px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.metaTextExperience,
-.metaTextLocation,
-.metaTextWork {
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-
 .metaIcon {
-  min-height: 16px;
-  min-width: 16px;
+  width: 15px;
+  height: 15px;
   flex-shrink: 0;
+  color: #4d7fca;
 }
 
 .statsBlock {
   display: grid;
-  grid-template-columns: repeat(3, auto);
-  text-align: center;
-  flex-shrink: 0;
-  margin: 0 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 10px;
 }
 
 .stat {
-  padding: 0 1rem;
+  min-width: 105px;
+  text-align: center;
+  border-radius: 14px;
+  border: 1px solid rgba(83, 136, 216, 0.18);
+  background: rgba(255, 255, 255, 0.82);
+  padding: 10px 12px;
 }
 
-.stat + .stat {
-  border-left: 1px solid #e5e5e5;
-}
-
-.statValue {
+.statValue,
+.statValueBlue {
   display: block;
-  font-weight: 600;
-  font-size: 1.5rem;
-  color: #111827;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1d2e44;
 }
 
 .statValueBlue {
-  display: block;
-  font-weight: 600;
-  font-size: 1.5rem;
   color: #5388d8;
 }
 
 .statLabel {
   display: block;
-  font-size: 1rem;
-  color: #6b7280;
+  margin-top: 2px;
+  color: #6f819d;
+  font-size: 0.78rem;
 }
 
 .tooltipWrapper {
   position: relative;
-  display: inline-block; 
 }
 
 .tooltipText {
   visibility: hidden;
   opacity: 0;
-  width: max-content;
-  max-width: 180px;
-  background: #5388d8;
-  color: #fff;
-  text-align: center;
-  border-radius: 4px;
-  padding: 0.375rem;
-  font-size: 0.75rem;
   position: absolute;
-  /* bottom: 105%; */
-  top: 105%;
+  top: calc(100% + 6px);
   left: 50%;
   transform: translateX(-50%);
-  transition: opacity 0.2s;
-  z-index: 10;
-  pointer-events: none;
+  width: 170px;
+  border-radius: 10px;
+  background: #3d72c0;
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 7px 8px;
+  z-index: 20;
+  transition: opacity 0.2s ease;
 }
 
 .tooltipWrapper:hover .tooltipText {
@@ -165,406 +153,115 @@
 .actions {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 0.75rem;
-  flex-shrink: 0;
+  gap: 10px;
+  justify-content: center;
 }
 
 .primaryButton,
 .secondaryButton {
-  box-sizing: border-box;
-  padding: 0.75rem 1.5rem;
-  height: 3rem;
-  width: 100%;
-  max-width: 13rem;
-  border-radius: 8px;
-  cursor: pointer;
+  min-width: 180px;
+  height: 42px;
+  border-radius: 12px;
+  font-size: 0.92rem;
   font-weight: 600;
-  line-height: 1.2;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .primaryButton {
-  background: #5388d8;
-  color: white;
   border: none;
-  transition: background-color 0.2s;
-}
-
-.primaryButton:hover {
-  background: #4070b8;
+  color: #fff;
+  background: linear-gradient(140deg, #5388d8, #366ec0);
+  box-shadow: 0 10px 20px rgba(83, 136, 216, 0.28);
 }
 
 .secondaryButton {
-  background: transparent;
-  color: #5388d8;
-  border: 2px solid #5388d8;
-  transition: all 0.2s;
+  border: 1px solid rgba(83, 136, 216, 0.5);
+  color: #3e6fb8;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.primaryButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.primaryButton:hover {
+  filter: brightness(0.97);
 }
 
 .secondaryButton:hover {
-  background: #5388d8;
-  color: white;
+  background: rgba(83, 136, 216, 0.12);
 }
 
-@media (max-width: 1200px) and (min-width: 1001px) {
+@media (max-width: 1180px) {
   .container {
-    padding: 1.75rem 1rem;
-    gap: 1rem;
+    grid-template-columns: 1fr;
   }
 
-   .avatar {
-    width: 85px;
-    height: 85px;
+  .statsBlock {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .name {
-    font-size: 1.375rem;
+  .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
-  .specialization {
-    font-size: 0.95rem;
-    margin-top: 0.375rem;
+  .primaryButton,
+  .secondaryButton {
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+    border-radius: 18px;
+    gap: 12px;
   }
 
-  .stat {
-    padding: 0 0.625rem;
+  .topRow {
+    align-items: flex-start;
+  }
+
+  .avatar {
+    width: 82px;
+    height: 82px;
   }
 
   .metaText {
     max-width: 120px;
   }
 
-  .metaTextLocation {
-    max-width: 80px;
-  }
-}
-
-@media (max-width: 1080px) and (min-width: 951px) {
-  .container {
-    padding: 1.5rem 1rem;
-  }
-
-  .avatar {
-    width: 75px;
-    height: 75px;
-  }
-
-  .name {
-    font-size: 1.125rem;
-  }
-
-  .specialization {
-    font-size: 0.8125rem;
-    margin-top: 0.25rem;
-    max-width: 250px;
-  }
-
-  .metaItem {
-    font-size: 0.75rem;
-  }
-
-  .metaText {
-    max-width: 100px;
-  }
-
-  .metaTextLocation {
-    max-width: 70px;
-  }
-
-  .metaTextExperience,
-  .metaTextWork {
-    max-width: 90px;
-  }
-
   .statsBlock {
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .stat {
-    padding: 0 0.75rem;
-  }
-
-  .statValue,
-  .statValueBlue {
-    font-size: 1.25rem;
-  }
-
-  .statLabel {
-    font-size: 0.8125rem;
-  }
-
-  .primaryButton,
-  .secondaryButton {
-    padding: 0.625rem 1.25rem;
-    height: 2.5rem;
-    max-width: 11rem;
-    font-size: 0.875rem;
-  }
-
-  .actions {
-    gap: 0.5rem;
-  }
-}
-
-@media (max-width: 950px) and (min-width: 769px) {
-  .container {
-    padding: 1.125rem 1rem;
-    gap: 0.75rem;
-  }
-
-  .avatar {
-    width: 65px;
-    height: 65px;
-  }
-
-  .name {
-    font-size: 0.875rem;
-  }
-
-  .specialization {
-    font-size: 0.625rem;
-    margin-top: 0.125rem;
-  }
-
-  .meta {
-    margin-top: 0.375rem;
-  }
-
-  .metaItem {
-    font-size: 0.625rem;
-  }
-
-  .metaText {
-    max-width: 80px;
-  }
-
-  .metaTextLocation {
-    max-width: 60px;
-  }
-
-  .metaTextExperience,
-  .metaTextWork {
-    max-width: 80px;
-  }
-
-  .stat {
-    padding: 0 0.625rem;
-  }
-
-  .statValue,
-  .statValueBlue {
-    font-size: 1rem;
-  }
-
-  .statLabel {
-    font-size: 0.625rem;
-  }
-
-  .primaryButton,
-  .secondaryButton {
-    padding: 0.5rem 0.875rem;
-    max-height: 2.5rem;
-    max-width: 11rem;
-    font-size: 0.625rem;
-  }
-}
-
-/* @media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1rem;
-    padding: 2rem 1rem 1.5rem;
-  }
-
-  .left {
-    position: relative;
-  }
-
-  .avatar {
-    width: 80px;
-    height: 80px;
-  }
-
-  .center {
-    order: 2;
-    width: 100%;
-  }
-
-  .name {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .specialization {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin-bottom: 1rem;
-    max-width: 100%;
-  }
-
-  .meta {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .metaItem {
-    justify-content: center;
-    font-size: 0.875rem;
-  }
-
-  .statsBlock {
-    order: 3;
-    grid-template-columns: repeat(3, 1fr);
-    width: 100%;
-    max-width: 320px;
-  }
-
-  .stat {
-    padding: 0 0.75rem;
-  }
-
-  .statValue,
-  .statValueBlue {
-    font-size: 1.25rem;
-  }
-
-  .statLabel {
-    font-size: 0.875rem;
-  }
-
-  .actions {
-    order: 4;
-    width: 100%;
-    max-width: 320px;
-    gap: 0.5rem;
-  }
-
-  .primaryButton,
-  .secondaryButton {
-    max-width: none;
-    width: 100%;
-    height: 2.75rem;
-    font-size: 0.875rem;
-  }
-
-  .metaText {
-    max-width: 180px;
-  }
-} */
-
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem 1rem;
-    margin-bottom: 1rem;
-    justify-content: center;
-  }
-
-  /* Первая строка: аватар + информация по центру */
-  .topRow {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 1rem;
-    width: 100%;
-    max-width: 400px;
-    order: 1;
-  }
-
-  .left {
-    flex-shrink: 0;
-  }
-
-  .avatar {
-    width: 70px;
-    height: 70px;
-  }
-
-  .center {
-    text-align: left;
-    flex: 1;
     min-width: 0;
-  }
-
-  .name {
-    font-size: 1rem;
-  }
-
-  .specialization {
-    font-size: 0.8125rem;
-    margin-bottom: 0.5rem;
-    max-width: 100%;
-  }
-
-  .meta {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: flex-start;
-    margin-top: 0.25rem;
-  }
-
-  .metaItem {
-    justify-content: flex-start;
-    font-size: 0.75rem;
-    flex-shrink: 0;
-  }
-
-  .metaText {
-    max-width: 100px;
-  }
-
-  .metaTextLocation {
-    max-width: 70px;
-  }
-
-  .metaTextExperience,
-  .metaTextWork {
-    max-width: 80px;
-  }
-
-  /* Вторая строка: статистика по центру */
-  .statsBlock {
-    order: 2;
-    grid-template-columns: repeat(3, 1fr);
-    width: 100%;
-    max-width: 280px;
-    margin: 0;
-  }
-
-  .stat {
-    padding: 0 0.5rem;
-    text-align: center;
+    padding: 8px;
   }
 
   .statValue,
   .statValueBlue {
-    font-size: 1.125rem;
+    font-size: 1.05rem;
   }
 
   .statLabel {
-    font-size: 0.8125rem;
+    font-size: 0.72rem;
   }
 
-  /* Третья строка: кнопки по центру */
   .actions {
-    order: 3;
     width: 100%;
-    max-width: 280px;
-    gap: 0.5rem;
+    flex-direction: column;
   }
 
   .primaryButton,
   .secondaryButton {
-    max-width: none;
     width: 100%;
-    height: 2.5rem;
-    font-size: 0.8125rem;
-    padding: 0.625rem 1rem;
+    min-width: 0;
+    height: 40px;
+    font-size: 0.86rem;
   }
 }

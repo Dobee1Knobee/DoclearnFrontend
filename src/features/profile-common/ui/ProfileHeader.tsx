@@ -61,8 +61,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     lastName,
     middleName,
     location,
-    placeWork,
-    placeStudy,
     rating,
     isVerified,
     stats,
@@ -150,7 +148,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
       }
 
       await refetchFollowStatus()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Ошибка при изменении подписки:", error)
     } finally {
       setTimeout(() => {
@@ -178,7 +176,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
 
     if (!isAuthenticated) {
       return (
-        <div className={styles.actions}>
+        <>
           <button
             className={styles.primaryButton}
             onClick={() => setShowLoginModal(true)}
@@ -192,13 +190,13 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
               Связаться
             </button>
           )}
-        </div>
+        </>
       )
     }
 
     if (isOwnProfile) {
       return (
-        <div className={styles.actions}>
+        <>
           <button className={styles.secondaryButton} onClick={() => router.push(`/profile/${_id}/edit`)}>
             Редактировать
           </button>
@@ -211,12 +209,12 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
               Добавить контакты
             </button>
           )}
-        </div>
+        </>
       )
     }
 
     return (
-      <div className={styles.actions}>
+      <>
         <button
           className={isFollowing ? styles.secondaryButton : styles.primaryButton}
           onClick={handleFollowToggle}
@@ -230,7 +228,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
             Связаться
           </button>
         )}
-      </div>
+      </>
     )
   }
 

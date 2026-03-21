@@ -1,153 +1,361 @@
 .container {
-  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  max-width: 1320px;
   margin: 0 auto;
 }
 
-.header {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+.heroCard {
+  border-radius: 28px;
+  border: 1px solid rgba(83, 136, 216, 0.12);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(83, 136, 216, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.98));
+  box-shadow: 0 22px 48px rgba(36, 73, 138, 0.07);
+}
+
+.heroCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) 340px;
+  gap: 1.2rem;
+  padding: 1.5rem;
+}
+
+.heroCopy {
+  min-width: 0;
+}
+
+.eyebrow,
+.progressEyebrow {
+  display: inline-flex;
+  margin-bottom: 0.5rem;
+  color: #7a93b3;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #1a1a1a;
   margin: 0;
+  color: #1d2c40;
+  font-size: clamp(2rem, 3vw, 2.95rem);
+  line-height: 0.98;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+
+.description {
+  max-width: 780px;
+  margin: 0.7rem 0 0;
+  color: #53657a;
+  font-size: 0.95rem;
+  line-height: 1.72;
+  font-weight: 500;
+}
+
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.roleBadge,
+.stateBadgeSuccess,
+.stateBadgeWarning {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.roleBadge {
+  background: rgba(83, 136, 216, 0.12);
+  color: #356cbf;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.1rem;
+}
+
+.previewButton,
+.primaryButton,
+.secondaryButton,
+.cancelButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 46px;
+  padding: 0.8rem 1.2rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.previewButton,
+.secondaryButton,
+.cancelButton {
+  background: #ffffff;
+}
+
+.previewButton {
+  border: 1px solid rgba(83, 136, 216, 0.18);
+  color: #356cbf;
+}
+
+.previewButton:hover,
+.secondaryButton:hover,
+.cancelButton:hover {
+  transform: translateY(-1px);
+}
+
+.stateBadgeSuccess {
+  background: rgba(34, 197, 94, 0.12);
+  color: #16803d;
+}
+
+.stateBadgeWarning {
+  background: rgba(251, 191, 36, 0.16);
+  color: #a66b0f;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.summaryCard {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 94px;
+  padding: 0.95rem 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(83, 136, 216, 0.12);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.summaryIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(83, 136, 216, 0.1);
+  color: #5388d8;
+}
+
+.summaryTextBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.summaryValue {
+  color: #1f2d42;
+  font-size: 1.24rem;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.summaryLabel {
+  color: #7c8fa6;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.inlineProgress {
+  margin-top: 1rem;
+  padding: 1rem 1.05rem;
+  border-radius: 20px;
+  border: 1px solid rgba(83, 136, 216, 0.12);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.progressTitle {
+  margin: 0;
+  color: #1d2c40;
+  font-size: 1.14rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.progressValue {
+  color: #356cbf;
+  font-size: 1.18rem;
+  font-weight: 800;
+}
+
+.progressTrack {
+  height: 10px;
+  margin-top: 0.9rem;
+  border-radius: 999px;
+  background: #e8eef6;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5388d8, #356cbf);
+}
+
+.progressHints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.95rem;
+}
+
+.hintBadge,
+.hintBadgeComplete {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 34px;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.hintBadge {
+  background: #f4f8fc;
+  color: #5e7591;
+}
+
+.hintBadgeComplete {
+  background: rgba(34, 197, 94, 0.12);
+  color: #188244;
+}
+
+.header {
+  padding-top: 0.2rem;
+}
+
+.sectionHeading {
+  margin: 0;
+  color: #203047;
+  font-size: 1.18rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.alertsStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
 .alert {
-  margin-bottom: 1.5rem;
+  margin: 0;
+  border-radius: 16px;
 }
 
 .topSection {
   display: grid;
-  grid-template-columns: 300px 1fr; 
-  gap: 2rem;
-  margin-bottom: 2rem; 
+  grid-template-columns: 320px 1fr;
+  gap: 1.25rem;
+  align-items: start;
 }
 
+.avatarWrapper,
+.personalInfoWrapper {
+  min-width: 0;
+}
 
 .bottomActions {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 5;
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
-  padding: 0.5rem 0;
-  margin-top: 2rem; 
+  padding: 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(83, 136, 216, 0.12);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 42px rgba(36, 73, 138, 0.08);
 }
 
 .primaryButton,
 .secondaryButton,
 .cancelButton {
-  box-sizing: border-box;
-  padding: 0.75rem 1.5rem;
-  height: 3rem;
-  width: 100%;
-  max-width: 13rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  line-height: 1.2;
-  transition: all 0.2s;
+  min-width: 158px;
 }
 
 .primaryButton {
-  background: #5388d8;
-  color: white;
   border: none;
+  background: linear-gradient(135deg, #5388d8, #356cbf);
+  color: #fff;
 }
 
 .primaryButton:hover {
-  background: #4070b8;
+  box-shadow: 0 14px 28px rgba(83, 136, 216, 0.24);
 }
 
-.primaryButton:disabled {
-  background: #9ca3af;
+.primaryButton:disabled,
+.secondaryButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.65;
   cursor: not-allowed;
 }
 
 .secondaryButton {
-  background: transparent;
-  color: #5388d8;
-  border: 2px solid #5388d8;
-}
-
-.secondaryButton:hover {
-  background: #5388d8;
-  color: white;
-}
-
-.secondaryButton:disabled {
-  color: #9ca3af;
-  border-color: #9ca3af;
-  cursor: not-allowed;
+  border: 1px solid rgba(83, 136, 216, 0.22);
+  color: #356cbf;
 }
 
 .cancelButton {
-  background: transparent;
-  color: #6b7280;
-  border: 2px solid #6b7280;
+  border: 1px solid #d8e2ee;
+  color: #61768f;
 }
 
-.cancelButton:hover {
-  background: #6b7280;
-  color: white;
-}
-
-.cancelButton:disabled {
-  color: #9ca3af;
-  border-color: #9ca3af;
-  cursor: not-allowed;
-}
-
-@media (max-width: 768px) and (min-width: 481px) {
-  .topSection {
+@media (max-width: 1100px) {
+  .heroCard {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .title {
-    font-size: 1.75rem;
-    text-align: center;
-  }
-
-  .bottomActions {
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .bottomActions button {
-    min-width: 140px;
-    max-width: 200px;
-  }
-}
-
-@media (max-width: 480px) {
-  .header {
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-
-  .title {
-    font-size: 1.5rem;
   }
 
   .topSection {
     grid-template-columns: 1fr;
-    gap: 1rem;
   }
+}
 
+@media (max-width: 760px) {
   .bottomActions {
+    position: static;
     flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
   }
 
-  .bottomActions button {
+  .primaryButton,
+  .secondaryButton,
+  .cancelButton,
+  .previewButton {
     width: 100%;
-    max-width: none;
   }
 }

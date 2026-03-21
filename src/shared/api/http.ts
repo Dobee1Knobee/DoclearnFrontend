@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
-const API_BASE_URL = "https://api.doclearn.ru";
-// https://api.doclearn.ru/auth/register https://dl-back-756832582185.us-east1.run.app
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://api.doclearn.ru');
 
 interface RefreshRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;

@@ -50,22 +50,26 @@ class AvatarCacheService {
     return this.db
   }
 
-  private async fetchWithRetry(url: string, retries = this.MAX_RETRIES): Promise<Blob> {
+  private async fetchWithRetry(url: string, retries = this.MAX_RETRIES): Promise<Blob | null> {
     for (let i = 0; i < retries; i++) {
       try {
         const response = await fetch(url)
         if (!response.ok) {
+          if (response.status === 404 || response.status === 403) {
+            return null
+          }
           throw new Error(`HTTP ${response.status}: ${response.statusText}`)
         }
         const blob = await response.blob()
         return blob
       } catch (error) {
-        console.error(`Avatar cache: Fetch attempt ${i + 1} failed`, { url, error })
-        if (i === retries - 1) throw error
+        if (i === retries - 1) {
+          return null
+        }
         await new Promise((resolve) => setTimeout(resolve, this.RETRY_DELAY * (i + 1)))
       }
     }
-    throw new Error("All retry attempts failed")
+    return null
   }
 
   /**
@@ -120,6 +124,9 @@ class AvatarCacheService {
       }
 
       const blob = await this.fetchWithRetry(avatarUrl)
+      if (!blob) {
+        return
+      }
 
       const transaction = db.transaction([this.storeName], "readwrite")
       const store = transaction.objectStore(this.storeName)

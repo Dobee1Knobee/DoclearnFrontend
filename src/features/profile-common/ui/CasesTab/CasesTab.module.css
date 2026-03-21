@@ -1,29 +1,241 @@
-/* File: src/features/profile-common/ui/CasesTab/CasesTab.module.css */
+.stateText {
+  padding: 2rem;
+  text-align: center;
+  color: #8193a8;
+  font-size: 0.86rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .container {
   display: flex;
   flex-direction: column;
+  gap: 1.2rem;
+}
+
+.sectionIntro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.15rem 1.2rem;
+  border-radius: 22px;
+  border: 1px solid rgba(83, 136, 216, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.98));
+}
+
+.eyebrow {
+  display: inline-flex;
+  margin-bottom: 0.45rem;
+  color: #7a93b3;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #1f2d42;
+  font-size: 1.26rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  margin: 0.35rem 0 0;
+  color: #687b92;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.noteBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 40px;
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(83, 136, 216, 0.1);
+  color: #4472bf;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.caseCard {
+  display: grid;
+  grid-template-columns: 44px 1fr;
   gap: 1rem;
 }
-.item {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+.caseRail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.title {
-  margin: 0 0 0.5rem;
+
+.caseDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #eef4ff, #dce8ff);
+  color: #5388d8;
+  box-shadow: 0 8px 24px rgba(83, 136, 216, 0.14);
+}
+
+.caseLine {
+  width: 2px;
+  flex: 1;
+  min-height: 56px;
+  margin: 0.4rem 0;
+  background: linear-gradient(180deg, rgba(83, 136, 216, 0.22), rgba(83, 136, 216, 0.04));
+}
+
+.caseContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.15rem;
+  margin-bottom: 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(83, 136, 216, 0.1);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(83, 136, 216, 0.07), transparent 28%),
+    linear-gradient(180deg, #ffffff, #f9fbff);
+  box-shadow: 0 12px 28px rgba(36, 73, 138, 0.05);
+}
+
+.caseMetaRow,
+.caseTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.caseNumber,
+.caseDate,
+.caseTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.caseNumber {
+  min-height: 30px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(83, 136, 216, 0.1);
+  color: #4472bf;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.caseDate {
+  color: #8a9bb0;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.caseTitle {
+  margin: 0;
+  color: #1d2c40;
+  font-size: 1.03rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.caseText {
+  margin: 0;
+  color: #53657a;
+  font-size: 0.9rem;
+  line-height: 1.72;
   font-weight: 500;
 }
-.description {
-  margin: 0 0 0.5rem;
-  color: #374151;
+
+.caseTag {
+  min-height: 34px;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: #f4f8fc;
+  color: #62758d;
+  font-size: 0.77rem;
+  font-weight: 700;
 }
-.date {
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-.empty {
-  padding: 2rem;
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 3rem 2rem;
+  border-radius: 24px;
+  border: 1px dashed rgba(83, 136, 216, 0.22);
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(255, 255, 255, 0.98));
   text-align: center;
-  color: #6b7280;
+}
+
+.emptyIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  background: rgba(83, 136, 216, 0.1);
+  color: #5388d8;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: #22344b;
+  font-size: 1.14rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.emptyText {
+  max-width: 620px;
+  margin: 0;
+  color: #677b93;
+  font-size: 0.9rem;
+  line-height: 1.68;
+}
+
+.emptyAction {
+  min-height: 46px;
+  padding: 0.75rem 1.2rem;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #5388d8, #356cbf);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .sectionIntro {
+    flex-direction: column;
+  }
+
+  .caseCard {
+    grid-template-columns: 1fr;
+  }
+
+  .caseRail {
+    display: none;
+  }
 }

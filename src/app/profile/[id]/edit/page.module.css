@@ -1,0 +1,20 @@
+.page {
+  width: 100%;
+}
+
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(83, 136, 216, 0.08), transparent 18%),
+    radial-gradient(circle at 88% 10%, rgba(83, 136, 216, 0.06), transparent 18%);
+  z-index: -1;
+}
+
+@media (max-width: 900px) {
+  .page {
+    width: 100%;
+  }
+}
